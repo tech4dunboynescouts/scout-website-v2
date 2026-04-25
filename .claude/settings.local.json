@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@14 . --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-npm)",
+      "Bash(npx create-next-app@14 /tmp/scout-tmp --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-npm)",
+      "Bash(cd /tmp)",
+      "Bash(npx create-next-app@14 scout-tmp --typescript --tailwind --eslint --app --no-src-dir --import-alias=\"@/*\" --use-npm --yes)",
+      "WebFetch(domain:1stmeathdunboynescouts.ie)"
+    ]
+  }
+}

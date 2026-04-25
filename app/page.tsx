@@ -1,101 +1,243 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Anchor, Users, Mountain, Heart, ArrowRight } from "lucide-react";
+import HeroSection from "@/components/HeroSection";
+import SectionCard from "@/components/SectionCard";
+import NewsCard from "@/components/NewsCard";
+import StatCounter from "@/components/StatCounter";
+import sections from "@/data/sections.json";
+import news from "@/data/news.json";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "1st Meath Dunboyne Scout Group — Adventure Starts Here",
+  description:
+    "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Join us today.",
+};
+
+const pillars = [
+  {
+    icon: Mountain,
+    title: "Outdoors",
+    desc: "From camping in the Wicklow Mountains to kayaking on the Royal Canal — we live for the great outdoors.",
+  },
+  {
+    icon: Users,
+    title: "Community",
+    desc: "Deeply rooted in Dunboyne since 1973, we serve and give back to the community that supports us.",
+  },
+  {
+    icon: Heart,
+    title: "Leadership",
+    desc: "We develop confident, caring young people who go on to make a difference in their communities.",
+  },
+  {
+    icon: Anchor,
+    title: "Water Section",
+    desc: "Our unique Water Section gives members kayaking, canoeing and water safety skills found in few other groups.",
+  },
+];
+
+const latestNews = news.slice(0, 3);
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      {/* Hero */}
+      <HeroSection
+        title="Adventure starts here."
+        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit — and a very active Water Section."
+        image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
+        primaryCta={{ label: "Join Our Group", href: "/join" }}
+        secondaryCta={{ label: "Explore Sections", href: "#sections" }}
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Stats */}
+      <section className="bg-navy-dark py-16 lg:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6">
+            <StatCounter value={50} suffix="+" label="Years Active" />
+            <StatCounter value={5} label="Sections" />
+            <StatCounter value={200} suffix="+" label="Young Members" />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </section>
+
+      {/* About strip */}
+      <section className="bg-navy-mid py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-4 block">
+                About the Group
+              </span>
+              <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
+                Over 50 years of scouting in Dunboyne
+              </h2>
+              <p className="font-body text-white/70 text-base leading-relaxed mb-6">
+                1st Meath Dunboyne Scout Group was founded in 1973 and remains a highly active group to this day. We comprise two Beaver colonies, three Cub packs, two Scout troops and a Venture unit — plus a very active Water Section that serves the entire group.
+              </p>
+              <p className="font-body text-white/70 text-base leading-relaxed mb-8">
+                We are part of Scouting Ireland, and our programme aims to encourage the physical, intellectual, character, emotional, social and spiritual development of young people so they may achieve their full potential.
+              </p>
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 text-orange-main font-body font-semibold hover:gap-3 transition-all"
+              >
+                Our full story <ArrowRight size={16} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {pillars.map((p, i) => (
+                <div
+                  key={i}
+                  className="bg-white/10 rounded-2xl p-5 hover:bg-white/15 transition-colors"
+                >
+                  <div className="text-orange-main mb-3">
+                    <p.icon size={28} />
+                  </div>
+                  <h3 className="font-display font-bold text-white text-base mb-2">{p.title}</h3>
+                  <p className="font-body text-white/60 text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sections */}
+      <section id="sections" className="py-16 lg:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-3 block">
+              Our Sections
+            </span>
+            <h2 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl lg:text-5xl">
+              Find your section
+            </h2>
+            <p className="font-body text-textMuted mt-4 text-base max-w-xl mx-auto">
+              From age 6 to 18, there&apos;s a place in 1st Meath Dunboyne for every young person ready for adventure.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {sections.map((section, i) => (
+              <SectionCard key={section.slug} {...section} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Water Section highlight */}
+      <section className="bg-navy-dark py-16 lg:py-20 overflow-hidden relative">
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: "url(https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1400&q=80)" }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-4">
+              <Anchor className="text-orange-main" size={28} />
+              <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest">
+                Water Section
+              </span>
+            </div>
+            <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
+              One of Meath&apos;s only Scout Water Sections
+            </h2>
+            <p className="font-body text-white/70 text-base leading-relaxed mb-8">
+              Since 1992, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel — qualifications that open doors to adventure across Ireland and beyond.
+            </p>
+            <Link
+              href="/join"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors"
+            >
+              Learn how to join <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest News */}
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-3 block">
+                Latest
+              </span>
+              <h2 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl">
+                News &amp; Events
+              </h2>
+            </div>
+            <Link
+              href="/news"
+              className="hidden sm:inline-flex items-center gap-2 text-sm font-body font-semibold text-navy-light hover:text-orange-main transition-colors"
+            >
+              All news <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestNews.map((article, i) => (
+              <NewsCard key={article.id} {...article} index={i} />
+            ))}
+          </div>
+          <div className="mt-8 text-center sm:hidden">
+            <Link
+              href="/news"
+              className="inline-flex items-center gap-2 text-sm font-body font-semibold text-navy-light hover:text-orange-main transition-colors"
+            >
+              View all news <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Join CTA */}
+      <section className="bg-navy-dark py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl mb-4">
+              Ready to get involved?
+            </h2>
+            <p className="font-body text-white/60 text-base max-w-xl mx-auto">
+              Whether you want to enrol your child or volunteer as a leader — there&apos;s a place for you at 1st Meath Dunboyne.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 text-center">
+              <div className="w-14 h-14 bg-orange-main rounded-full flex items-center justify-center mx-auto mb-5">
+                <Users size={24} className="text-white" />
+              </div>
+              <h3 className="font-display font-bold text-white text-xl mb-3">Enrol a Child</h3>
+              <p className="font-body text-white/60 text-sm leading-relaxed mb-6">
+                Ages 6–18. All sections currently have places available. Apply online in minutes.
+              </p>
+              <Link
+                href="/join"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors text-sm"
+              >
+                Apply Now <ArrowRight size={14} />
+              </Link>
+            </div>
+            <div className="bg-white/10 hover:bg-white/15 transition-colors rounded-2xl p-8 text-center">
+              <div className="w-14 h-14 bg-navy-light rounded-full flex items-center justify-center mx-auto mb-5">
+                <Heart size={24} className="text-white" />
+              </div>
+              <h3 className="font-display font-bold text-white text-xl mb-3">Volunteer as a Leader</h3>
+              <p className="font-body text-white/60 text-sm leading-relaxed mb-6">
+                No experience needed. We provide full training. Make a lasting difference in young lives.
+              </p>
+              <Link
+                href="/join#volunteer"
+                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white/30 hover:border-white text-white font-body font-semibold rounded-lg transition-colors text-sm"
+              >
+                Get Involved <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
