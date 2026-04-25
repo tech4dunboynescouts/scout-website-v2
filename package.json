@@ -14,17 +14,13 @@
     "next": "14.2.35",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.11.0",
-    "react-hook-form": "^7.73.1",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^5.0.0",
-    "@react-leaflet/core": "^3.0.0"
+    "react-hook-form": "^7.73.1"
   },
   "devDependencies": {
     "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/leaflet": "^1.9.21",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "eslint": "^8",
