@@ -9,7 +9,7 @@ import sections from "@/data/sections.json";
 import news from "@/data/news.json";
 
 export const metadata: Metadata = {
-  title: "1st Meath Dunboyne Scout Group — Adventure Starts Here",
+  title: "1st Meath Dunboyne Scout Group",
   description:
     "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Join us today.",
 };
@@ -44,8 +44,8 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <HeroSection
-        title="Adventure starts here."
-        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit — and a very active Water Section."
+        title="Camp. Explore. Lead. Belong."
+        subtitle="Where young people become remarkable."
         image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
         primaryCta={{ label: "Join Our Group", href: "/join" }}
         secondaryCta={{ label: "Explore Sections", href: "#sections" }}

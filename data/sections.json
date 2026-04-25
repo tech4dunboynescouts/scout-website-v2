@@ -2,10 +2,12 @@
   {
     "slug": "beavers",
     "name": "Beavers",
-    "ageRange": "6–8",
+    "ageRange": "1st Class – 3rd Class",
     "colour": "#E8640A",
-    "meetingDay": "Tuesday",
-    "meetingTime": "6:30pm – 7:30pm",
+    "meetings": [
+      { "day": "Monday", "time": "18:30 – 19:45" },
+      { "day": "Tuesday", "time": "18:00 – 19:00" }
+    ],
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🦫",
     "tagline": "Where every big adventure starts small",
@@ -27,10 +29,13 @@
   {
     "slug": "cubs",
     "name": "Cubs",
-    "ageRange": "8–11",
+    "ageRange": "4th Class – 6th Class",
     "colour": "#2A5298",
-    "meetingDay": "Wednesday",
-    "meetingTime": "7:00pm – 8:30pm",
+    "meetings": [
+      { "day": "Tuesday", "time": "19:15 – 20:45" },
+      { "day": "Wednesday", "time": "18:45 – 20:15" },
+      { "day": "Thursday", "time": "18:45 – 20:15" }
+    ],
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🐺",
     "tagline": "Curious minds, brave hearts",
@@ -52,10 +57,12 @@
   {
     "slug": "scouts",
     "name": "Scouts",
-    "ageRange": "11–15",
+    "ageRange": "1st Year – 3rd Year",
     "colour": "#1A3A6B",
-    "meetingDay": "Thursday",
-    "meetingTime": "7:30pm – 9:00pm",
+    "meetings": [
+      { "day": "Monday", "time": "20:00 – 21:30" },
+      { "day": "Wednesday", "time": "20:15 – 21:30" }
+    ],
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "⚜️",
     "tagline": "Lead. Explore. Grow.",
@@ -78,10 +85,11 @@
   {
     "slug": "ventures",
     "name": "Ventures",
-    "ageRange": "15–18",
+    "ageRange": "4th Year – 6th Year",
     "colour": "#0D2044",
-    "meetingDay": "Friday",
-    "meetingTime": "8:00pm – 9:30pm",
+    "meetings": [
+      { "day": "Thursday", "time": "20:30 – 22:00" }
+    ],
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🏔️",
     "tagline": "Your adventure, your way",

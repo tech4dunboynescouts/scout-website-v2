@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, Clock, MapPin, Calendar, ArrowRight } from "lucide-react";
+import { CheckCircle, MapPin, Calendar, ArrowRight } from "lucide-react";
 import sections from "@/data/sections.json";
 
 interface Props {
@@ -116,15 +116,14 @@ export default function SectionPage({ params }: Props) {
                 <div className="flex items-start gap-3">
                   <Calendar size={18} className="text-orange-main mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-body text-xs text-textMuted uppercase tracking-wider mb-0.5">Day</div>
-                    <div className="font-body font-medium text-navy-dark text-sm">{section.meetingDay}</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock size={18} className="text-orange-main mt-0.5 flex-shrink-0" />
-                  <div>
-                    <div className="font-body text-xs text-textMuted uppercase tracking-wider mb-0.5">Time</div>
-                    <div className="font-body font-medium text-navy-dark text-sm">{section.meetingTime}</div>
+                    <div className="font-body text-xs text-textMuted uppercase tracking-wider mb-1.5">Meeting Times</div>
+                    <div className="space-y-1">
+                      {section.meetings.map((meeting, i) => (
+                        <div key={i} className="font-body font-medium text-navy-dark text-sm">
+                          {meeting.day} &middot; {meeting.time}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

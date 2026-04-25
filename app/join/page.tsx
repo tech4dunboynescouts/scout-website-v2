@@ -69,24 +69,28 @@ export default function JoinPage() {
               <thead>
                 <tr className="bg-navy-mid text-white">
                   <th className="px-6 py-4 text-left font-semibold">Section</th>
-                  <th className="px-6 py-4 text-left font-semibold">Age Range</th>
-                  <th className="px-6 py-4 text-left font-semibold">Group Name</th>
+                  <th className="px-6 py-4 text-left font-semibold">Class / Year</th>
                   <th className="px-6 py-4 text-left font-semibold">Meeting Night</th>
                   <th className="px-6 py-4 text-left font-semibold">Time</th>
                 </tr>
               </thead>
               <tbody>
-                {sections.map((s, i) => (
-                  <tr key={s.slug} className={i % 2 === 0 ? "bg-white" : "bg-background"}>
-                    <td className="px-6 py-4 font-semibold text-navy-dark flex items-center gap-2">
-                      <span>{s.icon}</span> {s.name}
-                    </td>
-                    <td className="px-6 py-4 text-textMuted">{s.ageRange}</td>
-                    <td className="px-6 py-4 text-textMuted">{s.sectionName}</td>
-                    <td className="px-6 py-4 text-textMuted">{s.meetingDay}</td>
-                    <td className="px-6 py-4 text-textMuted">{s.meetingTime}</td>
-                  </tr>
-                ))}
+                {sections.flatMap((s, i) =>
+                  s.meetings.map((meeting, j) => (
+                    <tr key={`${s.slug}-${j}`} className={i % 2 === 0 ? "bg-white" : "bg-background"}>
+                      {j === 0 && (
+                        <>
+                          <td className="px-6 py-4 font-semibold text-navy-dark" rowSpan={s.meetings.length}>
+                            <span className="flex items-center gap-2"><span>{s.icon}</span> {s.name}</span>
+                          </td>
+                          <td className="px-6 py-4 text-textMuted" rowSpan={s.meetings.length}>{s.ageRange}</td>
+                        </>
+                      )}
+                      <td className="px-6 py-4 text-textMuted">{meeting.day}</td>
+                      <td className="px-6 py-4 text-textMuted">{meeting.time}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
