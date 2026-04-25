@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 interface SectionCardProps {
   slug: string;
   name: string;
-  ageRange: string;
+  ageRange?: string;
   colour: string;
   tagline: string;
   description: string;
@@ -18,7 +18,6 @@ interface SectionCardProps {
 export default function SectionCard({
   slug,
   name,
-  ageRange,
   colour,
   tagline,
   description,
