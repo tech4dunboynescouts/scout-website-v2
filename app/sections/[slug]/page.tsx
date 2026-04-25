@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const section = sections.find((s) => s.slug === params.slug);
   if (!section) return {};
   return {
-    title: `${section.name} (Ages ${section.ageRange})`,
+    title: section.name,
     description: section.description,
   };
 }
@@ -55,11 +55,6 @@ export default function SectionPage({ params }: Props) {
           </Link>
           <div className="flex items-center gap-4 mb-4">
             <span className="text-5xl" role="img" aria-label={section.name}>{section.icon}</span>
-            <span
-              className="inline-block text-sm font-body font-bold px-4 py-1.5 rounded-full text-white border-2 border-white/30"
-            >
-              Ages {section.ageRange}
-            </span>
           </div>
           <h1 className="font-display font-bold text-white text-5xl sm:text-6xl lg:text-7xl mb-4">
             {section.name}
@@ -176,7 +171,7 @@ export default function SectionPage({ params }: Props) {
                         <div className="font-body font-medium text-navy-dark text-sm group-hover:text-orange-main transition-colors">
                           {s.name}
                         </div>
-                        <div className="font-body text-textMuted text-xs">Ages {s.ageRange}</div>
+                        <div className="font-body text-textMuted text-xs">{s.sectionName}</div>
                       </div>
                     </Link>
                   ))}

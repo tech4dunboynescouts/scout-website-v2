@@ -12,10 +12,10 @@ const navLinks = [
   {
     label: "Sections",
     children: [
-      { href: "/sections/beavers", label: "Beavers (6–8)" },
-      { href: "/sections/cubs", label: "Cubs (8–11)" },
-      { href: "/sections/scouts", label: "Scouts (11–15)" },
-      { href: "/sections/ventures", label: "Ventures (15–18)" },
+      { href: "/sections/beavers", label: "Beavers" },
+      { href: "/sections/cubs", label: "Cubs" },
+      { href: "/sections/scouts", label: "Scouts" },
+      { href: "/sections/ventures", label: "Ventures" },
     ],
   },
   { href: "/news", label: "News & Events" },

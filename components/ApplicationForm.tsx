@@ -135,10 +135,10 @@ function YouthForm() {
           className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.section ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         >
           <option value="">Select section…</option>
-          <option value="beavers">Beavers (Ages 6–8)</option>
-          <option value="cubs">Cubs (Ages 8–11)</option>
-          <option value="scouts">Scouts (Ages 11–15)</option>
-          <option value="ventures">Ventures (Ages 15–18)</option>
+          <option value="beavers">Beavers</option>
+          <option value="cubs">Cubs</option>
+          <option value="scouts">Scouts</option>
+          <option value="ventures">Ventures</option>
         </select>
         {errors.section && <p className="mt-1 text-xs text-red-500">{errors.section.message}</p>}
       </div>

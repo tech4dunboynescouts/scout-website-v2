@@ -211,7 +211,7 @@ export default function HomePage() {
               </div>
               <h3 className="font-display font-bold text-white text-xl mb-3">Enrol a Child</h3>
               <p className="font-body text-white/60 text-sm leading-relaxed mb-6">
-                Ages 6–18. All sections currently have places available. Apply online in minutes.
+                All sections currently have places available. Apply online in minutes.
               </p>
               <Link
                 href="/join"

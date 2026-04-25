@@ -43,12 +43,6 @@ export default function SectionCard({
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div>
-              <span
-                className="inline-block text-xs font-body font-semibold px-3 py-1 rounded-full text-white mb-3"
-                style={{ background: colour }}
-              >
-                Ages {ageRange}
-              </span>
               <h3 className="font-display font-bold text-navy-dark text-2xl">
                 {name}
               </h3>
