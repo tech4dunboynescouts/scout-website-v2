@@ -44,7 +44,16 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <HeroSection
-        title="Camp. Explore. Lead. Belong."
+        titles={[
+          "Built for the outdoors. Made for life.",
+          "Where young people become remarkable.",
+          "Skills for life. Memories forever.",
+          "Be prepared for everything.",
+          "Fifty years of adventure in Dunboyne.",
+          "Camp. Explore. Lead. Belong.",
+          "Get outside. Get involved.",
+          "Do more. Be more.",
+        ]}
         subtitle="Where young people become remarkable."
         image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
         primaryCta={{ label: "Join Our Group", href: "/join" }}

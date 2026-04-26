@@ -1,17 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 interface HeroProps {
-  title: string;
+  title?: string;
+  titles?: string[];
   subtitle: string;
   image: string;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
 }
 
-export default function HeroSection({ title, subtitle, image, primaryCta, secondaryCta }: HeroProps) {
+export default function HeroSection({ title, titles, subtitle, image, primaryCta, secondaryCta }: HeroProps) {
+  const [resolvedTitle] = useState<string>(() => {
+    if (titles && titles.length > 0) {
+      return titles[Math.floor(Math.random() * titles.length)];
+    }
+    return title ?? "";
+  });
   return (
     <section
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -36,8 +44,11 @@ export default function HeroSection({ title, subtitle, image, primaryCta, second
           <span className="inline-flex items-center gap-2 text-orange-main font-body text-sm font-medium tracking-widest uppercase mb-6">
             <span>⚜</span> 1st Meath Dunboyne Scout Group <span>⚜</span>
           </span>
-          <h1 className="font-display font-bold text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-tight mb-6">
-            {title}
+          <h1
+            suppressHydrationWarning
+            className="font-display font-bold text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-tight mb-6"
+          >
+            {resolvedTitle}
           </h1>
           <p className="font-body text-white/75 text-lg sm:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed mb-10">
             {subtitle}

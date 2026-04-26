@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Timeline from "@/components/Timeline";
-import LeaderCard from "@/components/LeaderCard";
-import leaders from "@/data/leaders.json";
+import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -83,24 +83,27 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Leaders */}
-      <section className="py-16 lg:py-24 bg-white">
+      {/* Leaders teaser */}
+      <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-3 block">
-              Our Team
-            </span>
-            <h2 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl lg:text-5xl">
-              Meet the leaders
-            </h2>
-            <p className="font-body text-textMuted mt-4 text-base max-w-xl mx-auto">
-              Every one of our leaders is a volunteer — dedicated to giving young people the adventure and skills that scouting delivers.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {leaders.map((leader, i) => (
-              <LeaderCard key={leader.id} {...leader} index={i} />
-            ))}
+          <div className="bg-navy-dark rounded-2xl p-8 lg:p-12 flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div>
+              <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-2 block">
+                Our Team
+              </span>
+              <h2 className="font-display font-bold text-white text-2xl sm:text-3xl mb-2">
+                Meet the Leader Team 2025/26
+              </h2>
+              <p className="font-body text-white/60 text-base max-w-xl">
+                Over 40 volunteers across nine section groups — dedicated to delivering the best of scouting to young people in Dunboyne.
+              </p>
+            </div>
+            <Link
+              href="/leaders"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors"
+            >
+              View the full team <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>

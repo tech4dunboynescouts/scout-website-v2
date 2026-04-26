@@ -20,6 +20,7 @@ const navLinks = [
   },
   { href: "/news", label: "News & Events" },
   { href: "/about", label: "About" },
+  { href: "/leaders", label: "Leaders" },
   { href: "/fundraising", label: "Fundraising" },
   { href: "/contact", label: "Contact" },
 ];
