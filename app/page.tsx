@@ -70,7 +70,7 @@ export default async function HomePage() {
           "Get outside. Get involved.",
           "Do more. Be more.",
         ]}
-        subtitle="Where young people become remarkable."
+        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit and a very active Water Section."
         image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
         primaryCta={{ label: "Join Our Group", href: "/join" }}
         secondaryCta={{ label: "Explore Sections", href: "#sections" }}

@@ -9,10 +9,10 @@ export default function MapEmbed() {
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
-        src="https://www.openstreetmap.org/export/embed.html?bbox=-6.4825%2C53.4136%2C-6.4625%2C53.4236&layer=mapnik&marker=53.4186%2C-6.4725"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=-6.4815%2C53.4064%2C-6.4666%2C53.4164&layer=mapnik&marker=53.411416%2C-6.474048"
       />
       <a
-        href="https://www.openstreetmap.org/?mlat=53.4186&mlon=-6.4725#map=15/53.4186/-6.4725"
+        href="https://www.openstreetmap.org/#map=18/53.411416/-6.474048"
         target="_blank"
         rel="noopener noreferrer"
         className="block text-xs font-body text-textMuted text-center py-2 bg-gray-50 hover:text-navy-dark transition-colors"
