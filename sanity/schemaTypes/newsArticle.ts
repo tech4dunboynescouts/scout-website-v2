@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
 
 export const newsArticle = defineType({
   name: 'newsArticle',
@@ -59,9 +59,7 @@ export const newsArticle = defineType({
       name: 'image',
       title: 'Cover Image',
       type: 'image',
-      options: {
-        hotspot: true,
-      },
+      options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -69,7 +67,7 @@ export const newsArticle = defineType({
       title: 'Body',
       type: 'array',
       of: [
-        {
+        defineArrayMember({
           type: 'block',
           styles: [
             { title: 'Normal', value: 'normal' },
@@ -82,69 +80,68 @@ export const newsArticle = defineType({
               { title: 'Italic', value: 'em' },
             ],
           },
-        },
-        {
+        }),
+        defineArrayMember({
           type: 'image',
           name: 'bodyImage',
           title: 'Image',
           options: { hotspot: true },
           fields: [
-            {
+            defineField({
               name: 'alt',
               type: 'string',
               title: 'Alt text',
               description: 'Describe the image for screen readers and SEO.',
-            },
-            {
+            }),
+            defineField({
               name: 'caption',
               type: 'string',
               title: 'Caption',
               description: 'Optional caption displayed beneath the image.',
-            },
+            }),
           ],
-        },
-        {
+        }),
+        defineArrayMember({
           type: 'object',
           name: 'imageGallery',
           title: 'Image Carousel',
           fields: [
-            {
+            defineField({
               name: 'images',
               title: 'Images',
               type: 'array',
               description: 'Add multiple images — they will display as a swipeable carousel on the website.',
               of: [
-                {
+                defineArrayMember({
                   type: 'image',
                   options: { hotspot: true },
                   fields: [
-                    {
+                    defineField({
                       name: 'alt',
                       type: 'string',
                       title: 'Alt text',
                       description: 'Describe the image for screen readers.',
-                    },
-                    {
+                    }),
+                    defineField({
                       name: 'caption',
                       type: 'string',
                       title: 'Caption',
                       description: 'Optional caption shown beneath the image in the carousel.',
-                    },
+                    }),
                   ],
-                },
+                }),
               ],
-              validation: (Rule: { min: (n: number) => unknown }) => Rule.min(2),
-            },
+              validation: (Rule) => Rule.min(2),
+            }),
           ],
           preview: {
             select: { images: 'images' },
-            prepare({ images }: Record<string, unknown[]>) {
-              return {
-                title: `Image Carousel (${images?.length ?? 0} images)`,
-              }
+            prepare({ images }) {
+              const count = Array.isArray(images) ? images.length : 0
+              return { title: `Image Carousel (${count} images)` }
             },
           },
-        },
+        }),
       ],
       validation: (Rule) => Rule.required(),
     }),
