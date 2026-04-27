@@ -138,7 +138,7 @@ export const newsArticle = defineType({
           ],
           preview: {
             select: { images: 'images' },
-            prepare({ images }: { images: unknown[] }) {
+            prepare({ images }: Record<string, unknown[]>) {
               return {
                 title: `Image Carousel (${images?.length ?? 0} images)`,
               }
