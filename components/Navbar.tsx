@@ -10,6 +10,7 @@ import SearchModal from "@/components/SearchModal";
 
 const navLinks = [
   { href: "/", label: "Home" },
+  { href: "/news", label: "News & Events" },
   {
     label: "Sections",
     children: [
@@ -19,16 +20,21 @@ const navLinks = [
       { href: "/sections/ventures", label: "Ventures" },
     ],
   },
-  { href: "/news", label: "News & Events" },
-  { href: "/about", label: "About" },
-  { href: "/leaders", label: "Leaders" },
-  { href: "/fundraising", label: "Fundraising" },
-  { href: "/contact", label: "Contact" },
+  {
+    label: "About",
+    children: [
+      { href: "/about", label: "About the Group" },
+      { href: "/leaders", label: "Leader Team 2025/26" },
+      { href: "/fundraising", label: "Fundraising" },
+      { href: "/contact", label: "Contact Us" },
+    ],
+  },
 ];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sectionsOpen, setSectionsOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -41,10 +47,12 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
     setSectionsOpen(false);
+    setAboutOpen(false);
   }, [pathname]);
 
   const isActive = (href: string) => pathname === href;
-  const isSectionActive = () => pathname.startsWith("/sections");
+  const isGroupActive = (children: { href: string }[]) =>
+    children.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"));
 
   return (
     <header
@@ -81,23 +89,30 @@ export default function Navbar() {
             {navLinks.map((link) =>
               link.children ? (
                 <div key={link.label} className="relative">
+                  {(() => {
+                    const isSections = link.label === "Sections";
+                    const isOpen = isSections ? sectionsOpen : aboutOpen;
+                    const toggle = isSections
+                      ? () => setSectionsOpen((v) => !v)
+                      : () => setAboutOpen((v) => !v);
+                    const active = isGroupActive(link.children);
+                    return (
+                      <>
                   <button
-                    onClick={() => setSectionsOpen((v) => !v)}
+                    onClick={toggle}
                     className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
-                      isSectionActive()
-                        ? "text-orange-main"
-                        : "text-white/80 hover:text-white"
+                      active ? "text-orange-main" : "text-white/80 hover:text-white"
                     }`}
-                    aria-expanded={sectionsOpen}
+                    aria-expanded={isOpen}
                   >
                     {link.label}
                     <ChevronDown
                       size={14}
-                      className={`transition-transform ${sectionsOpen ? "rotate-180" : ""}`}
+                      className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
                     />
                   </button>
                   <AnimatePresence>
-                    {sectionsOpen && (
+                    {isOpen && (
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -121,6 +136,9 @@ export default function Navbar() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+                      </>
+                    );
+                  })()}
                 </div>
               ) : (
                 <Link
