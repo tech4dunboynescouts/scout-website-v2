@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import SearchModal from "@/components/SearchModal";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -135,6 +136,7 @@ export default function Navbar() {
                 </Link>
               )
             )}
+            <SearchModal />
             <Link
               href="/join"
               className="ml-3 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
@@ -199,7 +201,14 @@ export default function Navbar() {
                   </Link>
                 )
               )}
-              <div className="pt-3">
+              <div className="pt-3 flex flex-col gap-2">
+                <button
+                  onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }))}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/80 hover:text-white hover:bg-navy-mid transition-colors w-full"
+                >
+                  <Search size={18} />
+                  Search the site
+                </button>
                 <Link
                   href="/join"
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
