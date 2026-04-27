@@ -6,7 +6,8 @@ import SectionCard from "@/components/SectionCard";
 import NewsCard from "@/components/NewsCard";
 import StatCounter from "@/components/StatCounter";
 import sections from "@/data/sections.json";
-import news from "@/data/news.json";
+import { client } from "@/sanity/lib/client";
+import { allNewsQuery } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "1st Meath Dunboyne Scout Group",
@@ -37,9 +38,24 @@ const pillars = [
   },
 ];
 
-const latestNews = news.slice(0, 3);
+export const revalidate = 60;
 
-export default function HomePage() {
+interface NewsArticle {
+  _id: string;
+  slug: string;
+  title: string;
+  date: string;
+  tag: string;
+  excerpt: string;
+  image: string;
+}
+
+export default async function HomePage() {
+  const latestNews: NewsArticle[] = await client
+    .fetch(allNewsQuery)
+    .then((articles: NewsArticle[]) => articles.slice(0, 3))
+    .catch(() => []);
+
   return (
     <>
       {/* Hero */}
@@ -188,7 +204,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestNews.map((article, i) => (
-              <NewsCard key={article.id} {...article} index={i} />
+              <NewsCard key={article._id} {...article} index={i} />
             ))}
           </div>
           <div className="mt-8 text-center sm:hidden">

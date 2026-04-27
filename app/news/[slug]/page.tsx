@@ -1,26 +1,66 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Calendar, Clock, ArrowLeft, Tag } from "lucide-react";
-import NewsCard from "@/components/NewsCard";
-import news from "@/data/news.json";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { Calendar, ArrowLeft, Tag } from "lucide-react";
+import ImageCarousel from "@/components/ImageCarousel";
+import { client } from "@/sanity/lib/client";
+import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
-  return news.map((n) => ({ slug: n.slug }));
+  const slugs: { slug: string }[] = await client
+    .fetch(allNewsSlugsQuery)
+    .catch(() => []);
+  return slugs;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = news.find((n) => n.slug === params.slug);
+  const { slug } = await params;
+  const article = await client
+    .fetch(newsArticleBySlugQuery, { slug })
+    .catch(() => null);
   if (!article) return {};
-  return {
-    title: article.title,
-    description: article.excerpt,
-  };
+  return { title: article.title, description: article.excerpt };
 }
+
+const portableTextComponents: PortableTextComponents = {
+  types: {
+    bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
+      <figure className="my-8">
+        <img
+          src={value.url}
+          alt={value.alt ?? ""}
+          className="w-full rounded-xl object-cover"
+        />
+        {value.caption && (
+          <figcaption className="mt-2 text-center text-sm text-textMuted italic">
+            {value.caption}
+          </figcaption>
+        )}
+      </figure>
+    ),
+    imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
+      <ImageCarousel images={value.images ?? []} />
+    ),
+  },
+  block: {
+    h2: ({ children }) => (
+      <h2 className="font-display font-bold text-navy-dark text-2xl mt-8 mb-3">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="font-display font-bold text-navy-dark text-xl mt-6 mb-2">{children}</h3>
+    ),
+    normal: ({ children }) => (
+      <p className="mb-4 leading-relaxed">{children}</p>
+    ),
+  },
+};
 
 const tagColours: Record<string, string> = {
   Beavers: "#E8640A",
@@ -28,15 +68,16 @@ const tagColours: Record<string, string> = {
   Scouts: "#1A3A6B",
   Ventures: "#0D2044",
   Group: "#5A6A8A",
+  "Water Section": "#0077B6",
 };
 
-export default function NewsArticlePage({ params }: Props) {
-  const article = news.find((n) => n.slug === params.slug);
-  if (!article) notFound();
+export default async function NewsArticlePage({ params }: Props) {
+  const { slug } = await params;
+  const article = await client
+    .fetch(newsArticleBySlugQuery, { slug })
+    .catch(() => null);
 
-  const related = news
-    .filter((n) => n.slug !== article.slug && n.tag === article.tag)
-    .slice(0, 2);
+  if (!article) notFound();
 
   const formatted = new Date(article.date).toLocaleDateString("en-IE", {
     day: "numeric",
@@ -79,40 +120,23 @@ export default function NewsArticlePage({ params }: Props) {
               <span className="flex items-center gap-1.5 text-textMuted text-sm font-body">
                 <Calendar size={13} /> {formatted}
               </span>
-              {article.readTime && (
-                <span className="flex items-center gap-1.5 text-textMuted text-sm font-body">
-                  <Clock size={13} /> {article.readTime}
-                </span>
-              )}
             </div>
 
             <h1 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl lg:text-5xl leading-tight mb-8">
               {article.title}
             </h1>
 
-            <div
-              className="font-body text-textMuted text-base leading-relaxed prose prose-p:mb-4 prose-p:leading-relaxed max-w-none"
-              dangerouslySetInnerHTML={{ __html: article.body }}
-            />
+            <div className="font-body text-textMuted text-base max-w-none">
+              <PortableText value={article.body} components={portableTextComponents} />
+            </div>
           </article>
 
           {/* Sidebar */}
           <aside className="space-y-8">
-            {related.length > 0 && (
-              <div>
-                <h2 className="font-display font-bold text-navy-dark text-xl mb-5">
-                  More from {article.tag}
-                </h2>
-                <div className="space-y-5">
-                  {related.map((rel, i) => (
-                    <NewsCard key={rel.id} {...rel} index={i} />
-                  ))}
-                </div>
-              </div>
-            )}
-
             <div className="bg-navy-dark rounded-2xl p-6 text-center">
-              <h3 className="font-display font-bold text-white text-xl mb-3">Get involved</h3>
+              <h3 className="font-display font-bold text-white text-xl mb-3">
+                Get involved
+              </h3>
               <p className="font-body text-white/60 text-sm mb-5">
                 Want to be part of adventures like these? Join 1st Meath Dunboyne today.
               </p>

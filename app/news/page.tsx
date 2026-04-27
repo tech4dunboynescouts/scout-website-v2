@@ -1,16 +1,27 @@
-"use client";
-
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import NewsCard from "@/components/NewsCard";
-import TagFilter from "@/components/TagFilter";
+import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import news from "@/data/news.json";
+import NewsFilterGrid from "@/components/NewsFilterGrid";
+import { client } from "@/sanity/lib/client";
+import { allNewsQuery } from "@/sanity/lib/queries";
 
-export default function NewsPage() {
-  const [activeTag, setActiveTag] = useState("All");
+export const metadata: Metadata = {
+  title: "News & Events",
+  description:
+    "The latest from 1st Meath Dunboyne — adventures, achievements, and upcoming activities.",
+};
 
-  const filtered = activeTag === "All" ? news : news.filter((n) => n.tag === activeTag);
+export const revalidate = 60;
+
+export default async function NewsPage() {
+  const articles: {
+    _id: string;
+    slug: string;
+    title: string;
+    date: string;
+    tag: string;
+    excerpt: string;
+    image: string;
+  }[] = await client.fetch(allNewsQuery).catch(() => []);
 
   return (
     <>
@@ -21,32 +32,7 @@ export default function NewsPage() {
       />
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="mb-8">
-          <TagFilter active={activeTag} onChange={setActiveTag} />
-        </div>
-
-        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((article, i) => (
-              <motion.div
-                key={article.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <NewsCard {...article} index={i} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {filtered.length === 0 && (
-          <div className="text-center py-20">
-            <p className="font-body text-textMuted text-base">No articles found for this section.</p>
-          </div>
-        )}
+        <NewsFilterGrid articles={articles} />
       </section>
     </>
   );

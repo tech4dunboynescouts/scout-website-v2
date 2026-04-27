@@ -5,7 +5,7 @@ import { CheckCircle, MapPin, Calendar, ArrowRight } from "lucide-react";
 import sections from "@/data/sections.json";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -13,7 +13,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const section = sections.find((s) => s.slug === params.slug);
+  const { slug } = await params;
+  const section = sections.find((s) => s.slug === slug);
   if (!section) return {};
   return {
     title: section.name,
@@ -30,8 +31,9 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80",
 ];
 
-export default function SectionPage({ params }: Props) {
-  const section = sections.find((s) => s.slug === params.slug);
+export default async function SectionPage({ params }: Props) {
+  const { slug } = await params;
+  const section = sections.find((s) => s.slug === slug);
   if (!section) notFound();
 
   return (
