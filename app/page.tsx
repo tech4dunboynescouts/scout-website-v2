@@ -69,6 +69,10 @@ export default async function HomePage() {
           "Camp. Explore. Lead. Belong.",
           "Get outside. Get involved.",
           "Do more. Be more.",
+          "The wild is waiting.",
+          "Earn it. Learn it. Live it.",
+          "Be part of something bigger.",
+          "Prepared for everything. Ready for anything.",
         ]}
         subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit and a very active Water Section."
         image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
