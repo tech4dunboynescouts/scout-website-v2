@@ -32,11 +32,11 @@ const categoryColours: Record<string, string> = {
 
 export default async function DashboardPage() {
   const session = await auth()
-  const role = session?.user?.leaderRole ?? ""
+  const roles = session?.user?.leaderRoles ?? []
   const name = session?.user?.leaderName ?? session?.user?.name ?? "Leader"
 
   const resources: Resource[] = await serverClient
-    .fetch(allLeaderResourcesQuery, { role })
+    .fetch(allLeaderResourcesQuery, { roles })
     .catch(() => [])
 
   const categories = ["All", ...Array.from(new Set(resources.map((r) => r.category)))]

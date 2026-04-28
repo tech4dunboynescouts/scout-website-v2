@@ -56,7 +56,7 @@ export const leaderProfileByEmailQuery = groq`
   *[_type == "leaderProfile" && email == $email && isActive == true][0] {
     _id,
     name,
-    role,
+    roles,
     isActive,
   }
 `
@@ -64,7 +64,11 @@ export const leaderProfileByEmailQuery = groq`
 export const allLeaderResourcesQuery = groq`
   *[
     _type == "leaderResource" &&
-    (count(visibleToRoles) == 0 || $role in visibleToRoles)
+    (
+      count(visibleToRoles) == 0 ||
+      "all" in $roles ||
+      count(visibleToRoles[@ in $roles]) > 0
+    )
   ] | order(publishedAt desc) {
     _id,
     title,

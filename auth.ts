@@ -21,7 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           .catch(() => null)
 
         token.isAuthorizedLeader = leader?.isActive === true
-        token.leaderRole = (leader?.role as string) ?? null
+        token.leaderRoles = (leader?.roles as string[]) ?? []
         token.leaderName = (leader?.name as string) ?? token.name ?? null
       }
       void account

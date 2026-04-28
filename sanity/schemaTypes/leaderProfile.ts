@@ -1,4 +1,13 @@
-import { defineField, defineType } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
+
+const ROLES = [
+  { title: 'Group Council', value: 'group-council' },
+  { title: 'Beavers',       value: 'beavers' },
+  { title: 'Cubs',          value: 'cubs' },
+  { title: 'Scouts',        value: 'scouts' },
+  { title: 'Ventures',      value: 'ventures' },
+  { title: 'All',           value: 'all' },
+]
 
 export const leaderProfile = defineType({
   name: 'leaderProfile',
@@ -19,19 +28,13 @@ export const leaderProfile = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'role',
-      title: 'Role',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Group Leader', value: 'group-leader' },
-          { title: 'Section Leader', value: 'section-leader' },
-          { title: 'Assistant Leader', value: 'assistant-leader' },
-          { title: 'Committee Member', value: 'committee' },
-        ],
-        layout: 'radio',
-      },
-      validation: (Rule) => Rule.required(),
+      name: 'roles',
+      title: 'Roles',
+      type: 'array',
+      description: 'Select all sections this leader belongs to. "All" grants access to every resource.',
+      of: [defineArrayMember({ type: 'string' })],
+      options: { list: ROLES },
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
       name: 'isActive',
@@ -42,11 +45,24 @@ export const leaderProfile = defineType({
     }),
   ],
   preview: {
-    select: { name: 'name', email: 'email', isActive: 'isActive' },
-    prepare({ name, email, isActive }: { name?: string; email?: string; isActive?: boolean }) {
+    select: { name: 'name', email: 'email', roles: 'roles', isActive: 'isActive' },
+    prepare({
+      name,
+      email,
+      roles,
+      isActive,
+    }: {
+      name?: string
+      email?: string
+      roles?: string[]
+      isActive?: boolean
+    }) {
+      const roleLabels = (roles ?? [])
+        .map((r) => ROLES.find((o) => o.value === r)?.title ?? r)
+        .join(', ')
       return {
         title: name ?? email ?? 'Unknown',
-        subtitle: `${email ?? ''} ${isActive === false ? '· INACTIVE' : '· Active'}`,
+        subtitle: [roleLabels, isActive === false ? 'INACTIVE' : 'Active'].filter(Boolean).join(' · '),
       }
     },
   },

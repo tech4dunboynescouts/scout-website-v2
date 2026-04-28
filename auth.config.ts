@@ -13,7 +13,7 @@ export const authConfig: NextAuthConfig = {
     // Reads fields already stored in the JWT by the jwt() callback in auth.ts.
     session({ session, token }) {
       session.user.isAuthorizedLeader = (token.isAuthorizedLeader as boolean | undefined) ?? false
-      session.user.leaderRole = (token.leaderRole as string | null | undefined) ?? null
+      session.user.leaderRoles = (token.leaderRoles as string[] | undefined) ?? []
       session.user.leaderName = (token.leaderName as string | null | undefined) ?? null
       return session
     },

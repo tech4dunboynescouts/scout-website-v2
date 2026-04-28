@@ -1,5 +1,14 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+const ROLES = [
+  { title: 'Group Council', value: 'group-council' },
+  { title: 'Beavers',       value: 'beavers' },
+  { title: 'Cubs',          value: 'cubs' },
+  { title: 'Scouts',        value: 'scouts' },
+  { title: 'Ventures',      value: 'ventures' },
+  { title: 'All',           value: 'all' },
+]
+
 export const leaderResource = defineType({
   name: 'leaderResource',
   title: 'Leader Resource',
@@ -26,9 +35,9 @@ export const leaderResource = defineType({
         list: [
           { title: 'Announcements', value: 'Announcements' },
           { title: 'Meeting Notes', value: 'Meeting Notes' },
-          { title: 'Documents', value: 'Documents' },
-          { title: 'Training', value: 'Training' },
-          { title: 'Finance', value: 'Finance' },
+          { title: 'Documents',     value: 'Documents' },
+          { title: 'Training',      value: 'Training' },
+          { title: 'Finance',       value: 'Finance' },
         ],
         layout: 'radio',
       },
@@ -48,13 +57,13 @@ export const leaderResource = defineType({
         defineArrayMember({
           type: 'block',
           styles: [
-            { title: 'Normal', value: 'normal' },
-            { title: 'Heading', value: 'h2' },
+            { title: 'Normal',     value: 'normal' },
+            { title: 'Heading',    value: 'h2' },
             { title: 'Subheading', value: 'h3' },
           ],
           marks: {
             decorators: [
-              { title: 'Bold', value: 'strong' },
+              { title: 'Bold',   value: 'strong' },
               { title: 'Italic', value: 'em' },
             ],
           },
@@ -71,16 +80,10 @@ export const leaderResource = defineType({
       name: 'visibleToRoles',
       title: 'Restrict to Roles',
       type: 'array',
-      description: 'Leave empty to show to all active leaders. Select roles to restrict visibility.',
+      description:
+        'Leave empty to show to all active leaders. Select specific roles to restrict visibility. "All" role leaders always have access.',
       of: [defineArrayMember({ type: 'string' })],
-      options: {
-        list: [
-          { title: 'Group Leader', value: 'group-leader' },
-          { title: 'Section Leader', value: 'section-leader' },
-          { title: 'Assistant Leader', value: 'assistant-leader' },
-          { title: 'Committee Member', value: 'committee' },
-        ],
-      },
+      options: { list: ROLES },
     }),
   ],
   preview: {
@@ -96,7 +99,10 @@ export const leaderResource = defineType({
     }) {
       return {
         title: title ?? 'Untitled',
-        subtitle: [category, publishedAt ? new Date(publishedAt).toLocaleDateString('en-IE') : '']
+        subtitle: [
+          category,
+          publishedAt ? new Date(publishedAt).toLocaleDateString('en-IE') : '',
+        ]
           .filter(Boolean)
           .join(' · '),
       }

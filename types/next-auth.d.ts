@@ -4,7 +4,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       isAuthorizedLeader: boolean
-      leaderRole: string | null
+      leaderRoles: string[]
       leaderName: string | null
     } & DefaultSession["user"]
   }
@@ -13,7 +13,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     isAuthorizedLeader?: boolean
-    leaderRole?: string | null
+    leaderRoles?: string[]
     leaderName?: string | null
   }
 }

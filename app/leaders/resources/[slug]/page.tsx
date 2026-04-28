@@ -55,11 +55,12 @@ export default async function ResourcePage({ params }: Props) {
   if (!resource) notFound()
 
   // Role-based visibility check (belt-and-braces — middleware already guards the route)
-  const userRole = session?.user?.leaderRole ?? ""
+  const userRoles = session?.user?.leaderRoles ?? []
   const restricted =
     Array.isArray(resource.visibleToRoles) &&
     resource.visibleToRoles.length > 0 &&
-    !resource.visibleToRoles.includes(userRole)
+    !userRoles.includes("all") &&
+    !resource.visibleToRoles.some((r: string) => userRoles.includes(r))
 
   if (restricted) notFound()
 
