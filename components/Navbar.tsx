@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Search, Lock } from "lucide-react";
+import { Menu, X, ChevronDown, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchModal from "@/components/SearchModal";
 
@@ -52,7 +52,13 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href;
   const isGroupActive = (children: { href: string }[]) =>
-    children.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"));
+    children.some((c) => {
+      if (pathname === c.href) return true
+      // Avoid matching portal routes (/leaders/login, /leaders/dashboard, etc.)
+      // against the public /leaders page in the About dropdown
+      if (c.href === "/leaders") return false
+      return pathname.startsWith(c.href + "/")
+    });
 
   return (
     <header
@@ -154,13 +160,17 @@ export default function Navbar() {
                 </Link>
               )
             )}
+            <SearchModal />
             <Link
               href="/leaders/login"
-              className="flex items-center gap-1.5 px-3 py-2 text-white/40 hover:text-white/80 text-sm font-body transition-colors"
+              className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
+                pathname.startsWith("/leaders/")
+                  ? "text-orange-main"
+                  : "text-white/80 hover:text-white"
+              }`}
             >
-              <Lock size={13} /> Leaders Portal
+              Leaders Portal
             </Link>
-            <SearchModal />
             <Link
               href="/join"
               className="ml-1 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
@@ -226,12 +236,6 @@ export default function Navbar() {
                 )
               )}
               <div className="pt-3 flex flex-col gap-2">
-                <Link
-                  href="/leaders/login"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/40 hover:text-white/70 hover:bg-navy-mid transition-colors"
-                >
-                  <Lock size={14} /> Leaders Portal
-                </Link>
                 <button
                   onClick={() => {
                     setMobileOpen(false);
@@ -242,6 +246,16 @@ export default function Navbar() {
                   <Search size={18} />
                   Search the site
                 </button>
+                <Link
+                  href="/leaders/login"
+                  className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
+                    pathname.startsWith("/leaders/")
+                      ? "bg-orange-main/20 text-orange-main"
+                      : "text-white/80 hover:bg-navy-mid hover:text-white"
+                  }`}
+                >
+                  Leaders Portal
+                </Link>
                 <Link
                   href="/join"
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
