@@ -4,6 +4,7 @@ import type { NextAuthConfig } from "next-auth"
 // Used by middleware.ts. The full auth.ts spreads this and adds providers + jwt callback.
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET,
+  trustHost: true,
   pages: {
     signIn: "/leaders/login",
   },
