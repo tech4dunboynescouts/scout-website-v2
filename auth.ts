@@ -3,21 +3,12 @@ import Google from "next-auth/providers/google"
 import { serverClient } from "@/sanity/lib/serverClient"
 import { leaderProfileByEmailQuery } from "@/sanity/lib/queries"
 
-// TEMPORARY DEBUG LOGGING — remove after confirming env vars are set in Vercel
-console.log("=== AUTH ENV VAR DEBUG ===")
-console.log("AUTH_SECRET:          ", process.env.AUTH_SECRET)
-console.log("AUTH_GOOGLE_ID:       ", process.env.AUTH_GOOGLE_ID)
-console.log("AUTH_GOOGLE_SECRET:   ", process.env.AUTH_GOOGLE_SECRET)
-console.log("NEXTAUTH_URL:         ", process.env.NEXTAUTH_URL)
-console.log("SANITY_API_READ_TOKEN:", process.env.SANITY_API_READ_TOKEN)
-console.log("==========================")
-// END TEMPORARY DEBUG LOGGING
-
 // Only register the Google provider when credentials are present so that the
 // login page can still render during local development before OAuth is configured.
 const providers = process.env.AUTH_GOOGLE_ID ? [Google] : []
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers,
   pages: {
     signIn: "/leaders/login",
