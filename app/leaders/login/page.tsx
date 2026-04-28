@@ -87,8 +87,7 @@ export default async function LoginPage({
               </div>
             ) : (
               <p className="text-textMuted font-body text-sm text-center mb-6 leading-relaxed">
-                Sign in with your Google account to access meeting notes, documents, and
-                announcements.
+                Sign in with your Google account to access Leader Specific Materials.
               </p>
             )}
 
