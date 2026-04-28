@@ -6,6 +6,7 @@ import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
+import { siteUrl } from "@/lib/siteConfig";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -26,7 +27,49 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .fetch(newsArticleBySlugQuery, { slug })
     .catch(() => null);
   if (!article) return {};
-  return { title: article.title, description: article.excerpt };
+
+  return {
+    title: article.title,
+    description: article.excerpt,
+    alternates: { canonical: `/news/${slug}` },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.excerpt,
+      url: `${siteUrl}/news/${slug}`,
+      publishedTime: article.date,
+      tags: [article.tag],
+      images: article.image
+        ? [{ url: article.image, alt: article.title }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt,
+      images: article.image ? [article.image] : undefined,
+    },
+  };
+}
+
+function getEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v')
+      return v ? `https://www.youtube.com/embed/${v}` : null
+    }
+    if (u.hostname === 'youtu.be') {
+      return `https://www.youtube.com/embed${u.pathname}`
+    }
+    if (u.hostname.includes('vimeo.com')) {
+      const id = u.pathname.replace(/^\//, '')
+      return `https://player.vimeo.com/video/${id}`
+    }
+    return null
+  } catch {
+    return null
+  }
 }
 
 const portableTextComponents: PortableTextComponents = {
@@ -48,6 +91,28 @@ const portableTextComponents: PortableTextComponents = {
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
     ),
+    videoEmbed: ({ value }: { value: { url: string; caption?: string } }) => {
+      const embedUrl = getEmbedUrl(value.url)
+      if (!embedUrl) return null
+      return (
+        <figure className="my-8">
+          <div className="relative aspect-video rounded-xl overflow-hidden">
+            <iframe
+              src={embedUrl}
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={value.caption ?? 'Embedded video'}
+            />
+          </div>
+          {value.caption && (
+            <figcaption className="mt-2 text-center text-sm text-textMuted italic">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
   },
   block: {
     h2: ({ children }) => (
@@ -87,8 +152,27 @@ export default async function NewsArticlePage({ params }: Props) {
 
   const tagColour = tagColours[article.tag] || "#5A6A8A";
 
+  const newsArticleSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.excerpt,
+    datePublished: article.date,
+    url: `${siteUrl}/news/${slug}`,
+    image: article.image ? [article.image] : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "1st Meath Dunboyne Scout Group",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/images/logo.jpg` },
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(newsArticleSchema) }}
+      />
       {/* Hero image */}
       <div className="relative h-72 sm:h-96 lg:h-[480px] overflow-hidden">
         <img

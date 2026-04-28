@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { siteUrl } from "@/lib/siteConfig";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -12,6 +13,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "1st Meath Dunboyne Scout Group",
     template: "%s | 1st Meath Dunboyne Scouts",
@@ -19,17 +21,53 @@ export const metadata: Metadata = {
   description:
     "1st Meath Dunboyne Scout Group — a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Founded 1973.",
   keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "scouting ireland", "youth group"],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_IE",
     siteName: "1st Meath Dunboyne Scout Group",
+    url: siteUrl,
+    images: [{ url: "/images/logo.jpg", width: 800, height: 600, alt: "1st Meath Dunboyne Scout Group" }],
   },
+  twitter: {
+    card: "summary_large_image",
+    site: "@dunboyne_scouts",
+    images: ["/images/logo.jpg"],
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "1st Meath Dunboyne Scout Group",
+  url: siteUrl,
+  logo: `${siteUrl}/images/logo.jpg`,
+  description:
+    "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a Water Section. Founded 1973.",
+  foundingDate: "1973",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Rooske Road",
+    addressLocality: "Dunboyne",
+    addressRegion: "Co. Meath",
+    postalCode: "A86 NV07",
+    addressCountry: "IE",
+  },
+  email: "secretarydunboynescouts@gmail.com",
+  sameAs: [
+    "https://www.facebook.com/groups/811773582630420",
+    "https://www.instagram.com/dunboyne_scouts",
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={roboto.variable}>
       <body className="bg-background font-body antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <Navbar />
         <main>{children}</main>
         <Footer />

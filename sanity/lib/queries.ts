@@ -37,6 +37,10 @@ export const newsArticleBySlugQuery = groq`
           alt,
           caption,
         }
+      },
+      _type == "videoEmbed" => {
+        url,
+        caption,
       }
     },
   }

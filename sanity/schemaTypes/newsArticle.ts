@@ -103,6 +103,32 @@ export const newsArticle = defineType({
         }),
         defineArrayMember({
           type: 'object',
+          name: 'videoEmbed',
+          title: 'Video',
+          fields: [
+            defineField({
+              name: 'url',
+              type: 'url',
+              title: 'Video URL',
+              description: 'YouTube or Vimeo URL (e.g. https://www.youtube.com/watch?v=...)',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+              description: 'Optional caption displayed beneath the video.',
+            }),
+          ],
+          preview: {
+            select: { url: 'url', caption: 'caption' },
+            prepare({ url, caption }: { url?: string; caption?: string }) {
+              return { title: caption || 'Video', subtitle: url ?? '' }
+            },
+          },
+        }),
+        defineArrayMember({
+          type: 'object',
           name: 'imageGallery',
           title: 'Image Carousel',
           fields: [
