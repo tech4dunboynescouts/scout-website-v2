@@ -1,5 +1,9 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
+import NextAuth from "next-auth"
+import { authConfig } from "@/auth.config"
+
+// Use the Edge-compatible config so the middleware never imports the Sanity
+// client or any other Node.js-only module.
+const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
   const { nextUrl } = req
@@ -12,19 +16,17 @@ export default auth((req) => {
     path === "/leaders/login" ||
     path === "/leaders/unauthorized"
   ) {
-    return NextResponse.next()
+    return
   }
 
-  // All other /leaders/* routes require a valid, authorized session
+  // All other /leaders/* routes require a valid, authorised session
   if (!session) {
-    return NextResponse.redirect(new URL("/leaders/login", req.url))
+    return Response.redirect(new URL("/leaders/login", req.url))
   }
 
   if (!session.user?.isAuthorizedLeader) {
-    return NextResponse.redirect(new URL("/leaders/unauthorized", req.url))
+    return Response.redirect(new URL("/leaders/unauthorized", req.url))
   }
-
-  return NextResponse.next()
 })
 
 export const config = {
