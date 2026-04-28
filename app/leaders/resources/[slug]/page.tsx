@@ -6,6 +6,7 @@ import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
 import { leaderResourceBySlugQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
 import { ArrowLeft, Tag, Clock, FileDown } from "lucide-react"
+import PdfViewer from "@/components/PdfViewer"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -112,16 +113,9 @@ export default async function ResourcePage({ params }: Props) {
         </a>
       )}
 
-      {/* Inline PDF viewer */}
+      {/* Inline PDF viewer — uses PDF.js (works on Android/mobile) */}
       {resource.fileUrl && isPdf && (
-        <div className="mb-10 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-          <iframe
-            src={`${resource.fileUrl}#toolbar=1&navpanes=0`}
-            title={resource.fileName ?? "Document"}
-            className="w-full"
-            style={{ height: "75vh", minHeight: "500px" }}
-          />
-        </div>
+        <PdfViewer url={resource.fileUrl} fileName={resource.fileName} />
       )}
 
       {/* Body */}
