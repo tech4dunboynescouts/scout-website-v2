@@ -49,3 +49,43 @@ export const newsArticleBySlugQuery = groq`
 export const allNewsSlugsQuery = groq`
   *[_type == "newsArticle"] { "slug": slug.current }
 `
+
+// ── Leaders Portal ─────────────────────────────────────────────────────────────
+
+export const leaderProfileByEmailQuery = groq`
+  *[_type == "leaderProfile" && email == $email && isActive == true][0] {
+    _id,
+    name,
+    role,
+    isActive,
+  }
+`
+
+export const allLeaderResourcesQuery = groq`
+  *[
+    _type == "leaderResource" &&
+    (count(visibleToRoles) == 0 || $role in visibleToRoles)
+  ] | order(publishedAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    category,
+    publishedAt,
+    visibleToRoles,
+    "hasFile": defined(file.asset),
+  }
+`
+
+export const leaderResourceBySlugQuery = groq`
+  *[_type == "leaderResource" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    category,
+    publishedAt,
+    body,
+    visibleToRoles,
+    "fileUrl": file.asset->url,
+    "fileName": file.asset->originalFilename,
+  }
+`

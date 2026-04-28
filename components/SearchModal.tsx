@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Search, X, FileText, Newspaper, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,7 +45,10 @@ export default function SearchModal() {
   const [query, setQuery] = useState("");
   const [articles, setArticles] = useState<Result[]>([]);
   const [fetched, setFetched] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (open && !fetched) {
@@ -71,15 +75,20 @@ export default function SearchModal() {
   }, [open]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
+    const keyHandler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setOpen((v) => !v);
       }
       if (e.key === "Escape") setOpen(false);
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    const openHandler = () => setOpen(true);
+    window.addEventListener("keydown", keyHandler);
+    window.addEventListener("open-search", openHandler);
+    return () => {
+      window.removeEventListener("keydown", keyHandler);
+      window.removeEventListener("open-search", openHandler);
+    };
   }, []);
 
   const all = [...STATIC, ...articles];
@@ -100,83 +109,87 @@ export default function SearchModal() {
         <span className="hidden lg:inline">Search</span>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed inset-0 bg-navy-dark/70 backdrop-blur-sm z-50"
-              onClick={close}
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97, y: -8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: -8 }}
-              transition={{ duration: 0.15 }}
-              className="fixed top-[10vh] left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
-            >
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-                {/* Input row */}
-                <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
-                  <Search size={18} className="text-textMuted flex-shrink-0" />
-                  <input
-                    ref={inputRef}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search pages, sections, news…"
-                    className="flex-1 font-body text-base text-navy-dark outline-none placeholder:text-textMuted/50"
-                  />
-                  {query && (
+      {mounted && createPortal(
+        <AnimatePresence>
+          {open && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="fixed inset-0 z-50 bg-navy-dark/70 backdrop-blur-sm flex items-start justify-center pt-[10vh] px-4"
+                onClick={close}
+              >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97, y: -8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: -8 }}
+                transition={{ duration: 0.15 }}
+                className="w-full max-w-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  {/* Input row */}
+                  <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
+                    <Search size={18} className="text-textMuted flex-shrink-0" />
+                    <input
+                      ref={inputRef}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search pages, sections, news…"
+                      className="flex-1 font-body text-base text-navy-dark outline-none placeholder:text-textMuted/50"
+                    />
+                    {query && (
+                      <button
+                        onClick={() => setQuery("")}
+                        className="text-textMuted hover:text-navy-dark transition-colors"
+                        aria-label="Clear search"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
                     <button
-                      onClick={() => setQuery("")}
-                      className="text-textMuted hover:text-navy-dark transition-colors"
-                      aria-label="Clear search"
+                      onClick={close}
+                      className="text-xs font-body text-textMuted border border-gray-200 rounded px-2 py-1 hover:border-gray-400 transition-colors"
                     >
-                      <X size={15} />
+                      ESC
                     </button>
-                  )}
-                  <button
-                    onClick={close}
-                    className="text-xs font-body text-textMuted border border-gray-200 rounded px-2 py-1 hover:border-gray-400 transition-colors"
-                  >
-                    ESC
-                  </button>
-                </div>
+                  </div>
 
-                {/* Results */}
-                <div className="max-h-[60vh] overflow-y-auto">
-                  {query.length < 2 ? (
-                    <div className="px-4 py-10 text-center">
-                      <p className="font-body text-textMuted text-sm">
-                        Type at least 2 characters to search
-                      </p>
-                    </div>
-                  ) : results.length === 0 ? (
-                    <div className="px-4 py-10 text-center">
-                      <p className="font-body text-textMuted text-sm">
-                        No results for &ldquo;<strong className="text-navy-dark">{query}</strong>&rdquo;
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="py-2">
-                      {pages.length > 0 && (
-                        <ResultGroup label="Pages & Sections" results={pages} onSelect={close} />
-                      )}
-                      {news.length > 0 && (
-                        <ResultGroup label="News & Events" results={news} onSelect={close} />
-                      )}
-                    </div>
-                  )}
+                  {/* Results */}
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    {query.length < 2 ? (
+                      <div className="px-4 py-10 text-center">
+                        <p className="font-body text-textMuted text-sm">
+                          Type at least 2 characters to search
+                        </p>
+                      </div>
+                    ) : results.length === 0 ? (
+                      <div className="px-4 py-10 text-center">
+                        <p className="font-body text-textMuted text-sm">
+                          No results for &ldquo;<strong className="text-navy-dark">{query}</strong>&rdquo;
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="py-2">
+                        {pages.length > 0 && (
+                          <ResultGroup label="Pages & Sections" results={pages} onSelect={close} />
+                        )}
+                        {news.length > 0 && (
+                          <ResultGroup label="News & Events" results={news} onSelect={close} />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              </motion.div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }

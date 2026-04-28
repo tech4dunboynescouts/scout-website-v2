@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Search } from "lucide-react";
+import { Menu, X, ChevronDown, Search, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchModal from "@/components/SearchModal";
 
@@ -154,10 +154,16 @@ export default function Navbar() {
                 </Link>
               )
             )}
+            <Link
+              href="/leaders/login"
+              className="flex items-center gap-1.5 px-3 py-2 text-white/40 hover:text-white/80 text-sm font-body transition-colors"
+            >
+              <Lock size={13} /> Leaders Portal
+            </Link>
             <SearchModal />
             <Link
               href="/join"
-              className="ml-3 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
+              className="ml-1 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
             >
               Join Now
             </Link>
@@ -221,7 +227,10 @@ export default function Navbar() {
               )}
               <div className="pt-3 flex flex-col gap-2">
                 <button
-                  onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }))}
+                  onClick={() => {
+                    setMobileOpen(false);
+                    window.dispatchEvent(new Event("open-search"));
+                  }}
                   className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/80 hover:text-white hover:bg-navy-mid transition-colors w-full"
                 >
                   <Search size={18} />
@@ -232,6 +241,12 @@ export default function Navbar() {
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
                 >
                   Join Now
+                </Link>
+                <Link
+                  href="/leaders/login"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/40 hover:text-white/70 hover:bg-navy-mid transition-colors"
+                >
+                  <Lock size={14} /> Leader Login
                 </Link>
               </div>
             </div>

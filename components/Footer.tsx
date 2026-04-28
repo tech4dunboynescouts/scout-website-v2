@@ -149,6 +149,12 @@ export default function Footer() {
             © {new Date().getFullYear()} 1st Meath Dunboyne Scout Group. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
+            <Link
+              href="/leaders/login"
+              className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
+            >
+              Leader Login
+            </Link>
             <span className="inline-flex items-center gap-2 text-xs font-body text-white/40 border border-white/10 rounded-full px-3 py-1">
               <span className="text-orange-main">⚜</span>
               Founded 1973
