@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { PortableText, type PortableTextComponents } from "@portabletext/react"
 import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
-import { leaderResourceBySlugQuery } from "@/sanity/lib/queries"
+import { leaderResourceBySlugQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
 import { ArrowLeft, Tag, Clock, FileDown } from "lucide-react"
 
 interface Props {
@@ -47,19 +47,21 @@ const categoryColours: Record<string, string> = {
 export default async function ResourcePage({ params }: Props) {
   const { slug } = await params
   const session = await auth()
+  const email = session?.user?.email ?? ""
 
-  const resource = await serverClient
-    .fetch(leaderResourceBySlugQuery, { slug })
-    .catch(() => null)
+  const [resource, profile] = await Promise.all([
+    serverClient.fetch(leaderResourceBySlugQuery, { slug }).catch(() => null),
+    serverClient.fetch(leaderProfileByEmailQuery, { email }).catch(() => null),
+  ])
 
   if (!resource) notFound()
 
-  // Role-based visibility check (belt-and-braces — middleware already guards the route)
-  const userRoles = session?.user?.leaderRoles ?? []
+  // Re-fetch roles live from Sanity so stale JWT tokens don't cause false 404s
+  const userRoles: string[] = profile?.roles ?? session?.user?.leaderRoles ?? []
+
   const restricted =
     Array.isArray(resource.visibleToRoles) &&
     resource.visibleToRoles.length > 0 &&
-    !userRoles.includes("all") &&
     !resource.visibleToRoles.some((r: string) => userRoles.includes(r))
 
   if (restricted) notFound()
@@ -71,6 +73,7 @@ export default async function ResourcePage({ params }: Props) {
   })
 
   const colourClass = categoryColours[resource.category] ?? "bg-gray-100 text-gray-600"
+  const isPdf = resource.fileMimeType === "application/pdf"
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -107,6 +110,18 @@ export default async function ResourcePage({ params }: Props) {
           <FileDown size={15} />
           {resource.fileName ?? "Download file"}
         </a>
+      )}
+
+      {/* Inline PDF viewer */}
+      {resource.fileUrl && isPdf && (
+        <div className="mb-10 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+          <iframe
+            src={`${resource.fileUrl}#toolbar=1&navpanes=0`}
+            title={resource.fileName ?? "Document"}
+            className="w-full"
+            style={{ height: "75vh", minHeight: "500px" }}
+          />
+        </div>
       )}
 
       {/* Body */}

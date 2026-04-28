@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
-import { allLeaderResourcesQuery } from "@/sanity/lib/queries"
+import { allLeaderResourcesQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
 import { FileDown, Tag, Clock, ChevronRight } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -32,8 +32,15 @@ const categoryColours: Record<string, string> = {
 
 export default async function DashboardPage() {
   const session = await auth()
-  const roles = session?.user?.leaderRoles ?? []
+  const email = session?.user?.email ?? ""
   const name = session?.user?.leaderName ?? session?.user?.name ?? "Leader"
+
+  // Re-fetch roles live from Sanity on every dashboard load so that changes
+  // made in Sanity Studio take effect without requiring a sign-out/sign-in.
+  const profile = await serverClient
+    .fetch(leaderProfileByEmailQuery, { email })
+    .catch(() => null)
+  const roles: string[] = profile?.roles ?? session?.user?.leaderRoles ?? []
 
   const resources: Resource[] = await serverClient
     .fetch(allLeaderResourcesQuery, { roles })

@@ -6,7 +6,6 @@ const ROLES = [
   { title: 'Cubs',          value: 'cubs' },
   { title: 'Scouts',        value: 'scouts' },
   { title: 'Ventures',      value: 'ventures' },
-  { title: 'All',           value: 'all' },
 ]
 
 export const leaderResource = defineType({
@@ -81,7 +80,7 @@ export const leaderResource = defineType({
       title: 'Restrict to Roles',
       type: 'array',
       description:
-        'Leave empty to show to all active leaders. Select specific roles to restrict visibility. "All" role leaders always have access.',
+        'Leave empty to show to all active leaders. Select specific roles to restrict visibility.',
       of: [defineArrayMember({ type: 'string' })],
       options: { list: ROLES },
     }),

@@ -6,7 +6,6 @@ const ROLES = [
   { title: 'Cubs',          value: 'cubs' },
   { title: 'Scouts',        value: 'scouts' },
   { title: 'Ventures',      value: 'ventures' },
-  { title: 'All',           value: 'all' },
 ]
 
 export const leaderProfile = defineType({
@@ -31,7 +30,7 @@ export const leaderProfile = defineType({
       name: 'roles',
       title: 'Roles',
       type: 'array',
-      description: 'Select all sections this leader belongs to. "All" grants access to every resource.',
+      description: 'Select all sections this leader belongs to.',
       of: [defineArrayMember({ type: 'string' })],
       options: { list: ROLES },
       validation: (Rule) => Rule.required().min(1),
