@@ -12,7 +12,11 @@
       "Bash(git add *)",
       "Bash(git commit -m 'Fix Vercel build: add missing deps to package.json, remove react-leaflet *)",
       "Bash(git commit *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(git rm *)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next-auth/package.json'\\).version\\)\")",
+      "Bash(npm show *)",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const v=JSON.parse\\(d\\); console.log\\(v.slice\\(-10\\).join\\('\\\\n'\\)\\)\")"
     ]
   }
 }

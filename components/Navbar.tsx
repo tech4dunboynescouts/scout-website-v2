@@ -188,7 +188,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="lg:hidden bg-navy-dark border-t border-white/10 overflow-hidden"
+            className="lg:hidden bg-navy-dark border-t border-white/10 overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) =>
@@ -226,6 +226,12 @@ export default function Navbar() {
                 )
               )}
               <div className="pt-3 flex flex-col gap-2">
+                <Link
+                  href="/leaders/login"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/40 hover:text-white/70 hover:bg-navy-mid transition-colors"
+                >
+                  <Lock size={14} /> Leaders Portal
+                </Link>
                 <button
                   onClick={() => {
                     setMobileOpen(false);
@@ -241,12 +247,6 @@ export default function Navbar() {
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
                 >
                   Join Now
-                </Link>
-                <Link
-                  href="/leaders/login"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/40 hover:text-white/70 hover:bg-navy-mid transition-colors"
-                >
-                  <Lock size={14} /> Leader Login
                 </Link>
               </div>
             </div>
