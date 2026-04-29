@@ -61,7 +61,7 @@ export default function ContactPage() {
             {/* Social */}
             <div>
               <h2 className="font-display font-bold text-navy-dark text-2xl mb-4">Follow us</h2>
-              <div className="flex gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <a
                   href="https://www.facebook.com/groups/811773582630420"
                   target="_blank"
@@ -97,7 +97,7 @@ export default function ContactPage() {
           </div>
 
           {/* Form */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 lg:p-10">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 lg:p-10">
             <h2 className="font-display font-bold text-navy-dark text-2xl mb-2">Send a message</h2>
             <p className="font-body text-textMuted text-sm mb-8">
               We aim to reply within 48 hours on working days.

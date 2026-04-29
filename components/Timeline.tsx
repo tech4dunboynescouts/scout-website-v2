@@ -53,11 +53,15 @@ const timelineData: TimelineItem[] = [
 
 export default function Timeline() {
   return (
-    <div className="relative">
-      {/* Vertical line */}
+    // overflow-hidden prevents the x-axis Framer Motion initial offset from
+    // causing a horizontal scrollbar flash on mobile before the animation fires.
+    <div className="relative overflow-hidden">
+      {/* Mobile: left rail */}
+      <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200 md:hidden" />
+      {/* Desktop: centre rail */}
       <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 -translate-x-1/2 hidden md:block" />
 
-      <div className="space-y-8 md:space-y-0">
+      <div className="space-y-6 md:space-y-0">
         {timelineData.map((item, index) => {
           const isLeft = index % 2 === 0;
           return (
@@ -67,11 +71,14 @@ export default function Timeline() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className={`relative md:flex md:items-center ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} md:mb-12`}
+              className={`relative md:flex md:items-center ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} md:mb-12 pl-12 md:pl-0`}
             >
+              {/* Mobile: orange dot on the left rail */}
+              <div className="absolute left-[14px] top-6 w-3 h-3 bg-orange-main border-2 border-white rounded-full shadow-sm md:hidden" />
+
               {/* Card */}
               <div className={`md:w-5/12 ${isLeft ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+                <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                   <div className="inline-block bg-orange-main text-white text-xs font-body font-bold px-3 py-1 rounded-full mb-3">
                     {item.year}
                   </div>
@@ -84,10 +91,10 @@ export default function Timeline() {
                 </div>
               </div>
 
-              {/* Centre dot */}
+              {/* Desktop: centre dot */}
               <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-orange-main border-4 border-white rounded-full shadow-md" />
 
-              {/* Spacer */}
+              {/* Desktop: spacer */}
               <div className="md:w-5/12" />
             </motion.div>
           );

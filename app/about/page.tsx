@@ -86,7 +86,7 @@ export default function AboutPage() {
       {/* Leaders teaser */}
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-navy-dark rounded-2xl p-8 lg:p-12 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="bg-navy-dark rounded-2xl p-6 sm:p-8 lg:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
               <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-2 block">
                 Our Team
@@ -119,7 +119,7 @@ export default function AboutPage() {
               Rooted in Dunboyne
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 title: "Christmas Tree Collection",
