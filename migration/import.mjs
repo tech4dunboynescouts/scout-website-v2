@@ -330,7 +330,16 @@ async function importToSanity(title, isoDate, contentBlocks, featuredPath, urlTo
       })
     } else if (block.type === 'gallery') {
       const assetIds = block.urls.map(url => urlToAssetId[url]).filter(Boolean)
-      if (assetIds.length > 0) {
+      if (assetIds.length === 1) {
+        // Single image — use bodyImage (imageGallery requires at least 2)
+        body.push({
+          _type: 'bodyImage',
+          _key: key(),
+          asset: { _type: 'reference', _ref: assetIds[0] },
+          alt: title,
+        })
+      } else if (assetIds.length > 1) {
+        // Multiple images — use the carousel
         body.push({
           _type: 'imageGallery',
           _key: key(),
