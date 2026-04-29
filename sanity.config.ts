@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * This configuration is used to for the Sanity Studio that’s mounted on the `\app\studio\[[...tool]]\page.tsx` route
+ * This configuration is used to for the Sanity Studio that's mounted on the `/app/studio/[[...tool]]/page.tsx` route
  */
 
 import {visionTool} from '@sanity/vision'
@@ -20,4 +20,9 @@ export default defineConfig({
     structureTool(),
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  document: {
+    // Preserve all default actions (publish, unpublish, duplicate, delete, discard changes)
+    // Explicitly returning prev ensures Unpublish is always present for published documents
+    actions: (prev) => prev,
+  },
 })

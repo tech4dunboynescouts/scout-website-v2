@@ -127,103 +127,123 @@ async function scrape(articleUrl) {
     i === 0 && dateMatch ? p.replace(/^[^:]+:\s*/, '').trim() : p
   ).filter(Boolean)
 
-  const images = []
-  const addImage = src => {
+  // ── Featured image (WordPress post thumbnail) ─────────────────────────────────
+  // Primary: Gutenberg block theme uses figure.wp-block-post-featured-image
+  // Fallback: og:image meta tag
+  let featuredImageUrl =
+    $('figure.wp-block-post-featured-image img').first().attr('src') ||
+    $('img.wp-post-image').first().attr('src') ||
+    $('meta[property="og:image"]').attr('content') ||
+    null
+  if (featuredImageUrl) featuredImageUrl = featuredImageUrl.split('?')[0]
+
+  // ── Body images (exclude the featured image to avoid duplication) ─────────────
+  const bodyImages = []
+  const addBodyImage = src => {
     if (!src) return
     src = src.split('?')[0]
-    if (src.includes('wp-content/uploads') && !images.includes(src)) images.push(src)
+    if (
+      src.includes('wp-content/uploads') &&
+      src !== featuredImageUrl &&
+      !bodyImages.includes(src)
+    ) bodyImages.push(src)
   }
   contentEl.find('img').each((_, el) => {
     const srcset = $(el).attr('srcset') || ''
     if (srcset) {
       const largest = srcset.split(',').map(s => s.trim().split(/\s+/))
         .sort((a, b) => parseInt(b[1] ?? '0') - parseInt(a[1] ?? '0'))[0]
-      addImage(largest?.[0])
+      addBodyImage(largest?.[0])
     } else {
-      addImage($(el).attr('src'))
+      addBodyImage($(el).attr('src'))
     }
   })
   contentEl.find('a[href]').each((_, el) => {
     const href = $(el).attr('href') || ''
-    if (/\.(jpe?g|png|gif|webp)$/i.test(href)) addImage(href)
+    if (/\.(jpe?g|png|gif|webp)$/i.test(href)) addBodyImage(href)
   })
 
-  console.log(`  Title:    ${title}`)
-  console.log(`  Date:     ${isoDate}`)
-  console.log(`  Paras:    ${cleanParagraphs.length}`)
-  console.log(`  Images:   ${images.length}`)
+  console.log(`  Title:          ${title}`)
+  console.log(`  Date:           ${isoDate}`)
+  console.log(`  Paras:          ${cleanParagraphs.length}`)
+  console.log(`  Featured image: ${featuredImageUrl ?? '(none found)'}`)
+  console.log(`  Body images:    ${bodyImages.length}`)
 
-  return { title, isoDate, paragraphs: cleanParagraphs, images }
+  return { title, isoDate, paragraphs: cleanParagraphs, featuredImageUrl, bodyImages }
 }
 
 // ── Step 3: Download images ────────────────────────────────────────────────────
-async function downloadImages(imageUrls) {
-  console.log('\n[Step 3] Downloading images…')
+async function downloadFile(url) {
   fs.mkdirSync(IMAGES_DIR, { recursive: true })
-
-  const localPaths = []
-  for (const url of imageUrls) {
-    const filename = path.basename(url)
-    const dest = path.join(IMAGES_DIR, filename)
-
-    if (fs.existsSync(dest)) {
-      console.log(`  ✓ Already exists: ${filename}`)
-      localPaths.push(dest)
-      continue
-    }
-
-    const response = await axios.get(url, { responseType: 'stream', timeout: 30000 })
-    await new Promise((resolve, reject) => {
-      const writer = fs.createWriteStream(dest)
-      response.data.pipe(writer)
-      writer.on('finish', resolve)
-      writer.on('error', reject)
-    })
-    console.log(`  ↓ Downloaded: ${filename}`)
-    localPaths.push(dest)
+  const filename = path.basename(url.split('?')[0])
+  const dest = path.join(IMAGES_DIR, filename)
+  if (fs.existsSync(dest)) {
+    console.log(`  ✓ Already exists: ${filename}`)
+    return dest
   }
-  return localPaths
+  const response = await axios.get(url, { responseType: 'stream', timeout: 30000 })
+  await new Promise((resolve, reject) => {
+    const writer = fs.createWriteStream(dest)
+    response.data.pipe(writer)
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
+  console.log(`  ↓ Downloaded: ${filename}`)
+  return dest
+}
+
+async function downloadImages(featuredImageUrl, bodyImageUrls) {
+  console.log('\n[Step 3] Downloading images…')
+  const featuredPath = featuredImageUrl ? await downloadFile(featuredImageUrl) : null
+  if (featuredPath) console.log(`  ★ Featured image: ${path.basename(featuredPath)}`)
+  const bodyPaths = []
+  for (const url of bodyImageUrls) {
+    bodyPaths.push(await downloadFile(url))
+  }
+  return { featuredPath, bodyPaths }
 }
 
 // ── Step 4: Import to Sanity ───────────────────────────────────────────────────
-async function importToSanity(title, isoDate, paragraphs, localImagePaths, tag) {
-  console.log('\n[Step 4] Importing to Sanity…')
-
-  // 4a — Upload images
-  console.log('  Uploading images…')
-  const assetIds = []
-  for (const filePath of localImagePaths) {
-    const filename = path.basename(filePath)
-    const ext = path.extname(filename).slice(1).toLowerCase()
-    const mimeType = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : 'image/jpeg'
-
-    let asset
-    try {
-      asset = await client.assets.upload('image', createReadStream(filePath), {
-        filename,
-        contentType: mimeType,
-      })
-    } catch (err) {
-      if (err.statusCode === 401 || err.statusCode === 403) {
-        console.error('\n  ERROR: Permission denied uploading assets.')
-        console.error('  The existing SANITY_API_READ_TOKEN is read-only.')
-        console.error('  Create an Editor token in sanity.manage.com and set it as SANITY_WRITE_TOKEN in .env.local, then re-run.\n')
-        process.exit(1)
-      }
-      throw err
-    }
+async function uploadImage(filePath) {
+  const filename = path.basename(filePath)
+  const ext = path.extname(filename).slice(1).toLowerCase()
+  const mimeType = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : 'image/jpeg'
+  try {
+    const asset = await client.assets.upload('image', createReadStream(filePath), {
+      filename,
+      contentType: mimeType,
+    })
     console.log(`  ✓ Uploaded: ${filename} → ${asset._id}`)
-    assetIds.push(asset._id)
+    return asset._id
+  } catch (err) {
+    if (err.statusCode === 401 || err.statusCode === 403) {
+      console.error('\n  ERROR: Permission denied uploading assets.')
+      console.error('  Create an Editor token in sanity.manage.com and set it as SANITY_WRITE_TOKEN in .env.local, then re-run.\n')
+      process.exit(1)
+    }
+    throw err
+  }
+}
+
+async function importToSanity(title, isoDate, paragraphs, featuredPath, bodyPaths, tag) {
+  console.log('\n[Step 4] Importing to Sanity…')
+  console.log('  Uploading images…')
+
+  // 4a — Upload featured image first, then body images
+  const featuredAssetId = featuredPath ? await uploadImage(featuredPath) : null
+  const bodyAssetIds = []
+  for (const filePath of bodyPaths) {
+    bodyAssetIds.push(await uploadImage(filePath))
   }
 
-  // 4b — Build Portable Text body (paragraphs + image gallery)
+  // 4b — Build Portable Text body (paragraphs + gallery of body images only)
   const body = toPortableText(paragraphs)
 
-  if (assetIds.length > 0) {
+  if (bodyAssetIds.length > 0) {
     body.push({
       _type: 'imageGallery',
       _key: key(),
-      images: assetIds.map(id => ({
+      images: bodyAssetIds.map(id => ({
         _type: 'image',
         _key: key(),
         asset: { _type: 'reference', _ref: id },
@@ -236,6 +256,9 @@ async function importToSanity(title, isoDate, paragraphs, localImagePaths, tag) 
   const excerpt = autoExcerpt(paragraphs)
   const slug = slugify(title)
 
+  // Cover image: use featured image if found, otherwise fall back to first body image
+  const coverAssetId = featuredAssetId ?? bodyAssetIds[0] ?? null
+
   const doc = {
     _type: 'newsArticle',
     title,
@@ -243,8 +266,8 @@ async function importToSanity(title, isoDate, paragraphs, localImagePaths, tag) 
     date: isoDate,
     tag,
     excerpt,
-    image: assetIds.length > 0
-      ? { _type: 'image', asset: { _type: 'reference', _ref: assetIds[0] } }
+    image: coverAssetId
+      ? { _type: 'image', asset: { _type: 'reference', _ref: coverAssetId } }
       : undefined,
     body,
   }
@@ -273,14 +296,25 @@ async function importToSanity(title, isoDate, paragraphs, localImagePaths, tag) 
   return created
 }
 
+// ── Cleanup ────────────────────────────────────────────────────────────────────
+function clearImagesFolder() {
+  if (!fs.existsSync(IMAGES_DIR)) return
+  const files = fs.readdirSync(IMAGES_DIR)
+  for (const file of files) {
+    fs.rmSync(path.join(IMAGES_DIR, file))
+  }
+  console.log(`\n[Cleanup] Removed ${files.length} file${files.length !== 1 ? 's' : ''} from migration/images/`)
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function main() {
   const articleUrl = await promptUrl()
   const tag = await promptTag()
   console.log(`\n  Tagged as: ${tag}`)
-  const { title, isoDate, paragraphs, images } = await scrape(articleUrl)
-  const localPaths = await downloadImages(images)
-  await importToSanity(title, isoDate, paragraphs, localPaths, tag)
+  const { title, isoDate, paragraphs, featuredImageUrl, bodyImages } = await scrape(articleUrl)
+  const { featuredPath, bodyPaths } = await downloadImages(featuredImageUrl, bodyImages)
+  await importToSanity(title, isoDate, paragraphs, featuredPath, bodyPaths, tag)
+  clearImagesFolder()
 }
 
 main().catch(err => {
