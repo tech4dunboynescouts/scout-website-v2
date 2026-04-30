@@ -126,11 +126,10 @@ export const generalPage = defineType({
       slug: 'slug.current',
       media: 'coverImage',
     },
-    prepare({ title, slug, media }: { title?: string; slug?: string; media?: unknown }) {
+    prepare({ title, slug }: { title?: string; slug?: string }) {
       return {
         title,
         subtitle: slug ? `/pages/${slug}` : '',
-        media,
       }
     },
   },
