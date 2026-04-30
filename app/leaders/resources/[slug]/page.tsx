@@ -35,6 +35,14 @@ const portableTextComponents: PortableTextComponents = {
     ),
     normal: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
   },
+  list: {
+    bullet: ({ children }) => <ul className="list-disc list-outside ml-6 mb-4 space-y-1">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal list-outside ml-6 mb-4 space-y-1">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="leading-relaxed">{children}</li>,
+    number: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  },
 }
 
 const categoryColours: Record<string, string> = {
