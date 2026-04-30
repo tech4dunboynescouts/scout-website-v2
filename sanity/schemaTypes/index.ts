@@ -6,7 +6,8 @@ import { fundraisingCampaign } from './fundraisingCampaign'
 import { generalPage } from './generalPage'
 import { sectionPage } from './sectionPage'
 import { siteNavigation } from './siteNavigation'
+import { leaderTeam } from './leaderTeam'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation],
+  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam],
 }

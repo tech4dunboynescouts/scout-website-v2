@@ -1,5 +1,19 @@
 import { groq } from 'next-sanity'
 
+// ── Leader Team ────────────────────────────────────────────────────────────────
+
+export const leaderTeamQuery = groq`
+  *[_type == "leaderTeam"][0] {
+    councilColour,
+    councilMembers[] { name, role, lead },
+    sectionGroups[] {
+      name,
+      colour,
+      members[] { name, role, lead },
+    }
+  }
+`
+
 // ── Site Navigation ────────────────────────────────────────────────────────────
 
 export const siteNavigationQuery = groq`
