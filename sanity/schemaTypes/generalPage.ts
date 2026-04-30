@@ -37,6 +37,18 @@ export const generalPage = defineType({
       description: 'Optional hero image shown at the top of the page.',
     }),
     defineField({
+      name: 'ctaLabel',
+      title: 'Button Label',
+      type: 'string',
+      description: 'Text shown on the action button, e.g. "Pay Here" or "Donate Here". Leave blank to hide the button.',
+    }),
+    defineField({
+      name: 'ctaLink',
+      title: 'Button Link',
+      type: 'url',
+      description: 'The URL the button links to.',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'array',

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ExternalLink } from "lucide-react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import ImageCarousel from "@/components/ImageCarousel";
 import PageHero from "@/components/PageHero";
@@ -92,6 +93,20 @@ export default async function GeneralPage({ params }: Props) {
         <div className="font-body text-textMuted text-base">
           <PortableText value={page.body} components={portableTextComponents} />
         </div>
+
+        {page.ctaLink && (
+          <div className="mt-8">
+            <a
+              href={page.ctaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors"
+            >
+              {page.ctaLabel ?? "Click Here"}
+              <ExternalLink size={16} />
+            </a>
+          </div>
+        )}
       </section>
     </>
   );

@@ -143,6 +143,8 @@ export const generalPageBySlugQuery = groq`
     "slug": slug.current,
     description,
     "coverImage": coverImage.asset->url,
+    ctaLabel,
+    ctaLink,
     body[] {
       ...,
       _type == "bodyImage" => {
