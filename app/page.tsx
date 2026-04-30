@@ -85,7 +85,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6">
             <StatCounter value={50} suffix="+" label="Years Active" />
-            <StatCounter value={5} label="Sections" />
+            <StatCounter value={4} label="Sections" />
             <StatCounter value={200} suffix="+" label="Young Members" />
           </div>
         </div>
@@ -172,10 +172,10 @@ export default async function HomePage() {
               </span>
             </div>
             <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
-              One of Meath&apos;s only Scout Water Sections
+              A highly active Water Section
             </h2>
             <p className="font-body text-white/70 text-base leading-relaxed mb-8">
-              Since 1992, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel — qualifications that open doors to adventure across Ireland and beyond.
+              For over two decades, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel — qualifications that open doors to adventure across Ireland and beyond.
             </p>
             <Link
               href="/join"
