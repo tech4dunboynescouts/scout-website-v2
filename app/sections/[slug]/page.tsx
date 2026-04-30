@@ -153,11 +153,11 @@ export default async function SectionPage({ params }: Props) {
             )}
 
             {/* What We Get Up To */}
-            {section.activities.length > 0 && (
+            {(section.activities ?? []).length > 0 && (
               <div>
                 <h2 className="font-display font-bold text-navy-dark text-3xl mb-5">What We Get Up To</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {section.activities.map((activity, i) => (
+                  {(section.activities ?? []).map((activity, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <CheckCircle
                         size={18}
@@ -172,11 +172,11 @@ export default async function SectionPage({ params }: Props) {
             )}
 
             {/* Gallery */}
-            {section.gallery.length > 0 && (
+            {(section.gallery ?? []).length > 0 && (
               <div>
                 <h2 className="font-display font-bold text-navy-dark text-3xl mb-5">Gallery</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {section.gallery.map((img, i) => (
+                  {(section.gallery ?? []).map((img, i) => (
                     <div key={i} className="aspect-square rounded-xl overflow-hidden">
                       <img
                         src={img.url}
@@ -194,17 +194,17 @@ export default async function SectionPage({ params }: Props) {
           <div className="space-y-6">
 
             {/* Meeting details */}
-            {(section.meetings.length > 0 || section.location) && (
+            {((section.meetings ?? []).length > 0 || section.location) && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <h3 className="font-display font-bold text-navy-dark text-xl mb-5">Meeting Details</h3>
                 <div className="space-y-4">
-                  {section.meetings.length > 0 && (
+                  {(section.meetings ?? []).length > 0 && (
                     <div className="flex items-start gap-3">
                       <Calendar size={18} className="text-orange-main mt-0.5 flex-shrink-0" />
                       <div>
                         <div className="font-body text-xs text-textMuted uppercase tracking-wider mb-1.5">Meeting Times</div>
                         <div className="space-y-1">
-                          {section.meetings.map((meeting, i) => (
+                          {(section.meetings ?? []).map((meeting, i) => (
                             <div key={i} className="font-body font-medium text-navy-dark text-sm">
                               {meeting.day} &middot; {meeting.time}
                             </div>
