@@ -179,6 +179,28 @@ async function scrape(pageUrl) {
       return
     }
 
+    // Unordered list — each <li> becomes a bullet listItem block
+    if (tagName === 'ul') {
+      $(el).children('li').each((_, li) => {
+        const plainText = $(li).text().trim()
+        if (!plainText) return
+        const spans = parseInlineContent(li, $)
+        if (spans.length > 0) contentBlocks.push({ type: 'listItem', listItem: 'bullet', level: 1, spans, plainText })
+      })
+      return
+    }
+
+    // Ordered list — each <li> becomes a number listItem block
+    if (tagName === 'ol') {
+      $(el).children('li').each((_, li) => {
+        const plainText = $(li).text().trim()
+        if (!plainText) return
+        const spans = parseInlineContent(li, $)
+        if (spans.length > 0) contentBlocks.push({ type: 'listItem', listItem: 'number', level: 1, spans, plainText })
+      })
+      return
+    }
+
     // Recurse into other containers
     $(el).children().each((_, child) => walkNode(child))
   }
@@ -196,9 +218,11 @@ async function scrape(pageUrl) {
   }
 
   const paraCount = contentBlocks.filter(b => b.type === 'paragraph').length
+  const listCount = contentBlocks.filter(b => b.type === 'listItem').length
   const galleryCount = contentBlocks.filter(b => b.type === 'gallery').length
   console.log(`  Title:          ${title}`)
   console.log(`  Paragraphs:     ${paraCount}`)
+  console.log(`  List items:     ${listCount}`)
   console.log(`  Gallery blocks: ${galleryCount} (${allBodyImageUrls.length} images total)`)
   console.log(`  Featured image: ${featuredImageUrl ?? '(none found)'}`)
   console.log(`  Meta desc:      ${metaDescription ? metaDescription.slice(0, 80) + '…' : '(none found)'}`)
@@ -281,6 +305,16 @@ async function importToSanity(title, metaDescription, contentBlocks, featuredPat
         _type: 'block',
         _key: key(),
         style: block.style,
+        children: block.spans,
+        markDefs: [],
+      })
+    } else if (block.type === 'listItem') {
+      body.push({
+        _type: 'block',
+        _key: key(),
+        style: 'normal',
+        listItem: block.listItem,
+        level: block.level,
         children: block.spans,
         markDefs: [],
       })
