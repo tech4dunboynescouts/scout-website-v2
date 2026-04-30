@@ -168,6 +168,39 @@ export const allGeneralPageSlugsQuery = groq`
   *[_type == "generalPage"] { "slug": slug.current }
 `
 
+// ── Sections ───────────────────────────────────────────────────────────────────
+
+export const sectionPageBySlugQuery = groq`
+  *[_type == "sectionPage" && slug.current == $slug][0] {
+    _id,
+    name,
+    "slug": slug.current,
+    sectionName,
+    leaderTitle,
+    ageRange,
+    icon,
+    colour,
+    tagline,
+    "heroImage": heroImage.asset->url,
+    description,
+    programme,
+    activities,
+    "gallery": gallery[] {
+      "url": asset->url,
+      alt,
+    },
+    meetings[] {
+      day,
+      time,
+    },
+    location,
+  }
+`
+
+export const allSectionPageSlugsQuery = groq`
+  *[_type == "sectionPage"] { "slug": slug.current }
+`
+
 // ── Leaders Portal ─────────────────────────────────────────────────────────────
 
 export const leaderProfileByEmailQuery = groq`
