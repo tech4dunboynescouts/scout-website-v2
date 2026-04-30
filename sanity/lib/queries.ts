@@ -59,6 +59,24 @@ export const searchNewsQuery = groq`
   }
 `
 
+export const searchFundraisingQuery = groq`
+  *[_type == "fundraisingCampaign" && defined(body[0])] | order(_createdAt desc) {
+    title,
+    "slug": slug.current,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
+`
+
+export const searchGeneralPagesQuery = groq`
+  *[_type == "generalPage"] | order(_createdAt desc) {
+    title,
+    "slug": slug.current,
+    description,
+    "bodyText": pt::text(body),
+  }
+`
+
 // ── Fundraising ────────────────────────────────────────────────────────────────
 
 export const allFundraisingCampaignsQuery = groq`

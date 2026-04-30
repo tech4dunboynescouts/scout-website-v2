@@ -3,17 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Search, X, FileText, Newspaper, ArrowRight } from "lucide-react";
+import { Search, X, FileText, Newspaper, DollarSign, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client } from "@/sanity/lib/client";
-import { searchNewsQuery } from "@/sanity/lib/queries";
+import { searchNewsQuery, searchFundraisingQuery, searchGeneralPagesQuery } from "@/sanity/lib/queries";
 import sectionsData from "@/data/sections.json";
 
 interface Result {
   title: string;
   href: string;
   description: string;
-  type: "page" | "section" | "article";
+  type: "page" | "section" | "article" | "fundraising" | "generalPage";
   bodyText?: string;
 }
 
@@ -45,7 +45,7 @@ function hits(result: Result, q: string) {
 export default function SearchModal() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [articles, setArticles] = useState<Result[]>([]);
+  const [dynamicResults, setDynamicResults] = useState<Result[]>([]);
   const [fetched, setFetched] = useState(false);
   const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,18 +54,34 @@ export default function SearchModal() {
 
   useEffect(() => {
     if (open && !fetched) {
-      client
-        .fetch(searchNewsQuery)
-        .then((data: { slug: string; title: string; excerpt: string; bodyText: string }[]) => {
-          setArticles(
-            data.map((a) => ({
-              title: a.title,
-              href: `/news/${a.slug}`,
-              description: a.excerpt ?? "",
-              bodyText: a.bodyText ?? "",
-              type: "article" as const,
-            }))
-          );
+      Promise.all([
+        client.fetch(searchNewsQuery),
+        client.fetch(searchFundraisingQuery),
+        client.fetch(searchGeneralPagesQuery),
+      ])
+        .then(([news, fundraising, pages]) => {
+          const newsResults: Result[] = (news as { slug: string; title: string; excerpt: string; bodyText: string }[]).map((a) => ({
+            title: a.title,
+            href: `/news/${a.slug}`,
+            description: a.excerpt ?? "",
+            bodyText: a.bodyText ?? "",
+            type: "article" as const,
+          }));
+          const fundraisingResults: Result[] = (fundraising as { slug: string; title: string; excerpt: string; bodyText: string }[]).map((a) => ({
+            title: a.title,
+            href: `/fundraising/${a.slug}`,
+            description: a.excerpt ?? "",
+            bodyText: a.bodyText ?? "",
+            type: "fundraising" as const,
+          }));
+          const pageResults: Result[] = (pages as { slug: string; title: string; description: string; bodyText: string }[]).map((a) => ({
+            title: a.title,
+            href: `/pages/${a.slug}`,
+            description: a.description ?? "",
+            bodyText: a.bodyText ?? "",
+            type: "generalPage" as const,
+          }));
+          setDynamicResults([...newsResults, ...fundraisingResults, ...pageResults]);
           setFetched(true);
         })
         .catch(() => setFetched(true));
@@ -94,10 +110,11 @@ export default function SearchModal() {
     };
   }, []);
 
-  const all = [...STATIC, ...articles];
+  const all = [...STATIC, ...dynamicResults];
   const results = query.length >= 2 ? all.filter((r) => hits(r, query)) : [];
-  const pages = results.filter((r) => r.type !== "article");
+  const pages = results.filter((r) => r.type === "page" || r.type === "section" || r.type === "generalPage");
   const news = results.filter((r) => r.type === "article");
+  const fundraising = results.filter((r) => r.type === "fundraising");
   const close = () => setOpen(false);
 
   return (
@@ -182,6 +199,9 @@ export default function SearchModal() {
                         {news.length > 0 && (
                           <ResultGroup label="News & Events" results={news} onSelect={close} />
                         )}
+                        {fundraising.length > 0 && (
+                          <ResultGroup label="Fundraising" results={fundraising} onSelect={close} />
+                        )}
                       </div>
                     )}
                   </div>
@@ -223,6 +243,8 @@ function ResultGroup({
           <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-orange-main/10 flex items-center justify-center flex-shrink-0 transition-colors">
             {r.type === "article" ? (
               <Newspaper size={14} className="text-orange-main" />
+            ) : r.type === "fundraising" ? (
+              <DollarSign size={14} className="text-orange-main" />
             ) : (
               <FileText size={14} className="text-navy-dark/40 group-hover:text-orange-main transition-colors" />
             )}
