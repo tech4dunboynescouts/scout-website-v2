@@ -160,7 +160,6 @@ export default function Navbar() {
                 </Link>
               )
             )}
-            <SearchModal />
             <Link
               href="/leaders/login"
               className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
@@ -171,6 +170,7 @@ export default function Navbar() {
             >
               Leaders Portal
             </Link>
+            <SearchModal />
             <Link
               href="/join"
               className="ml-1 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
@@ -236,16 +236,6 @@ export default function Navbar() {
                 )
               )}
               <div className="pt-3 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setMobileOpen(false);
-                    window.dispatchEvent(new Event("open-search"));
-                  }}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/80 hover:text-white hover:bg-navy-mid transition-colors w-full"
-                >
-                  <Search size={18} />
-                  Search the site
-                </button>
                 <Link
                   href="/leaders/login"
                   className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
@@ -256,6 +246,16 @@ export default function Navbar() {
                 >
                   Leaders Portal
                 </Link>
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    window.dispatchEvent(new Event("open-search"));
+                  }}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-body text-white/80 hover:text-white hover:bg-navy-mid transition-colors w-full"
+                >
+                  <Search size={18} />
+                  Search the site
+                </button>
                 <Link
                   href="/join"
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"

@@ -50,6 +50,106 @@ export const allNewsSlugsQuery = groq`
   *[_type == "newsArticle"] { "slug": slug.current }
 `
 
+export const searchNewsQuery = groq`
+  *[_type == "newsArticle"] | order(date desc) {
+    title,
+    "slug": slug.current,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
+`
+
+// ── Fundraising ────────────────────────────────────────────────────────────────
+
+export const allFundraisingCampaignsQuery = groq`
+  *[_type == "fundraisingCampaign"] | order(_createdAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    "coverImage": coverImage.asset->url,
+    target,
+    raised,
+    donorCount,
+    ctaLabel,
+    ctaLink,
+    visibleFromMonth,
+    visibleToMonth,
+    "hasBody": defined(body[0]),
+  }
+`
+
+export const fundraisingCampaignBySlugQuery = groq`
+  *[_type == "fundraisingCampaign" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    "coverImage": coverImage.asset->url,
+    target,
+    raised,
+    donorCount,
+    ctaLabel,
+    ctaLink,
+    body[] {
+      ...,
+      _type == "bodyImage" => {
+        ...,
+        "url": asset->url,
+        alt,
+        caption,
+      },
+      _type == "imageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+        }
+      },
+    },
+  }
+`
+
+export const allFundraisingSlugsQuery = groq`
+  *[_type == "fundraisingCampaign"] { "slug": slug.current }
+`
+
+// ── General Pages ──────────────────────────────────────────────────────────────
+
+export const generalPageBySlugQuery = groq`
+  *[_type == "generalPage" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    "coverImage": coverImage.asset->url,
+    body[] {
+      ...,
+      _type == "bodyImage" => {
+        ...,
+        "url": asset->url,
+        alt,
+        caption,
+      },
+      _type == "imageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+        }
+      },
+    },
+  }
+`
+
+export const allGeneralPageSlugsQuery = groq`
+  *[_type == "generalPage"] { "slug": slug.current }
+`
+
 // ── Leaders Portal ─────────────────────────────────────────────────────────────
 
 export const leaderProfileByEmailQuery = groq`

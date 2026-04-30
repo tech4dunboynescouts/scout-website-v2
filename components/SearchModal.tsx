@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Search, X, FileText, Newspaper, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client } from "@/sanity/lib/client";
-import { allNewsQuery } from "@/sanity/lib/queries";
+import { searchNewsQuery } from "@/sanity/lib/queries";
 import sectionsData from "@/data/sections.json";
 
 interface Result {
@@ -14,6 +14,7 @@ interface Result {
   href: string;
   description: string;
   type: "page" | "section" | "article";
+  bodyText?: string;
 }
 
 const STATIC: Result[] = [
@@ -36,7 +37,8 @@ function hits(result: Result, q: string) {
   const lower = q.toLowerCase();
   return (
     result.title.toLowerCase().includes(lower) ||
-    result.description.toLowerCase().includes(lower)
+    result.description.toLowerCase().includes(lower) ||
+    (result.bodyText?.toLowerCase().includes(lower) ?? false)
   );
 }
 
@@ -53,13 +55,14 @@ export default function SearchModal() {
   useEffect(() => {
     if (open && !fetched) {
       client
-        .fetch(allNewsQuery)
-        .then((data: { slug: string; title: string; excerpt: string }[]) => {
+        .fetch(searchNewsQuery)
+        .then((data: { slug: string; title: string; excerpt: string; bodyText: string }[]) => {
           setArticles(
             data.map((a) => ({
               title: a.title,
               href: `/news/${a.slug}`,
-              description: a.excerpt,
+              description: a.excerpt ?? "",
+              bodyText: a.bodyText ?? "",
               type: "article" as const,
             }))
           );

@@ -2,7 +2,9 @@ import { type SchemaTypeDefinition } from 'sanity'
 import { newsArticle } from './newsArticle'
 import { leaderProfile } from './leaderProfile'
 import { leaderResource } from './leaderResource'
+import { fundraisingCampaign } from './fundraisingCampaign'
+import { generalPage } from './generalPage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [newsArticle, leaderProfile, leaderResource],
+  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage],
 }
