@@ -20,7 +20,7 @@ interface Result {
 const STATIC: Result[] = [
   { title: "Home", href: "/", description: "Welcome to 1st Meath Dunboyne Scout Group", type: "page" },
   { title: "About the Group", href: "/about", description: "Our history since 1973 and our commitment to Dunboyne", type: "page" },
-  { title: "Leader Team 2025/26", href: "/leaders", description: "Meet our volunteer leaders for the 2025/26 scouting year", type: "page" },
+  { title: "Leader Team", href: "/leaders", description: "Meet our volunteer leaders for the 2025/26 scouting year", type: "page" },
   { title: "News & Events", href: "/news", description: "Latest news, events and achievements from the group", type: "page" },
   { title: "Join the Group", href: "/join", description: "Join as a youth member or volunteer as an adult leader", type: "page" },
   { title: "Contact Us", href: "/contact", description: "Get in touch with 1st Meath Dunboyne Scout Group", type: "page" },

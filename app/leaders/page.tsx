@@ -4,7 +4,7 @@ import PageHero from "@/components/PageHero";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Leader Team 2025/26",
+  title: "Leader Team",
   description:
     "Meet the volunteer leader team of 1st Meath Dunboyne Scout Group for the 2025/26 scouting year.",
 };
@@ -141,7 +141,7 @@ export default function LeadersPage() {
   return (
     <>
       <PageHero
-        title="Leader Team 2025/26"
+        title="Leader Team"
         subtitle="Every leader is a volunteer — giving their time, energy, and expertise so young people in Dunboyne can have the scouting experience they deserve."
         breadcrumbs={[
           { label: "Home", href: "/" },

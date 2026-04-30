@@ -92,7 +92,7 @@ export default function AboutPage() {
                 Our Team
               </span>
               <h2 className="font-display font-bold text-white text-2xl sm:text-3xl mb-2">
-                Meet the Leader Team 2025/26
+                Meet the Leader Team
               </h2>
               <p className="font-body text-white/60 text-base max-w-xl">
                 Over 40 volunteers across nine section groups — dedicated to delivering the best of scouting to young people in Dunboyne.

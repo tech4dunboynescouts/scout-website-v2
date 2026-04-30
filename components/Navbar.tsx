@@ -32,7 +32,7 @@ const staticNavItems: NavItem[] = [
     label: "About",
     children: [
       { label: "About the Group", href: "/about" },
-      { label: "Leader Team 2025/26", href: "/leaders" },
+      { label: "Leader Team", href: "/leaders" },
       { label: "Fundraising", href: "/fundraising" },
       { label: "Contact Us", href: "/contact" },
     ],
