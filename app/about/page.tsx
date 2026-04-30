@@ -17,7 +17,7 @@ export default function AboutPage() {
         title="About the Group"
         subtitle="Founded in 1973 and highly active to this day — two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section that serves the whole group."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
-        bgImage="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80"
+        bgImage="/images/photo-1529156069898-49953e39b3ac.jpg"
       />
 
       {/* History */}
@@ -57,7 +57,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
               <img
-                src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80"
+                src="/images/photo-1544551763-46a013bb70d5.jpg"
                 alt="Water section kayaking"
                 className="w-full rounded-2xl object-cover h-80 lg:h-96"
               />

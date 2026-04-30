@@ -5,7 +5,7 @@
     "role": "Group Leader",
     "section": "Group",
     "bio": "Ciarán has been with 1st Meath Dunboyne since 1994, starting as a Beaver before working his way up to Group Leader in 2015. A passionate advocate for outdoor education and youth development, he holds multiple national scouting training qualifications.",
-    "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80"
+    "image": "/images/photo-1560250097-0b93528c311a.jpg"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "role": "Deputy Group Leader",
     "section": "Group",
     "bio": "Siobhán joined as a Cub leader in 2009 and took on the Deputy Group Leader role in 2019. She coordinates training and development for all adult leaders and chairs the group's child safeguarding committee.",
-    "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
+    "image": "/images/photo-1573496359142-b8d87734a5a2.jpg"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "role": "Beaver Leader",
     "section": "Beavers",
     "bio": "Padraig brings boundless energy and creativity to the Beaver Colony. A primary school teacher by profession, he has a natural gift for engaging young children and makes every meeting feel like the best day of the week.",
-    "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80"
+    "image": "/images/photo-1472099645785-5658abf4ff4e.jpg"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "role": "Beaver Leader",
     "section": "Beavers",
     "bio": "Aoibheann joined as a parent helper when her daughter became a Beaver, and never left. She completed her leader training in 2021 and now leads the Colony's outdoor programme with particular enthusiasm for nature education.",
-    "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"
+    "image": "/images/photo-1580489944761-15a19d654956.jpg"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "role": "Cub Scout Leader",
     "section": "Cubs",
     "bio": "Declan has led the Cub Pack since 2013. A former Scout himself, he's passionate about camp craft and outdoor cooking, and takes great pride in the Pack's reputation for producing some of the best campfire food in Meath.",
-    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80"
+    "image": "/images/photo-1507003211169-0a1dd7228f2d.jpg"
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@
     "role": "Scout Leader",
     "section": "Scouts",
     "bio": "Roisín holds a BSc in Outdoor Education and a Canoeing Ireland Level 2 qualification. She leads the Scout Troop with a focus on challenge and personal development, and has led groups on expeditions to Norway and the Swiss Alps.",
-    "image": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=400&q=80"
+    "image": "/images/photo-1567532939604-b6b5b0db2604.jpg"
   },
   {
     "id": 7,
@@ -53,7 +53,7 @@
     "role": "Venture Scout Leader",
     "section": "Ventures",
     "bio": "Brian has been a leader with 1st Meath Dunboyne for twelve years, taking on the Ventures section in 2018. He's a qualified mountain leader and has led expeditions to the Alps, the Pyrenees, and the Wicklow Mountains.",
-    "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80"
+    "image": "/images/photo-1500648767791-00dcc994a43e.jpg"
   },
   {
     "id": 8,
@@ -61,6 +61,6 @@
     "role": "Group Secretary",
     "section": "Group",
     "bio": "Karen manages the group's administration, communications, and event coordination with remarkable efficiency. She's also a qualified Cub leader who steps in when needed, and coordinates all parent liaison for the group.",
-    "image": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80"
+    "image": "/images/photo-1551836022-d5d88e9218df.jpg"
   }
 ]

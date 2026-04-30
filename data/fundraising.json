@@ -9,7 +9,7 @@
     "donorCount": 66,
     "cta": "Read the Report",
     "ctaLink": "/news/dublin-city-marathon-2025",
-    "image": "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=800&q=80"
+    "image": "/images/photo-1571008887538-b36bb32f4571.jpg"
   },
   {
     "id": 2,
@@ -21,7 +21,7 @@
     "donorCount": 0,
     "cta": "Learn More",
     "ctaLink": "/news",
-    "image": "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80"
+    "image": "/images/photo-1557804506-669a67965ba0.jpg"
   },
   {
     "id": 3,
@@ -33,6 +33,6 @@
     "donorCount": 0,
     "cta": "Get in Touch",
     "ctaLink": "/contact",
-    "image": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80"
+    "image": "/images/photo-1529156069898-49953e39b3ac.jpg"
   }
 ]

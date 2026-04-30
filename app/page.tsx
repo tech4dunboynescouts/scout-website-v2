@@ -75,7 +75,7 @@ export default async function HomePage() {
           "Prepared for everything. Ready for anything.",
         ]}
         subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit and a very active Water Section."
-        image="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80"
+        image="/images/photo-1501854140801-50d01698950b.jpg"
         primaryCta={{ label: "Join Our Group", href: "/join" }}
         secondaryCta={{ label: "Explore Sections", href: "#sections" }}
       />
@@ -160,7 +160,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 opacity-10">
           <div
             className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: "url(https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1400&q=80)" }}
+            style={{ backgroundImage: "url(/images/photo-1544551763-46a013bb70d5.jpg" }}
           />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
