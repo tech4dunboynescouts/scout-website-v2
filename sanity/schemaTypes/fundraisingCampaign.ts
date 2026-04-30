@@ -202,10 +202,10 @@ export const fundraisingCampaign = defineType({
       to: 'visibleToMonth',
       media: 'coverImage',
     },
-    prepare({ title, from, to, media }: { title?: string; from?: number; to?: number; media?: unknown }) {
+    prepare({ title, from, to }: { title?: string; from?: number; to?: number }) {
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
       const range = from && to ? `${months[from - 1]} – ${months[to - 1]}` : 'Always visible'
-      return { title, subtitle: range, media }
+      return { title, subtitle: range }
     },
   },
 })
