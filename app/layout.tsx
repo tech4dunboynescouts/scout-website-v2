@@ -3,6 +3,9 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { siteUrl } from "@/lib/siteConfig";
+import { client } from "@/sanity/lib/client";
+import { siteNavigationQuery } from "@/sanity/lib/queries";
+import type { NavItem } from "@/components/Navbar";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -59,7 +62,12 @@ const organizationSchema = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const navData = await client
+    .fetch(siteNavigationQuery)
+    .catch(() => null) as { navItems: NavItem[] } | null;
+  const navItems = navData?.navItems ?? undefined;
+
   return (
     <html lang="en" className={roboto.variable}>
       <body className="bg-background font-body antialiased">
@@ -67,7 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        <ConditionalLayout>{children}</ConditionalLayout>
+        <ConditionalLayout navItems={navItems}>{children}</ConditionalLayout>
       </body>
     </html>
   );

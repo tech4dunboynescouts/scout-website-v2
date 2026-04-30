@@ -1,5 +1,21 @@
 import { groq } from 'next-sanity'
 
+// ── Site Navigation ────────────────────────────────────────────────────────────
+
+export const siteNavigationQuery = groq`
+  *[_type == "siteNavigation"][0] {
+    navItems[] {
+      _type,
+      label,
+      href,
+      children[] {
+        label,
+        href,
+      }
+    }
+  }
+`
+
 export const allNewsQuery = groq`
   *[_type == "newsArticle"] | order(date desc) {
     _id,

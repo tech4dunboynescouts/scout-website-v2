@@ -8,33 +8,46 @@ import { Menu, X, ChevronDown, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchModal from "@/components/SearchModal";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/news", label: "News & Events" },
+export type NavChild = { label: string; href: string };
+export type NavItem =
+  | { _type: "navLink"; label: string; href: string; children?: never }
+  | { _type: "navGroup"; label: string; href?: never; children: NavChild[] };
+
+// Static fallback used when no Sanity navigation document exists yet
+const staticNavItems: NavItem[] = [
+  { _type: "navLink", label: "Home", href: "/" },
+  { _type: "navLink", label: "News & Events", href: "/news" },
   {
+    _type: "navGroup",
     label: "Sections",
     children: [
-      { href: "/sections/beavers", label: "Beavers" },
-      { href: "/sections/cubs", label: "Cubs" },
-      { href: "/sections/scouts", label: "Scouts" },
-      { href: "/sections/ventures", label: "Ventures" },
+      { label: "Beavers", href: "/sections/beavers" },
+      { label: "Cubs", href: "/sections/cubs" },
+      { label: "Scouts", href: "/sections/scouts" },
+      { label: "Ventures", href: "/sections/ventures" },
     ],
   },
   {
+    _type: "navGroup",
     label: "About",
     children: [
-      { href: "/about", label: "About the Group" },
-      { href: "/leaders", label: "Leader Team 2025/26" },
-      { href: "/fundraising", label: "Fundraising" },
-      { href: "/contact", label: "Contact Us" },
+      { label: "About the Group", href: "/about" },
+      { label: "Leader Team 2025/26", href: "/leaders" },
+      { label: "Fundraising", href: "/fundraising" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
 ];
 
-export default function Navbar() {
+interface Props {
+  navItems?: NavItem[];
+}
+
+export default function Navbar({ navItems }: Props) {
+  const items = navItems && navItems.length > 0 ? navItems : staticNavItems;
+
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [sectionsOpen, setSectionsOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -46,18 +59,18 @@ export default function Navbar() {
 
   useEffect(() => {
     setMobileOpen(false);
-    setSectionsOpen(false);
-    setAboutOpen(false);
+    setOpenGroup(null);
   }, [pathname]);
 
+  const toggleGroup = (label: string) =>
+    setOpenGroup((g) => (g === label ? null : label));
+
   const isActive = (href: string) => pathname === href;
-  const isGroupActive = (children: { href: string }[]) =>
+  const isGroupActive = (children: NavChild[]) =>
     children.some((c) => {
-      if (pathname === c.href) return true
-      // Avoid matching portal routes (/leaders/login, /leaders/dashboard, etc.)
-      // against the public /leaders page in the About dropdown
-      if (c.href === "/leaders") return false
-      return pathname.startsWith(c.href + "/")
+      if (pathname === c.href) return true;
+      if (c.href === "/leaders") return false;
+      return pathname.startsWith(c.href + "/");
     });
 
   return (
@@ -68,6 +81,7 @@ export default function Navbar() {
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
+
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white/20 group-hover:ring-orange-main transition-all">
@@ -92,33 +106,26 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) =>
-              link.children ? (
-                <div key={link.label} className="relative">
-                  {(() => {
-                    const isSections = link.label === "Sections";
-                    const isOpen = isSections ? sectionsOpen : aboutOpen;
-                    const toggle = isSections
-                      ? () => setSectionsOpen((v) => !v)
-                      : () => setAboutOpen((v) => !v);
-                    const active = isGroupActive(link.children);
-                    return (
-                      <>
+            {items.map((item) =>
+              item._type === "navGroup" ? (
+                <div key={item.label} className="relative">
                   <button
-                    onClick={toggle}
+                    onClick={() => toggleGroup(item.label)}
+                    aria-expanded={openGroup === item.label}
                     className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
-                      active ? "text-orange-main" : "text-white/80 hover:text-white"
+                      isGroupActive(item.children ?? [])
+                        ? "text-orange-main"
+                        : "text-white/80 hover:text-white"
                     }`}
-                    aria-expanded={isOpen}
                   >
-                    {link.label}
+                    {item.label}
                     <ChevronDown
                       size={14}
-                      className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+                      className={`transition-transform ${openGroup === item.label ? "rotate-180" : ""}`}
                     />
                   </button>
                   <AnimatePresence>
-                    {isOpen && (
+                    {openGroup === item.label && (
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -126,7 +133,7 @@ export default function Navbar() {
                         transition={{ duration: 0.15 }}
                         className="absolute top-full left-0 mt-1 w-48 bg-navy-dark border border-white/10 rounded-lg shadow-xl overflow-hidden"
                       >
-                        {link.children.map((child) => (
+                        {(item.children ?? []).map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
@@ -142,24 +149,23 @@ export default function Navbar() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                      </>
-                    );
-                  })()}
                 </div>
               ) : (
                 <Link
-                  key={link.href}
-                  href={link.href!}
+                  key={item.href}
+                  href={item.href!}
                   className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
-                    isActive(link.href!)
+                    isActive(item.href!)
                       ? "text-orange-main"
                       : "text-white/80 hover:text-white"
                   }`}
                 >
-                  {link.label}
+                  {item.label}
                 </Link>
               )
             )}
+
+            {/* Fixed items — not editable via Studio */}
             <Link
               href="/leaders/login"
               className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
@@ -201,13 +207,13 @@ export default function Navbar() {
             className="lg:hidden bg-navy-dark border-t border-white/10 overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
           >
             <div className="px-4 py-4 space-y-1">
-              {navLinks.map((link) =>
-                link.children ? (
-                  <div key={link.label}>
+              {items.map((item) =>
+                item._type === "navGroup" ? (
+                  <div key={item.label}>
                     <div className="px-3 py-2 text-white/50 text-xs font-body uppercase tracking-wider">
-                      {link.label}
+                      {item.label}
                     </div>
-                    {link.children.map((child) => (
+                    {(item.children ?? []).map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}
@@ -223,18 +229,20 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <Link
-                    key={link.href}
-                    href={link.href!}
+                    key={item.href}
+                    href={item.href!}
                     className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
-                      isActive(link.href!)
+                      isActive(item.href!)
                         ? "bg-orange-main/20 text-orange-main"
                         : "text-white/80 hover:bg-navy-mid hover:text-white"
                     }`}
                   >
-                    {link.label}
+                    {item.label}
                   </Link>
                 )
               )}
+
+              {/* Fixed mobile items */}
               <div className="pt-3 flex flex-col gap-2">
                 <Link
                   href="/leaders/login"
