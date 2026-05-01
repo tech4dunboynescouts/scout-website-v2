@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
+import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
 import { siteUrl } from "@/lib/siteConfig";
@@ -75,18 +76,7 @@ function getEmbedUrl(url: string): string | null {
 const portableTextComponents: PortableTextComponents = {
   types: {
     bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
-      <figure className="my-8">
-        <img
-          src={value.url}
-          alt={value.alt ?? ""}
-          className="w-full rounded-xl object-cover"
-        />
-        {value.caption && (
-          <figcaption className="mt-2 text-center text-sm text-textMuted italic">
-            {value.caption}
-          </figcaption>
-        )}
-      </figure>
+      <BodyImage url={value.url} alt={value.alt} caption={value.caption} />
     ),
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
