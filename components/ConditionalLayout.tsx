@@ -15,7 +15,17 @@ export default function ConditionalLayout({ children, navItems }: Props) {
   const isStudio = pathname?.startsWith("/studio")
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" })
+    // Scroll to top on navigation — multiple methods for cross-browser/iOS Safari compatibility
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+    // Deferred attempt covers cases where iOS Safari resets scroll after React's render
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }, 0)
+    return () => clearTimeout(timer)
   }, [pathname])
 
   if (isStudio) return <>{children}</>
