@@ -23,13 +23,41 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const lastTapRef = useRef<number>(0);
+  const lockedScrollY = useRef(0);
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Lock body scroll while lightbox is open
+  // Lock body scroll while lightbox is open (including iOS Safari)
   useEffect(() => {
-    document.body.style.overflow = lightboxOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!lightboxOpen) return;
+
+    lockedScrollY.current = window.scrollY;
+    const body = document.body;
+    const previous = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+    };
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${lockedScrollY.current}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
+    return () => {
+      body.style.overflow = previous.overflow;
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      window.scrollTo(0, lockedScrollY.current);
+    };
   }, [lightboxOpen]);
 
   // Keyboard navigation and ESC when lightbox is open

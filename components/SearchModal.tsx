@@ -3,13 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Search, X, FileText, Newspaper, DollarSign, Users, ArrowRight } from "lucide-react";
+import { Search, X, FileText, Newspaper, Euro, Users, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client } from "@/sanity/lib/client";
 import { searchNewsQuery, searchFundraisingQuery, searchGeneralPagesQuery, searchLeaderTeamQuery } from "@/sanity/lib/queries";
 import sectionsData from "@/data/sections.json";
 
 interface Result {
+  id: string;
   title: string;
   href: string;
   description: string;
@@ -18,14 +19,15 @@ interface Result {
 }
 
 const STATIC: Result[] = [
-  { title: "Home", href: "/", description: "Welcome to 1st Meath Dunboyne Scout Group", type: "page" },
-  { title: "About the Group", href: "/about", description: "Our history since 1973 and our commitment to Dunboyne", type: "page" },
-  { title: "Leader Team", href: "/leaders", description: "Meet our volunteer leaders for the 2025/26 scouting year", type: "page" },
-  { title: "News & Events", href: "/news", description: "Latest news, events and achievements from the group", type: "page" },
-  { title: "Join the Group", href: "/join", description: "Join as a youth member or volunteer as an adult leader", type: "page" },
-  { title: "Contact Us", href: "/contact", description: "Get in touch with 1st Meath Dunboyne Scout Group", type: "page" },
-  { title: "Fundraising", href: "/fundraising", description: "Support the group through our fundraising activities", type: "page" },
+  { id: "page:/", title: "Home", href: "/", description: "Welcome to 1st Meath Dunboyne Scout Group", type: "page" },
+  { id: "page:/about", title: "About the Group", href: "/about", description: "Our history since 1973 and our commitment to Dunboyne", type: "page" },
+  { id: "page:/leaders", title: "Leader Team", href: "/leaders", description: "Meet our volunteer leaders for the 2025/26 scouting year", type: "page" },
+  { id: "page:/news", title: "News & Events", href: "/news", description: "Latest news, events and achievements from the group", type: "page" },
+  { id: "page:/join", title: "Join the Group", href: "/join", description: "Join as a youth member or volunteer as an adult leader", type: "page" },
+  { id: "page:/contact", title: "Contact Us", href: "/contact", description: "Get in touch with 1st Meath Dunboyne Scout Group", type: "page" },
+  { id: "page:/fundraising", title: "Fundraising", href: "/fundraising", description: "Support the group through our fundraising activities", type: "page" },
   ...sectionsData.map((s) => ({
+    id: `section:${s.slug}`,
     title: s.name,
     href: `/sections/${s.slug}`,
     description: s.tagline,
@@ -49,6 +51,7 @@ export default function SearchModal() {
   const [fetched, setFetched] = useState(false);
   const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lockedScrollY = useRef(0);
 
   useEffect(() => setMounted(true), []);
 
@@ -62,6 +65,7 @@ export default function SearchModal() {
       ])
         .then(([news, fundraising, pages, leaders]) => {
           const newsResults: Result[] = (news as { slug: string; title: string; excerpt: string; bodyText: string }[]).map((a) => ({
+            id: `article:${a.slug}`,
             title: a.title,
             href: `/news/${a.slug}`,
             description: a.excerpt ?? "",
@@ -69,6 +73,7 @@ export default function SearchModal() {
             type: "article" as const,
           }));
           const fundraisingResults: Result[] = (fundraising as { slug: string; title: string; excerpt: string; bodyText: string }[]).map((a) => ({
+            id: `fundraising:${a.slug}`,
             title: a.title,
             href: `/fundraising/${a.slug}`,
             description: a.excerpt ?? "",
@@ -76,13 +81,15 @@ export default function SearchModal() {
             type: "fundraising" as const,
           }));
           const pageResults: Result[] = (pages as { slug: string; title: string; description: string; bodyText: string }[]).map((a) => ({
+            id: `generalPage:${a.slug}`,
             title: a.title,
             href: `/pages/${a.slug}`,
             description: a.description ?? "",
             bodyText: a.bodyText ?? "",
             type: "generalPage" as const,
           }));
-          const leaderResults: Result[] = (leaders as { name: string; role: string; group: string }[] ?? []).map((l) => ({
+          const leaderResults: Result[] = (leaders as { name: string; role: string; group: string }[] ?? []).map((l, i) => ({
+            id: `leader:${l.name}:${l.group}:${l.role}:${i}`,
             title: l.name,
             href: "/leaders",
             description: [l.role, l.group].filter(Boolean).join(", "),
@@ -99,6 +106,39 @@ export default function SearchModal() {
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 50);
     else setQuery("");
+  }, [open]);
+
+  // Prevent background page scroll while modal is open (especially on iOS Safari)
+  useEffect(() => {
+    if (!open) return;
+
+    lockedScrollY.current = window.scrollY;
+    const body = document.body;
+    const previous = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+    };
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${lockedScrollY.current}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
+    return () => {
+      body.style.overflow = previous.overflow;
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      window.scrollTo(0, lockedScrollY.current);
+    };
   }, [open]);
 
   useEffect(() => {
@@ -247,7 +287,7 @@ function ResultGroup({
       </div>
       {results.map((r) => (
         <Link
-          key={r.href}
+          key={r.id}
           href={r.href}
           onClick={onSelect}
           className="flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors group"
@@ -256,7 +296,7 @@ function ResultGroup({
             {r.type === "article" ? (
               <Newspaper size={14} className="text-orange-main" />
             ) : r.type === "fundraising" ? (
-              <DollarSign size={14} className="text-orange-main" />
+              <Euro size={14} className="text-orange-main" />
             ) : r.type === "leader" ? (
               <Users size={14} className="text-orange-main" />
             ) : (

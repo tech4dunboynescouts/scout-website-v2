@@ -15,7 +15,7 @@ export default function ConditionalLayout({ children, navItems }: Props) {
   const isStudio = pathname?.startsWith("/studio")
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" })
+    window.scrollTo({ top: 0, behavior: "auto" })
   }, [pathname])
 
   if (isStudio) return <>{children}</>

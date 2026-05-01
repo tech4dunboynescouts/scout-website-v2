@@ -15,13 +15,41 @@ export default function BodyImage({ url, alt, caption }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const lastTapRef = useRef<number>(0);
+  const lockedScrollY = useRef(0);
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Lock body scroll while lightbox is open
+  // Lock body scroll while lightbox is open (including iOS Safari)
   useEffect(() => {
-    document.body.style.overflow = lightboxOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!lightboxOpen) return;
+
+    lockedScrollY.current = window.scrollY;
+    const body = document.body;
+    const previous = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+    };
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${lockedScrollY.current}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
+    return () => {
+      body.style.overflow = previous.overflow;
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      window.scrollTo(0, lockedScrollY.current);
+    };
   }, [lightboxOpen]);
 
   // ESC to close
@@ -62,7 +90,7 @@ export default function BodyImage({ url, alt, caption }: Props) {
           <button
             onClick={(e) => { e.stopPropagation(); openLightbox(); }}
             aria-label="View fullscreen"
-            className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white transition-colors z-10 opacity-0 group-hover:opacity-100 focus:opacity-100"
+            className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white transition-colors z-10"
           >
             <Maximize2 size={16} />
           </button>
