@@ -71,6 +71,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={roboto.variable}>
       <body className="bg-background font-body antialiased">
+        {/* Disable browser scroll restoration synchronously before any replay can occur.
+            This must run before React hydration to reliably fix Android Chrome. */}
+        <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual'}" }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

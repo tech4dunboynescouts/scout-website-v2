@@ -14,19 +14,8 @@ export default function ConditionalLayout({ children, navItems }: Props) {
   const pathname = usePathname()
   const isStudio = pathname?.startsWith("/studio")
 
-  // Disable the browser's built-in scroll restoration once on mount.
-  // Without this, Android Chrome (and some desktop browsers) replay the saved
-  // scroll position AFTER our manual scroll, undoing the fix.
-  useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual"
-    }
-  }, [])
-
   useEffect(() => {
     const scrollToTop = () => {
-      // Cover all scroll targets: window, documentElement (Chrome/Firefox),
-      // and body (older WebKit / iOS Safari)
       window.scrollTo(0, 0)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
@@ -35,12 +24,18 @@ export default function ConditionalLayout({ children, navItems }: Props) {
     // Immediate attempt
     scrollToTop()
 
-    // requestAnimationFrame fires after the browser has painted the new page,
-    // which is the point where Android Chrome would otherwise restore the old
-    // scroll position — this reliably beats it.
-    const raf = requestAnimationFrame(scrollToTop)
+    // Double requestAnimationFrame: the first rAF fires after React's commit,
+    // the second fires after the browser has fully settled layout and any
+    // scroll restoration — this is the point we reliably win on Android Chrome.
+    let raf2: number
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(scrollToTop)
+    })
 
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+    }
   }, [pathname])
 
   if (isStudio) return <>{children}</>
