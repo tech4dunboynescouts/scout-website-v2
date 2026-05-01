@@ -172,10 +172,10 @@ export default async function HomePage() {
               </span>
             </div>
             <h2 className="font-display font-bold text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-6">
-              A highly active Water Section
+              Building Skills on the Water
             </h2>
             <p className="font-body text-white/70 text-base leading-relaxed mb-8">
-              For over two decades, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel, qualifications that open doors to adventure across Ireland and beyond.
+              For more than two decades, our Water Section has been a key part of our group, covering all sections, as well as adult leaders. With a focus on building skills in kayaking, canoeing, and water safety. Above all, it’s about enjoying time on the water, building confidence, working together, and creating memorable adventures along the way.
             </p>
             <Link
               href="/join"
