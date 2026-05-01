@@ -150,7 +150,7 @@ export default async function LeadersPage() {
     <>
       <PageHero
         title="Leader Team"
-        subtitle="Every leader is a volunteer — giving their time, energy, and expertise so young people in Dunboyne can have the scouting experience they deserve."
+        subtitle="Every leader is a volunteer, giving their time, energy, and expertise so young people in Dunboyne can have the scouting experience they deserve."
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "About", href: "/about" },
@@ -200,10 +200,10 @@ export default async function LeadersPage() {
           <div>
             <div className="mb-8">
               <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-2 block">
-                Section Leaders
+                Sections
               </span>
               <h2 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl">
-                Section Teams
+                Leader Teams
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -257,7 +257,7 @@ export default async function LeadersPage() {
             Want to join our team?
           </h2>
           <p className="font-body text-white/60 text-base max-w-xl mx-auto mb-6">
-            No experience needed — we provide full training. If you&apos;d like to make a difference in young people&apos;s lives, we&apos;d love to hear from you.
+            No experience needed, we provide full training. If you&apos;d like to make a difference in young people&apos;s lives, we&apos;d love to hear from you.
           </p>
           <Link
             href="/join#volunteer"
@@ -270,3 +270,4 @@ export default async function LeadersPage() {
     </>
   );
 }
+

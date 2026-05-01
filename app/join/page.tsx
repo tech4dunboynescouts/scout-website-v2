@@ -27,7 +27,7 @@ export default function JoinPage() {
             Two ways to join
           </h2>
           <p className="font-body text-textMuted mt-3 text-base">
-            Whether you&apos;re enrolling a child or want to volunteer — we&apos;d love to have you.
+            Whether you&apos;re enrolling a child or want to volunteer, we&apos;d love to have you.
           </p>
         </div>
 
@@ -112,3 +112,4 @@ export default function JoinPage() {
     </>
   );
 }
+

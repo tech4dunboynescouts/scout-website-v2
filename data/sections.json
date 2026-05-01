@@ -12,7 +12,7 @@
     "icon": "🦫",
     "tagline": "Where every big adventure starts small",
     "description": "Beavers is the first section of Scouting Ireland, welcoming children aged 6 to 8 into the world of scouting. In a safe, fun, and inclusive environment, young Beavers explore the natural world, develop friendships, and begin building the values of respect, care, and adventure that will stay with them for life.",
-    "programme": "Our Beaver programme is built around play, story, and discovery. Each meeting brings new activities — from nature crafts and simple cooking to songs, games, and community service projects. Beavers earn badges as they grow in confidence and capability.",
+    "programme": "Our Beaver programme is built around play, story, and discovery. Each meeting brings new activities, from nature crafts and simple cooking to songs, games, and community service projects. Beavers earn badges as they grow in confidence and capability.",
     "activities": [
       "Nature walks and outdoor exploration",
       "Arts, crafts and simple construction projects",
@@ -94,10 +94,10 @@
     "icon": "🏔️",
     "tagline": "Your adventure, your way",
     "description": "Venture Scouts, aged 15 to 18, have the freedom and responsibility to shape their own scouting experience. This section is young-person led, with Ventures deciding their own programme, planning their own expeditions, and taking on significant leadership and community roles.",
-    "programme": "Venture Scouts work towards the Gaisce — the President's Award — as well as the Chief Scout's Award if not already achieved. The programme is self-directed and covers adventure, community action, personal development, and international opportunities.",
+    "programme": "Venture Scouts work towards the Gaisce, the President's Award, as well as the Chief Scout's Award if not already achieved. The programme is self-directed and covers adventure, community action, personal development, and international opportunities.",
     "activities": [
       "Self-planned expeditions and overseas trips",
-      "Gaisce — President's Award participation",
+      "Gaisce, President's Award participation",
       "Mountaineering, caving and extreme outdoor pursuits",
       "Advanced water sports and sailing",
       "Volunteering and community action projects",
@@ -110,3 +110,4 @@
     "image": "/images/photo-1464822759023-fed622ff2c3b.jpg"
   }
 ]
+

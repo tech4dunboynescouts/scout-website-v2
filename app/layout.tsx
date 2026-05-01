@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | 1st Meath Dunboyne Scouts",
   },
   description:
-    "1st Meath Dunboyne Scout Group — a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Founded 1973.",
+    "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Founded 1973.",
   keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "scouting ireland", "youth group"],
   alternates: { canonical: "/" },
   openGraph: {
@@ -80,3 +80,4 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     </html>
   );
 }
+

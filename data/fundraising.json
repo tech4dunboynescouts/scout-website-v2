@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "title": "Dublin City Marathon — Water Station Volunteers",
-    "description": "Each year our group mobilises volunteers — parents, Scouts, Senior Cubs and Leaders — to operate a water station at the Dublin City Marathon. In 2025, 66 volunteers manned the 22-mile station on Fosters Avenue from 7am through to the final walkers. A brilliant community effort representing the very best of 1st Meath Dunboyne.",
+    "title": "Dublin City Marathon, Water Station Volunteers",
+    "description": "Each year our group mobilises volunteers, parents, Scouts, Senior Cubs and Leaders, to operate a water station at the Dublin City Marathon. In 2025, 66 volunteers manned the 22-mile station on Fosters Avenue from 7am through to the final walkers. A brilliant community effort representing the very best of 1st Meath Dunboyne.",
     "status": "Completed",
     "target": 0,
     "raised": 0,
@@ -14,7 +14,7 @@
   {
     "id": 2,
     "title": "Ventures Table Quiz 2025",
-    "description": "Our Ventures section ran a fundraising table quiz in May 2025. A fantastic night of questions, fun and community spirit that helped fund the Ventures programme for the year ahead — including their trip to Kandersteg International Scout Camp in Switzerland.",
+    "description": "Our Ventures section ran a fundraising table quiz in May 2025. A fantastic night of questions, fun and community spirit that helped fund the Ventures programme for the year ahead, including their trip to Kandersteg International Scout Camp in Switzerland.",
     "status": "Completed",
     "target": 0,
     "raised": 0,
@@ -36,3 +36,4 @@
     "image": "/images/photo-1529156069898-49953e39b3ac.jpg"
   }
 ]
+

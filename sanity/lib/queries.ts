@@ -107,6 +107,26 @@ export const searchGeneralPagesQuery = groq`
   }
 `
 
+export const searchLeaderTeamQuery = groq`
+  *[_type == "leaderTeam"][0] {
+    "entries": [
+      ...councilMembers[]{
+        "name": name,
+        "role": role,
+        "group": "Group Council"
+      },
+      ...sectionGroups[]{
+        "groupName": name,
+        "members": members[]{
+          "name": name,
+          "role": role,
+          "group": ^.name
+        }
+      }.members[]
+    ]
+  }.entries
+`
+
 // ── Fundraising ────────────────────────────────────────────────────────────────
 
 export const allFundraisingCampaignsQuery = groq`

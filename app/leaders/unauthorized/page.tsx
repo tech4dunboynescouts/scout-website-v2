@@ -4,7 +4,7 @@ import { handleSignOut } from "@/app/leaders/actions"
 import { ShieldX } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Access Denied — Leaders Portal",
+  title: "Access Denied, Leaders Portal",
   robots: { index: false, follow: false },
 }
 
@@ -47,3 +47,4 @@ export default function UnauthorizedPage() {
     </div>
   )
 }
+

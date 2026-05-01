@@ -3,17 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Search, X, FileText, Newspaper, DollarSign, ArrowRight } from "lucide-react";
+import { Search, X, FileText, Newspaper, DollarSign, Users, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client } from "@/sanity/lib/client";
-import { searchNewsQuery, searchFundraisingQuery, searchGeneralPagesQuery } from "@/sanity/lib/queries";
+import { searchNewsQuery, searchFundraisingQuery, searchGeneralPagesQuery, searchLeaderTeamQuery } from "@/sanity/lib/queries";
 import sectionsData from "@/data/sections.json";
 
 interface Result {
   title: string;
   href: string;
   description: string;
-  type: "page" | "section" | "article" | "fundraising" | "generalPage";
+  type: "page" | "section" | "article" | "fundraising" | "generalPage" | "leader";
   bodyText?: string;
 }
 
@@ -58,8 +58,9 @@ export default function SearchModal() {
         client.fetch(searchNewsQuery),
         client.fetch(searchFundraisingQuery),
         client.fetch(searchGeneralPagesQuery),
+        client.fetch(searchLeaderTeamQuery),
       ])
-        .then(([news, fundraising, pages]) => {
+        .then(([news, fundraising, pages, leaders]) => {
           const newsResults: Result[] = (news as { slug: string; title: string; excerpt: string; bodyText: string }[]).map((a) => ({
             title: a.title,
             href: `/news/${a.slug}`,
@@ -81,7 +82,14 @@ export default function SearchModal() {
             bodyText: a.bodyText ?? "",
             type: "generalPage" as const,
           }));
-          setDynamicResults([...newsResults, ...fundraisingResults, ...pageResults]);
+          const leaderResults: Result[] = (leaders as { name: string; role: string; group: string }[] ?? []).map((l) => ({
+            title: l.name,
+            href: "/leaders",
+            description: [l.role, l.group].filter(Boolean).join(", "),
+            bodyText: [l.name, l.role, l.group].filter(Boolean).join(" "),
+            type: "leader" as const,
+          }));
+          setDynamicResults([...newsResults, ...fundraisingResults, ...pageResults, ...leaderResults]);
           setFetched(true);
         })
         .catch(() => setFetched(true));
@@ -115,6 +123,7 @@ export default function SearchModal() {
   const pages = results.filter((r) => r.type === "page" || r.type === "section" || r.type === "generalPage");
   const news = results.filter((r) => r.type === "article");
   const fundraising = results.filter((r) => r.type === "fundraising");
+  const leaders = results.filter((r) => r.type === "leader");
   const close = () => setOpen(false);
 
   return (
@@ -202,6 +211,9 @@ export default function SearchModal() {
                         {fundraising.length > 0 && (
                           <ResultGroup label="Fundraising" results={fundraising} onSelect={close} />
                         )}
+                        {leaders.length > 0 && (
+                          <ResultGroup label="Leaders" results={leaders} onSelect={close} />
+                        )}
                       </div>
                     )}
                   </div>
@@ -245,6 +257,8 @@ function ResultGroup({
               <Newspaper size={14} className="text-orange-main" />
             ) : r.type === "fundraising" ? (
               <DollarSign size={14} className="text-orange-main" />
+            ) : r.type === "leader" ? (
+              <Users size={14} className="text-orange-main" />
             ) : (
               <FileText size={14} className="text-navy-dark/40 group-hover:text-orange-main transition-colors" />
             )}

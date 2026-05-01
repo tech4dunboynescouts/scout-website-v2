@@ -7,7 +7,7 @@ import { allNewsQuery } from "@/sanity/lib/queries";
 export const metadata: Metadata = {
   title: "News & Events",
   description:
-    "The latest from 1st Meath Dunboyne — adventures, achievements, and upcoming activities.",
+    "The latest from 1st Meath Dunboyne, adventures, achievements, and upcoming activities.",
 };
 
 export const revalidate = 60;
@@ -27,7 +27,7 @@ export default async function NewsPage() {
     <>
       <PageHero
         title="News & Events"
-        subtitle="The latest from 1st Meath Dunboyne — adventures, achievements, and upcoming activities."
+        subtitle="The latest from 1st Meath Dunboyne, adventures, achievements, and upcoming activities."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "News & Events" }]}
       />
 
@@ -37,3 +37,4 @@ export default async function NewsPage() {
     </>
   );
 }
+

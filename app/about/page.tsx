@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about 1st Meath Dunboyne Scout Group — our history since 1973, our leaders, and our commitment to the Dunboyne community.",
+    "Learn about 1st Meath Dunboyne Scout Group, our history since 1973, our leaders, and our commitment to the Dunboyne community.",
 };
 
 export default function AboutPage() {
@@ -15,7 +15,7 @@ export default function AboutPage() {
     <>
       <PageHero
         title="About the Group"
-        subtitle="Founded in 1973 and highly active to this day — two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section that serves the whole group."
+        subtitle="Founded in 1973 and highly active to this day, two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section that serves the whole group."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
         bgImage="/images/photo-1529156069898-49953e39b3ac.jpg"
       />
@@ -30,7 +30,7 @@ export default function AboutPage() {
             Five decades of scouting
           </h2>
           <p className="font-body text-textMuted mt-4 text-base max-w-2xl mx-auto">
-            From a single Scout Troop meeting in a community hall to one of Meath&apos;s most active and well-respected scout groups — here&apos;s our story.
+            From a single Scout Troop meeting in a community hall to one of Meath&apos;s most active and well-respected scout groups, here&apos;s our story.
           </p>
         </div>
         <Timeline />
@@ -46,7 +46,7 @@ export default function AboutPage() {
             &ldquo;The Aim of Scouting Ireland is to encourage the physical, intellectual, character, emotional, social and spiritual development of young people so they may achieve their full potential and, as responsible citizens, to improve society.&rdquo;
           </blockquote>
           <p className="font-body text-white/60 text-base leading-relaxed max-w-2xl mx-auto">
-            We are proud members of Scouting Ireland, part of the World Organisation of the Scout Movement (WOSM) — the world&apos;s largest youth organisation with over 57 million members in 170 countries.
+            We are proud members of Scouting Ireland, part of the World Organisation of the Scout Movement (WOSM), the world&apos;s largest youth organisation with over 57 million members in 170 countries.
           </p>
         </div>
       </section>
@@ -95,7 +95,7 @@ export default function AboutPage() {
                 Meet the Leader Team
               </h2>
               <p className="font-body text-white/60 text-base max-w-xl">
-                Over 40 volunteers across nine section groups — dedicated to delivering the best of scouting to young people in Dunboyne.
+                Over 40 volunteers across nine section groups, dedicated to delivering the best of scouting to young people in Dunboyne.
               </p>
             </div>
             <Link
@@ -146,3 +146,4 @@ export default function AboutPage() {
     </>
   );
 }
+

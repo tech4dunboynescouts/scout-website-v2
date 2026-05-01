@@ -26,7 +26,7 @@ const resources = [
   {
     icon: <Heart size={24} />,
     title: "Wellness Assist Programme",
-    desc: "Scouting Ireland's support programme for adult volunteers — confidential counselling, financial advice, and more.",
+    desc: "Scouting Ireland's support programme for adult volunteers, confidential counselling, financial advice, and more.",
     link: "https://www.scouts.ie/scouters/wellness/",
     linkLabel: "Learn More",
   },
@@ -115,3 +115,4 @@ export default function ResourcesPage() {
     </>
   );
 }
+

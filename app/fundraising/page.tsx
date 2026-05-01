@@ -55,7 +55,7 @@ export default async function FundraisingPage() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {campaigns.length === 0 ? (
           <p className="text-center font-body text-textMuted py-16">
-            No campaigns at the moment — check back soon.
+            No campaigns at the moment, check back soon.
           </p>
         ) : (
           <div className="space-y-8">
@@ -165,3 +165,4 @@ export default async function FundraisingPage() {
     </>
   );
 }
+

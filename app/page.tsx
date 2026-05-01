@@ -19,7 +19,7 @@ const pillars = [
   {
     icon: Mountain,
     title: "Outdoors",
-    desc: "From camping in the Wicklow Mountains to kayaking on the Royal Canal — we live for the great outdoors.",
+    desc: "From camping in the Wicklow Mountains to kayaking on the Royal Canal, we live for the great outdoors.",
   },
   {
     icon: Users,
@@ -103,7 +103,7 @@ export default async function HomePage() {
                 Over 50 years of scouting in Dunboyne
               </h2>
               <p className="font-body text-white/70 text-base leading-relaxed mb-6">
-                1st Meath Dunboyne Scout Group was founded in 1973 and remains a highly active group to this day. We comprise two Beaver colonies, three Cub packs, two Scout troops and a Venture unit — plus a very active Water Section that serves the entire group.
+                1st Meath Dunboyne Scout Group was founded in 1973 and remains a highly active group to this day. We comprise two Beaver colonies, three Cub packs, two Scout troops and a Venture unit, plus a very active Water Section that serves the entire group.
               </p>
               <p className="font-body text-white/70 text-base leading-relaxed mb-8">
                 We are part of Scouting Ireland, and our programme aims to encourage the physical, intellectual, character, emotional, social and spiritual development of young people so they may achieve their full potential.
@@ -175,7 +175,7 @@ export default async function HomePage() {
               A highly active Water Section
             </h2>
             <p className="font-body text-white/70 text-base leading-relaxed mb-8">
-              For over two decades, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel — qualifications that open doors to adventure across Ireland and beyond.
+              For over two decades, our Water Section has been a defining feature of the group. Scouts, Ventures, and adult leaders develop kayaking, canoeing, and water safety skills at the Royal Canal and Lough Owel, qualifications that open doors to adventure across Ireland and beyond.
             </p>
             <Link
               href="/join"
@@ -230,7 +230,7 @@ export default async function HomePage() {
               Ready to get involved?
             </h2>
             <p className="font-body text-white/60 text-base max-w-xl mx-auto">
-              Whether you want to enrol your child or volunteer as a leader — there&apos;s a place for you at 1st Meath Dunboyne.
+              Whether you want to enrol your child or volunteer as a leader, there&apos;s a place for you at 1st Meath Dunboyne.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -270,3 +270,4 @@ export default async function HomePage() {
     </>
   );
 }
+

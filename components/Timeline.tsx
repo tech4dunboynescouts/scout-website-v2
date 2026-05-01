@@ -22,7 +22,7 @@ const timelineData: TimelineItem[] = [
   {
     year: "1985",
     title: "New Scout Den Opens",
-    description: "After years of fundraising, the group opened its dedicated Scout Den on Rooske Road — a permanent home that remains the heart of the group to this day.",
+    description: "After years of fundraising, the group opened its dedicated Scout Den on Rooske Road, a permanent home that remains the heart of the group to this day.",
   },
   {
     year: "1992",
@@ -103,3 +103,4 @@ export default function Timeline() {
     </div>
   );
 }
+
