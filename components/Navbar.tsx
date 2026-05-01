@@ -233,7 +233,7 @@ export default function Navbar({ navItems }: Props) {
                     href={item.href!}
                     className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
                       isActive(item.href!)
-                        ? "bg-orange-main/20 text-orange-main"
+                        ? "bg-orange-main text-white"
                         : "text-white/80 hover:bg-navy-mid hover:text-white"
                     }`}
                   >
@@ -248,7 +248,7 @@ export default function Navbar({ navItems }: Props) {
                   href="/leaders/login"
                   className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
                     pathname.startsWith("/leaders/")
-                      ? "bg-orange-main/20 text-orange-main"
+                      ? "bg-orange-main text-white"
                       : "text-white/80 hover:bg-navy-mid hover:text-white"
                   }`}
                 >
