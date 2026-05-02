@@ -258,6 +258,7 @@ export const sectionPageBySlugQuery = groq`
       time,
     },
     location,
+    "badgePlacementImage": badgePlacementImage.asset->url,
   }
 `
 

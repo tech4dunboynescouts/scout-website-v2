@@ -5,6 +5,7 @@ import { CheckCircle, MapPin, Calendar, ArrowRight } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { sectionPageBySlugQuery, allSectionPageSlugsQuery } from "@/sanity/lib/queries";
 import sectionsJson from "@/data/sections.json";
+import BadgePlacementViewer from "@/components/BadgePlacementViewer";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,7 +30,16 @@ interface Section {
   gallery: { url: string; alt?: string }[];
   meetings: { day: string; time: string }[];
   location: string;
+  badgePlacementImage: string | null;
 }
+
+// Static badge placement images (public/images/badges/) keyed by slug
+const staticBadgeImages: Record<string, string> = {
+  beavers: "/images/badges/beavers-badge-placement.webp",
+  cubs: "/images/badges/cubs-badge-placement.webp",
+  scouts: "/images/badges/scouts-badge-placement.webp",
+  ventures: "/images/badges/ventures-badge-placement.webp",
+};
 
 // Map the static JSON shape to the common Section type
 function fromJson(s: (typeof sectionsJson)[number]): Section {
@@ -49,6 +59,7 @@ function fromJson(s: (typeof sectionsJson)[number]): Section {
     gallery: [],
     meetings: s.meetings,
     location: s.location,
+    badgePlacementImage: null,
   };
 }
 
@@ -87,6 +98,9 @@ export default async function SectionPage({ params }: Props) {
   const { slug } = await params;
   const section = await getSection(slug);
   if (!section) notFound();
+
+  // Badge placement image: prefer Sanity-managed, fall back to static public asset
+  const badgeImage = section.badgePlacementImage ?? staticBadgeImages[slug] ?? null;
 
   // All sections for the sidebar — merge Sanity + JSON, dedup by slug
   const sanityAll: Section[] = await client
@@ -187,6 +201,15 @@ export default async function SectionPage({ params }: Props) {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Badge Placement */}
+            {badgeImage && (
+              <BadgePlacementViewer
+                src={badgeImage}
+                sectionName={section.name}
+                colour={section.colour}
+              />
             )}
           </div>
 

@@ -154,6 +154,15 @@ export const sectionPage = defineType({
       type: 'string',
       description: 'e.g. Rooske Road Scout Den, Dunboyne',
     }),
+
+    // ── Badge Placement ─────────────────────────────────────────────────────────
+    defineField({
+      name: 'badgePlacementImage',
+      title: 'Badge Placement Diagram',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Official Scouting Ireland diagram showing where badges are placed on the uniform',
+    }),
   ],
 
   preview: {
