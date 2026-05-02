@@ -6,6 +6,7 @@ import { siteUrl } from "@/lib/siteConfig";
 import { client } from "@/sanity/lib/client";
 import { siteNavigationQuery } from "@/sanity/lib/queries";
 import type { NavItem } from "@/components/Navbar";
+import { Analytics } from "@vercel/analytics/next";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -79,6 +80,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
         <ConditionalLayout navItems={navItems}>{children}</ConditionalLayout>
+        <Analytics />
       </body>
     </html>
   );
