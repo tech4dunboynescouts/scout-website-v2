@@ -29,17 +29,25 @@ const categoryColours: Record<string, string> = {
 
 export default function LeadersDashboardSearch({ resources }: Props) {
   const [query, setQuery] = useState("")
+  const [activeCategory, setActiveCategory] = useState("All")
+
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(resources.map((r) => r.category)))],
+    [resources]
+  )
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return resources
-    return resources.filter(
-      (r) =>
+    return resources.filter((r) => {
+      const matchesCat = activeCategory === "All" || r.category === activeCategory
+      const matchesQuery =
+        !q ||
         r.title.toLowerCase().includes(q) ||
         r.category.toLowerCase().includes(q) ||
         (r.bodyText?.toLowerCase().includes(q) ?? false)
-    )
-  }, [query, resources])
+      return matchesCat && matchesQuery
+    })
+  }, [query, activeCategory, resources])
 
   const formatted = (iso: string) =>
     new Date(iso).toLocaleDateString("en-IE", {
@@ -50,6 +58,38 @@ export default function LeadersDashboardSearch({ resources }: Props) {
 
   return (
     <div>
+      {/* Category filter pills */}
+      {resources.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-5">
+          {categories.map((cat) => {
+            const count =
+              cat === "All"
+                ? resources.length
+                : resources.filter((r) => r.category === cat).length
+            const isActive = activeCategory === cat
+            const baseColour = categoryColours[cat]
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-body font-semibold transition-all ${
+                  isActive
+                    ? cat === "All"
+                      ? "bg-navy-dark text-white ring-2 ring-navy-dark/40"
+                      : `${baseColour ?? "bg-gray-200 text-gray-700"} ring-2 ring-offset-1 ring-current`
+                    : cat === "All"
+                    ? "bg-navy-dark/10 text-navy-dark hover:bg-navy-dark/20"
+                    : `${baseColour ?? "bg-gray-100 text-gray-600"} opacity-60 hover:opacity-100`
+                }`}
+              >
+                {cat} ({count})
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {/* Search bar */}
       <div className="relative mb-6">
         <Search
@@ -75,18 +115,18 @@ export default function LeadersDashboardSearch({ resources }: Props) {
       </div>
 
       {/* Result count when searching */}
-      {query && (
+      {(query || activeCategory !== "All") && (
         <p className="text-sm font-body text-textMuted mb-5">
           {filtered.length === 0
-            ? `No resources match "${query}"`
-            : `${filtered.length} result${filtered.length !== 1 ? "s" : ""} for "${query}"`}
+            ? `No resources match${query ? ` "${query}"` : ""}${activeCategory !== "All" ? ` in ${activeCategory}` : ""}`
+            : `${filtered.length} result${filtered.length !== 1 ? "s" : ""}${activeCategory !== "All" ? ` in ${activeCategory}` : ""}${query ? ` for "${query}"` : ""}`}
         </p>
       )}
 
-      {/* Empty search results */}
-      {filtered.length === 0 && query ? (
+      {/* Empty results */}
+      {filtered.length === 0 && (query || activeCategory !== "All") ? (
         <div className="text-center py-20 text-textMuted font-body text-sm">
-          Try a different search term.
+          Try a different search term or category.
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20 text-textMuted font-body text-sm">

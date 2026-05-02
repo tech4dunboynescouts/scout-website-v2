@@ -142,7 +142,7 @@ export default function RatiosCalculatorPage() {
             </p>
           </div>
           <h1 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl leading-tight">
-            Leader-to-Child Ratios Calculator
+            Leader to Youth Member Ratio Calculator
           </h1>
           <p className="font-body text-textMuted text-sm mt-3">
             Based on Scouting Ireland policy. Select your section, activity type,

@@ -7,21 +7,6 @@ import LeadersDashboardSearch from "@/components/LeadersDashboardSearch"
 import type { LeaderResource } from "@/components/LeadersDashboardSearch"
 import { Calculator, ChevronRight } from "lucide-react"
 
-export const metadata: Metadata = {
-  title: "Leaders Dashboard",
-  robots: { index: false, follow: false },
-}
-
-export const revalidate = 60
-
-const categoryColours: Record<string, string> = {
-  Announcements: "bg-orange-100 text-orange-700",
-  "Meeting Notes": "bg-blue-100 text-blue-700",
-  Documents: "bg-navy-dark/10 text-navy-dark",
-  Training: "bg-green-100 text-green-700",
-  Finance: "bg-purple-100 text-purple-700",
-}
-
 export default async function DashboardPage() {
   const session = await auth()
   const email = session?.user?.email ?? ""
@@ -37,8 +22,6 @@ export default async function DashboardPage() {
   const resources: LeaderResource[] = await serverClient
     .fetch(allLeaderResourcesQuery, { roles })
     .catch(() => [])
-
-  const categories = ["All", ...Array.from(new Set(resources.map((r) => r.category)))]
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -68,7 +51,7 @@ export default async function DashboardPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-display font-bold text-navy-dark text-sm leading-snug group-hover:text-orange-main transition-colors">
-                Leader-to-Child Ratios Calculator
+                Leader to Youth Member Ratio Calculator
               </p>
               <p className="font-body text-textMuted text-xs mt-0.5">
                 Scouting Ireland minimum Scouter requirements
@@ -79,31 +62,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Category summary pills */}
-      {resources.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((cat) => {
-            const count =
-              cat === "All"
-                ? resources.length
-                : resources.filter((r) => r.category === cat).length
-            return (
-              <span
-                key={cat}
-                className={`px-3 py-1 rounded-full text-xs font-body font-semibold ${
-                  cat === "All"
-                    ? "bg-navy-dark text-white"
-                    : (categoryColours[cat] ?? "bg-gray-100 text-gray-600")
-                }`}
-              >
-                {cat} ({count})
-              </span>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Searchable resource grid */}
+      {/* Searchable + filterable resource grid */}
       <LeadersDashboardSearch resources={resources} />
     </div>
   )
