@@ -279,6 +279,7 @@ export const allLeaderResourcesQuery = groq`
     publishedAt,
     visibleToRoles,
     "hasFile": defined(file.asset),
+    "bodyText": pt::text(body),
   }
 `
 

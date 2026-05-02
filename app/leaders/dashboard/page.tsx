@@ -3,7 +3,9 @@ import Link from "next/link"
 import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
 import { allLeaderResourcesQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
-import { FileDown, Tag, Clock, ChevronRight } from "lucide-react"
+import LeadersDashboardSearch from "@/components/LeadersDashboardSearch"
+import type { LeaderResource } from "@/components/LeadersDashboardSearch"
+import { Calculator, ChevronRight } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Leaders Dashboard",
@@ -11,16 +13,6 @@ export const metadata: Metadata = {
 }
 
 export const revalidate = 60
-
-interface Resource {
-  _id: string
-  title: string
-  slug: string
-  category: string
-  publishedAt: string
-  hasFile: boolean
-  visibleToRoles: string[] | null
-}
 
 const categoryColours: Record<string, string> = {
   Announcements: "bg-orange-100 text-orange-700",
@@ -42,7 +34,7 @@ export default async function DashboardPage() {
     .catch(() => null)
   const roles: string[] = profile?.roles ?? session?.user?.leaderRoles ?? []
 
-  const resources: Resource[] = await serverClient
+  const resources: LeaderResource[] = await serverClient
     .fetch(allLeaderResourcesQuery, { roles })
     .catch(() => [])
 
@@ -63,82 +55,56 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Resources */}
-      {resources.length === 0 ? (
-        <div className="text-center py-20 text-textMuted font-body text-sm">
-          No resources have been published yet.
+      {/* Tools */}
+      <div className="mb-10">
+        <h2 className="font-display font-bold text-navy-dark text-xl mb-4">Tools</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link
+            href="/leaders/ratios-calculator"
+            className="group flex items-center gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:border-orange-main/30 hover:shadow-md transition-all"
+          >
+            <div className="w-11 h-11 bg-orange-main/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-orange-main/20 transition-colors">
+              <Calculator size={20} className="text-orange-main" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-display font-bold text-navy-dark text-sm leading-snug group-hover:text-orange-main transition-colors">
+                Leader-to-Child Ratios Calculator
+              </p>
+              <p className="font-body text-textMuted text-xs mt-0.5">
+                Scouting Ireland minimum Scouter requirements
+              </p>
+            </div>
+            <ChevronRight size={16} className="text-textMuted group-hover:text-orange-main transition-colors flex-shrink-0" />
+          </Link>
         </div>
-      ) : (
-        <div>
-          {/* Category summary pills */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {categories.map((cat) => {
-              const count =
-                cat === "All"
-                  ? resources.length
-                  : resources.filter((r) => r.category === cat).length
-              return (
-                <span
-                  key={cat}
-                  className={`px-3 py-1 rounded-full text-xs font-body font-semibold ${
-                    cat === "All"
-                      ? "bg-navy-dark text-white"
-                      : (categoryColours[cat] ?? "bg-gray-100 text-gray-600")
-                  }`}
-                >
-                  {cat} ({count})
-                </span>
-              )
-            })}
-          </div>
+      </div>
 
-          {/* Resource grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {resources.map((resource) => {
-              const colourClass =
-                categoryColours[resource.category] ?? "bg-gray-100 text-gray-600"
-              const formatted = new Date(resource.publishedAt).toLocaleDateString("en-IE", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
-
-              return (
-                <Link
-                  key={resource._id}
-                  href={`/leaders/resources/${resource.slug}`}
-                  className="group bg-white border border-gray-100 rounded-2xl p-6 hover:border-orange-main/30 hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-body font-semibold ${colourClass}`}
-                    >
-                      <Tag size={10} /> {resource.category}
-                    </span>
-                    {resource.hasFile && (
-                      <FileDown size={15} className="text-textMuted flex-shrink-0" />
-                    )}
-                  </div>
-
-                  <h2 className="font-display font-bold text-navy-dark text-base leading-snug mb-3 group-hover:text-orange-main transition-colors">
-                    {resource.title}
-                  </h2>
-
-                  <div className="flex items-center justify-between mt-auto">
-                    <span className="flex items-center gap-1.5 text-textMuted text-xs font-body">
-                      <Clock size={11} /> {formatted}
-                    </span>
-                    <ChevronRight
-                      size={14}
-                      className="text-textMuted group-hover:text-orange-main transition-colors"
-                    />
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
+      {/* Category summary pills */}
+      {resources.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          {categories.map((cat) => {
+            const count =
+              cat === "All"
+                ? resources.length
+                : resources.filter((r) => r.category === cat).length
+            return (
+              <span
+                key={cat}
+                className={`px-3 py-1 rounded-full text-xs font-body font-semibold ${
+                  cat === "All"
+                    ? "bg-navy-dark text-white"
+                    : (categoryColours[cat] ?? "bg-gray-100 text-gray-600")
+                }`}
+              >
+                {cat} ({count})
+              </span>
+            )
+          })}
         </div>
       )}
+
+      {/* Searchable resource grid */}
+      <LeadersDashboardSearch resources={resources} />
     </div>
   )
 }
