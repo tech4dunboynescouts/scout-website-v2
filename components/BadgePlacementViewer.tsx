@@ -93,57 +93,63 @@ export default function BadgePlacementViewer({ src, sectionName, colour }: Props
     <>
       {lightbox}
 
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-bold text-navy-dark text-3xl">Badge Placement Guide</h2>
-          <button
+      <div className="min-w-0">
+        <h2 className="font-display font-bold text-navy-dark text-3xl mb-5">Badge Placement Guide</h2>
+
+        {/* Side-by-side on desktop, stacked on mobile */}
+        <div className="flex flex-col sm:flex-row gap-6 items-start">
+
+          {/* Thumbnail — constrained width on all sizes */}
+          <div
+            className="relative w-full sm:w-48 md:w-56 flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-zoom-in group"
             onClick={() => { setOpen(true); setScale(1) }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 text-sm font-body font-semibold transition-all hover:text-white"
-            style={{ borderColor: colour, color: colour }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = colour
-              ;(e.currentTarget as HTMLButtonElement).style.color = "white"
-            }}
-            onMouseLeave={(e) => {
-              ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = ""
-              ;(e.currentTarget as HTMLButtonElement).style.color = colour
-            }}
-            aria-label="View full-size badge placement diagram"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
+            aria-label="Open badge placement diagram fullscreen"
           >
-            <Maximize2 size={15} /> View Full Diagram
-          </button>
-        </div>
-
-        <p className="font-body text-textMuted text-sm mb-5">
-          The diagram below shows where each badge should be placed on the {sectionName.toLowerCase()} uniform.
-          Tap "View Full Diagram" to zoom in for detail.
-        </p>
-
-        {/* Thumbnail — clicking also opens lightbox */}
-        <div
-          className="relative rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-zoom-in group"
-          onClick={() => { setOpen(true); setScale(1) }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
-          aria-label="Open badge placement diagram fullscreen"
-        >
-          <img
-            src={src}
-            alt={`${sectionName} badge placement diagram`}
-            className="w-full object-contain bg-white"
-          />
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white rounded-xl px-4 py-2 flex items-center gap-2 text-sm font-body font-semibold">
-              <Maximize2 size={15} /> Enlarge
+            <img
+              src={src}
+              alt={`${sectionName} badge placement diagram`}
+              className="w-full object-contain bg-white"
+            />
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white rounded-xl px-3 py-1.5 flex items-center gap-1.5 text-xs font-body font-semibold">
+                <Maximize2 size={13} /> Enlarge
+              </div>
             </div>
           </div>
-        </div>
 
-        <p className="text-xs font-body text-textMuted mt-3 text-center">
-          All graphics © Scouting Ireland
-        </p>
+          {/* Text + CTA */}
+          <div className="flex flex-col gap-4 min-w-0">
+            <p className="font-body text-textMuted text-sm leading-relaxed">
+              The diagram shows where each badge should be placed on the {sectionName.toLowerCase()} uniform.
+              Tap the image or the button below to zoom in for full detail.
+            </p>
+            <div>
+              <button
+                onClick={() => { setOpen(true); setScale(1) }}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 text-sm font-body font-semibold transition-all hover:text-white whitespace-nowrap"
+                style={{ borderColor: colour, color: colour }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = colour
+                  ;(e.currentTarget as HTMLButtonElement).style.color = "white"
+                }}
+                onMouseLeave={(e) => {
+                  ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = ""
+                  ;(e.currentTarget as HTMLButtonElement).style.color = colour
+                }}
+                aria-label="View full-size badge placement diagram"
+              >
+                <Maximize2 size={15} /> View Full Diagram
+              </button>
+            </div>
+            <p className="text-xs font-body text-textMuted">
+              All graphics © Scouting Ireland
+            </p>
+          </div>
+        </div>
       </div>
     </>
   )
