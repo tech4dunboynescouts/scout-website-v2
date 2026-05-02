@@ -11,7 +11,7 @@
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🦫",
     "tagline": "Where every big adventure starts small",
-    "description": "Beavers is the first section of Scouting Ireland, welcoming children aged 6 to 8 into the world of scouting. In a safe, fun, and inclusive environment, young Beavers explore the natural world, develop friendships, and begin building the values of respect, care, and adventure that will stay with them for life.",
+    "description": "Beavers is the first section of Scouting Ireland, welcoming children who are in 1st, 2nd and 3rd Class in primary school into the world of scouting. In a safe, fun, and inclusive environment, young Beavers explore the natural world, develop friendships, and begin building the values of respect, care, and adventure that will stay with them for life.",
     "programme": "Our Beaver programme is built around play, story, and discovery. Each meeting brings new activities, from nature crafts and simple cooking to songs, games, and community service projects. Beavers earn badges as they grow in confidence and capability.",
     "activities": [
       "Nature walks and outdoor exploration",
@@ -39,7 +39,7 @@
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🐺",
     "tagline": "Curious minds, brave hearts",
-    "description": "Cub Scouts, aged 8 to 11, are ready to take on bigger challenges and explore more of the world around them. The Cub programme builds on the curiosity and confidence of Beavers, introducing structured teamwork, outdoor skills, and more ambitious adventures.",
+    "description": "Cub Scouts, are ready to take on bigger challenges and explore more of the world around them. The Cub programme builds on the curiosity and confidence of Beavers, introducing structured teamwork, outdoor skills, and more ambitious adventures.",
     "programme": "Cubs work towards a range of badges and awards through the Cub Scout programme, covering areas like outdoor survival, creativity, community engagement, and personal development. The Pack meets weekly and goes on day trips, camps, and exciting local excursions throughout the year.",
     "activities": [
       "Camping and outdoor survival skills",
@@ -66,7 +66,7 @@
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "⚜️",
     "tagline": "Lead. Explore. Grow.",
-    "description": "Scout Troop is where scouting truly comes alive. Young people aged 11 to 15 take on more independence, leadership responsibility, and outdoor adventure than ever before. Scouts plan and lead their own activities, take on challenging expeditions, and develop the practical and personal skills that last a lifetime.",
+    "description": "Scout Troop is where scouting truly comes alive. Young people between 1st Year and 3rd Year of secondary school, take on more independence, leadership responsibility, and outdoor adventure than ever before. Scouts plan and lead their own activities, take on challenging expeditions, and develop the practical and personal skills that last a lifetime.",
     "programme": "The Scout programme is centred on the outdoors, personal challenge, and peer leadership. Scouts work towards the Chief Scout's Award, the highest youth achievement in Irish Scouting, through a combination of service, skill, adventure, and leadership projects.",
     "activities": [
       "Multi-day wilderness camping and expeditions",
@@ -93,7 +93,7 @@
     "location": "Rooske Road Scout Den, Dunboyne",
     "icon": "🏔️",
     "tagline": "Your adventure, your way",
-    "description": "Venture Scouts, aged 15 to 18, have the freedom and responsibility to shape their own scouting experience. This section is young-person led, with Ventures deciding their own programme, planning their own expeditions, and taking on significant leadership and community roles.",
+    "description": "Venture Scouts, typically in 4th, 5th and 6th year of secondary school, have the freedom and responsibility to shape their own scouting experience. This section is young-person led, with Ventures deciding their own programme, planning their own expeditions, and taking on significant leadership and community roles.",
     "programme": "Venture Scouts work towards the Gaisce, the President's Award, as well as the Chief Scout's Award if not already achieved. The programme is self-directed and covers adventure, community action, personal development, and international opportunities.",
     "activities": [
       "Self-planned expeditions and overseas trips",

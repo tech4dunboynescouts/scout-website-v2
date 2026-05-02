@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import FAQAccordion from "@/components/FAQAccordion";
 import { YouthForm, VolunteerForm } from "@/components/ApplicationForm";
-import faqs from "@/data/faqs.json";
+import staticFaqs from "@/data/faqs.json";
 import sections from "@/data/sections.json";
+import { client } from "@/sanity/lib/client";
+import { faqListQuery } from "@/sanity/lib/queries";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Join the Group",
@@ -11,12 +15,25 @@ export const metadata: Metadata = {
     "Join 1st Meath Dunboyne Scout Group. Apply for your child to join as a youth member or express interest in volunteering as an adult leader.",
 };
 
-export default function JoinPage() {
+export default async function JoinPage() {
+  const sanityData = await client.fetch(faqListQuery).catch(() => null)
+
+  // Map Sanity items to the shape FAQAccordion expects, falling back to static JSON
+  const faqs: { id: number; question: string; answer: string }[] =
+    sanityData?.items?.length
+      ? sanityData.items.map(
+          (item: { _key: string; question: string; answer: string }, i: number) => ({
+            id: i + 1,
+            question: item.question,
+            answer: item.answer,
+          })
+        )
+      : staticFaqs
   return (
     <>
       <PageHero
         title="Join the Group"
-        subtitle="Start your scouting adventure with us. We welcome young people aged 6–18, and adult volunteers of any age."
+        subtitle="Start your scouting adventure with us. We welcome young people between 1st Class and 6th Year of secondary school, and adult volunteers of any age."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Join" }]}
       />
 

@@ -4,4 +4,19 @@ import type {StructureResolver} from 'sanity/structure'
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
-    .items(S.documentTypeListItems())
+    .items([
+      // Singleton: only one FAQs document ever exists — link directly to it
+      S.listItem()
+        .title('FAQs')
+        .id('faqList')
+        .child(
+          S.document()
+            .schemaType('faqList')
+            .documentId('faqList')
+        ),
+      S.divider(),
+      // All other document types rendered as normal lists
+      ...S.documentTypeListItems().filter(
+        (item) => item.getId() !== 'faqList'
+      ),
+    ])

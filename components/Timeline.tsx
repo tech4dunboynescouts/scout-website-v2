@@ -17,7 +17,7 @@ const timelineData: TimelineItem[] = [
   {
     year: "1979",
     title: "Beaver Colony Launched",
-    description: "Recognising demand from younger children in the community, the group established its first Beaver Colony, extending scouting to children aged 6 and upwards.",
+    description: "Recognising demand from younger children in the community, the group established its first Beaver Colony, extending scouting experienced to younger children from Dunbouyne.",
   },
   {
     year: "1985",
@@ -37,7 +37,7 @@ const timelineData: TimelineItem[] = [
   {
     year: "2008",
     title: "Ventures Section Added",
-    description: "A Venture Scout Unit was established for older young people aged 15–18, completing the full range of sections and allowing young people to continue their scouting journey into late adolescence.",
+    description: "A Venture Scout Unit was established for older young people in 4th, 5th and 6th year of secondary school, completing the full range of sections and allowing young people to continue their scouting journey into late adolescence.",
   },
   {
     year: "2015",

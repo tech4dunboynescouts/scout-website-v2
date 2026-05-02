@@ -76,7 +76,7 @@ export default function AboutPage() {
                 Training takes place at the Royal Canal, Kilcock, and at Lough Owel, Westmeath, under the supervision of Canoeing Ireland-qualified instructors. Members can work towards formal paddling certifications at beginner, intermediate, and advanced levels.
               </p>
               <p className="font-body text-textMuted text-base leading-relaxed">
-                The Water Section is open to Scouts (aged 13+), Venture Scouts, and adult leaders. All equipment is provided by the group.
+                The Water Section is open to all sections and adult leaders, and all equipment is provided by the group.
               </p>
             </div>
           </div>

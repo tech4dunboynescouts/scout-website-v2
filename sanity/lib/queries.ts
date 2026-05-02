@@ -1,5 +1,17 @@
 import { groq } from 'next-sanity'
 
+// ── FAQs ───────────────────────────────────────────────────────────────────────
+
+export const faqListQuery = groq`
+  *[_type == "faqList"][0] {
+    items[] {
+      _key,
+      question,
+      answer,
+    }
+  }
+`
+
 // ── Leader Team ────────────────────────────────────────────────────────────────
 
 export const leaderTeamQuery = groq`

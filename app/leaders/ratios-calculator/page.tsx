@@ -59,10 +59,10 @@ function calculate(
 // ── Labels ────────────────────────────────────────────────────────────────────
 
 const sectionLabels: Record<Section, string> = {
-  beavers:  "Beaver Scouts",
-  cubs:     "Cub Scouts",
+  beavers:  "Beavers",
+  cubs:     "Cubs",
   scouts:   "Scouts",
-  ventures: "Venture Scouts",
+  ventures: "Ventures",
 }
 
 const activityLabels: Record<ActivityType, string> = {
