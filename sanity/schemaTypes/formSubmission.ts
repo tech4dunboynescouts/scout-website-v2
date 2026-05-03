@@ -25,6 +25,7 @@ export const formSubmission = defineType({
       title: 'Status',
       type: 'string',
       initialValue: 'new',
+      hidden: ({ document }) => document?.formType === 'youth',
       options: {
         list: [
           { title: '🆕 New', value: 'new' },

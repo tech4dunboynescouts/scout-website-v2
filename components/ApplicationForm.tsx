@@ -288,7 +288,7 @@ function VolunteerForm() {
         <CheckCircle size={52} className="text-orange-main mb-4" />
         <h3 className="font-display font-bold text-navy-dark text-xl mb-2">Application Received!</h3>
         <p className="font-body text-textMuted text-sm mb-6 max-w-sm">
-          Thank you for your interest in volunteering. Our Group Leader will be in touch within 5 working days.
+          Thank you for your interest in volunteering. We have received your application and will be in touch in due course.
         </p>
         <button
           onClick={() => { setSubmitted(false); reset(); }}

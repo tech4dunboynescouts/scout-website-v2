@@ -39,7 +39,6 @@ export async function submitYouthApplication(formData: {
   const doc = {
     _type: "formSubmission",
     formType: "youth",
-    status: "new",
     submittedAt: new Date().toISOString(),
     childName: sanitiseString(formData.childName, 200),
     dob: sanitiseString(formData.dob, 20),
