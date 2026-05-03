@@ -8,7 +8,8 @@ import { sectionPage } from './sectionPage'
 import { siteNavigation } from './siteNavigation'
 import { leaderTeam } from './leaderTeam'
 import { faqList } from './faqList'
+import { formSubmission } from './formSubmission'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam, faqList],
+  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam, faqList, formSubmission],
 }

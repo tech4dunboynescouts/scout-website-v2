@@ -109,11 +109,13 @@ export default async function SectionPage({ params }: Props) {
       Promise.all(docs.map((d) => client.fetch(sectionPageBySlugQuery, { slug: d.slug })))
     )
     .catch(() => []);
-  const sanitySlugs = new Set(sanityAll.map((s) => s.slug));
+  const sanitySlugs = new Set(sanityAll.map((s) => s?.slug).filter(Boolean));
   const allSections: Section[] = [
     ...sanityAll,
     ...sectionsJson.filter((s) => !sanitySlugs.has(s.slug)).map(fromJson),
-  ];
+  ]
+    .filter((s): s is Section => !!s?.slug)            // remove any null/undefined entries
+    .filter((s, i, arr) => arr.findIndex((x) => x.slug === s.slug) === i); // dedup by slug
 
   return (
     <>
