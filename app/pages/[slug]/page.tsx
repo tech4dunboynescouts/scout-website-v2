@@ -65,6 +65,27 @@ function getEmbedUrl(url: string): string | null {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function augmentVideoEmbeds(body: any[]): Promise<any[]> {
+  return Promise.all(
+    body.map(async (block) => {
+      if (block._type !== 'videoEmbed' || !block.url || !String(block.url).includes('vimeo')) return block
+      try {
+        const res = await fetch(
+          `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(block.url)}`,
+          { next: { revalidate: 86400 } }
+        )
+        if (!res.ok) return block
+        const data = await res.json()
+        if (typeof data.width === 'number' && typeof data.height === 'number') {
+          return { ...block, _paddingTop: (data.height / data.width) * 100 }
+        }
+      } catch { /* ignore, fall back to 16:9 */ }
+      return block
+    })
+  )
+}
+
 const portableTextComponents: PortableTextComponents = {
   types: {
     bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
@@ -73,15 +94,16 @@ const portableTextComponents: PortableTextComponents = {
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
     ),
-    videoEmbed: ({ value }: { value: { url: string; caption?: string } }) => {
+    videoEmbed: ({ value }: { value: { url: string; caption?: string; _paddingTop?: number } }) => {
       const embedUrl = getEmbedUrl(value.url)
       if (!embedUrl) return null
+      const paddingTop = value._paddingTop ?? 56.25
       return (
-        <figure className="my-8">
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden">
+        <figure className="my-8 mx-0">
+          <div style={{ position: 'relative', paddingTop: `${paddingTop}%` }}>
             <iframe
               src={embedUrl}
-              className="absolute inset-0 w-full h-full"
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title={value.caption ?? 'Embedded video'}
@@ -133,6 +155,8 @@ export default async function GeneralPage({ params }: Props) {
 
   if (!page) notFound();
 
+  const body = Array.isArray(page.body) ? await augmentVideoEmbeds(page.body) : page.body
+
   return (
     <>
       <PageHero
@@ -143,7 +167,7 @@ export default async function GeneralPage({ params }: Props) {
 
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="font-body text-textMuted text-base">
-          <PortableText value={page.body} components={portableTextComponents} />
+          <PortableText value={body} components={portableTextComponents} />
         </div>
 
         {page.ctaLink && (
