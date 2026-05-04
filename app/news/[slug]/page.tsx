@@ -90,7 +90,7 @@ const portableTextComponents: PortableTextComponents = {
       if (!embedUrl) return null
       return (
         <figure className="my-8">
-          <div className="relative aspect-video rounded-xl overflow-hidden">
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden">
             <iframe
               src={embedUrl}
               className="absolute inset-0 w-full h-full"
