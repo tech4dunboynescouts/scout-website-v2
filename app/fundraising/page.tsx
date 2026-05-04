@@ -24,6 +24,7 @@ interface Campaign {
   donorCount: number | null;
   ctaLabel: string | null;
   ctaLink: string | null;
+  ctaOpenInNewTab: boolean | null;
   visibleFromMonth: number | null;
   visibleToMonth: number | null;
   hasBody: boolean;
@@ -122,6 +123,8 @@ export default async function FundraisingPage() {
                         {campaign.ctaLink && (
                           <a
                             href={campaign.ctaLink}
+                            target={campaign.ctaOpenInNewTab !== false ? '_blank' : undefined}
+                            rel={campaign.ctaOpenInNewTab !== false ? 'noopener noreferrer' : undefined}
                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg text-sm transition-colors"
                           >
                             {campaign.ctaLabel ?? "Learn More"}

@@ -143,6 +143,8 @@ export default async function FundraisingCampaignPage({ params }: Props) {
         {campaign.ctaLink && (
           <a
             href={campaign.ctaLink}
+            target={campaign.ctaOpenInNewTab !== false ? '_blank' : undefined}
+            rel={campaign.ctaOpenInNewTab !== false ? 'noopener noreferrer' : undefined}
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors mb-10"
           >
             {campaign.ctaLabel ?? "Donate Now"} <ExternalLink size={15} />

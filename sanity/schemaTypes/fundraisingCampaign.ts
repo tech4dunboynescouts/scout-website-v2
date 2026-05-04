@@ -67,6 +67,13 @@ export const fundraisingCampaign = defineType({
       description: 'Where the button links to. Can be an external donation page or a mailto: link.',
     }),
     defineField({
+      name: 'ctaOpenInNewTab',
+      title: 'Open Link in New Tab',
+      type: 'boolean',
+      initialValue: true,
+      description: 'When enabled, the button link opens in a new browser tab.',
+    }),
+    defineField({
       name: 'visibleFromMonth',
       title: 'Visible From Month',
       type: 'number',

@@ -158,6 +158,7 @@ export const allFundraisingCampaignsQuery = groq`
     donorCount,
     ctaLabel,
     ctaLink,
+    ctaOpenInNewTab,
     visibleFromMonth,
     visibleToMonth,
     "hasBody": defined(body[0]),
@@ -176,6 +177,7 @@ export const fundraisingCampaignBySlugQuery = groq`
     donorCount,
     ctaLabel,
     ctaLink,
+    ctaOpenInNewTab,
     body[] {
       ...,
       _type == "bodyImage" => {
