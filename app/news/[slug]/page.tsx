@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import { Calendar, ArrowLeft, Tag } from "lucide-react";
+import { Calendar, ArrowLeft, Tag, ExternalLink } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
@@ -64,8 +64,12 @@ function getEmbedUrl(url: string): string | null {
       return `https://www.youtube.com/embed${u.pathname}`
     }
     if (u.hostname.includes('vimeo.com')) {
-      const id = u.pathname.replace(/^\//, '')
-      return `https://player.vimeo.com/video/${id}`
+      const parts = u.pathname.replace(/^\//, '').split('/')
+      const id = parts[0]
+      const hash = parts[1]  // privacy hash for unlisted videos
+      return hash
+        ? `https://player.vimeo.com/video/${id}?h=${hash}`
+        : `https://player.vimeo.com/video/${id}`
     }
     return null
   } catch {
@@ -211,6 +215,30 @@ export default async function NewsArticlePage({ params }: Props) {
             <div className="font-body text-textMuted text-base max-w-none">
               <PortableText value={article.body} components={portableTextComponents} />
             </div>
+
+            {/* CTA Button */}
+            {article.ctaButton?.label && article.ctaButton?.url && (
+              <div className="mt-8 pt-8 border-t border-gray-100">
+                {article.ctaButton.openInNewTab ? (
+                  <a
+                    href={article.ctaButton.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors"
+                  >
+                    {article.ctaButton.label}
+                    <ExternalLink size={15} />
+                  </a>
+                ) : (
+                  <Link
+                    href={article.ctaButton.url}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-orange-main hover:bg-orange-hover text-white font-body font-semibold rounded-lg transition-colors"
+                  >
+                    {article.ctaButton.label}
+                  </Link>
+                )}
+              </div>
+            )}
           </article>
 
           {/* Sidebar */}

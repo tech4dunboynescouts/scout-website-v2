@@ -85,6 +85,11 @@ export const newsArticleBySlugQuery = groq`
         caption,
       }
     },
+    ctaButton {
+      label,
+      url,
+      openInNewTab,
+    },
   }
 `
 
@@ -224,6 +229,10 @@ export const generalPageBySlugQuery = groq`
           caption,
         }
       },
+      _type == "videoEmbed" => {
+        url,
+        caption,
+      }
     },
   }
 `

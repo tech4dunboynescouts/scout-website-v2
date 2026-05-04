@@ -171,6 +171,37 @@ export const newsArticle = defineType({
       ],
       validation: (Rule) => Rule.required(),
     }),
+
+    // ── Call-to-Action Button ───────────────────────────────────────────────────
+    defineField({
+      name: 'ctaButton',
+      title: 'Call-to-Action Button',
+      type: 'object',
+      description: 'Optional button shown at the bottom of the article',
+      fields: [
+        defineField({
+          name: 'label',
+          title: 'Button Label',
+          type: 'string',
+          description: 'Text shown on the button, e.g. "Register Now" or "Find Out More"',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'url',
+          title: 'URL',
+          type: 'string',
+          description: 'Relative path (e.g. /join) for internal pages, or full URL (e.g. https://example.com) for external sites',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'openInNewTab',
+          title: 'Open in new tab',
+          type: 'boolean',
+          description: 'Enable for external URLs so the article stays open',
+          initialValue: false,
+        }),
+      ],
+    }),
   ],
   preview: {
     select: {

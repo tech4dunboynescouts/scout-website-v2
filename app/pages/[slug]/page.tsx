@@ -41,6 +41,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function getEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v')
+      return v ? `https://www.youtube.com/embed/${v}` : null
+    }
+    if (u.hostname === 'youtu.be') {
+      return `https://www.youtube.com/embed${u.pathname}`
+    }
+    if (u.hostname.includes('vimeo.com')) {
+      const parts = u.pathname.replace(/^\//, '').split('/')
+      const id = parts[0]
+      const hash = parts[1]  // privacy hash for unlisted videos
+      return hash
+        ? `https://player.vimeo.com/video/${id}?h=${hash}`
+        : `https://player.vimeo.com/video/${id}`
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 const portableTextComponents: PortableTextComponents = {
   types: {
     bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
@@ -49,6 +73,28 @@ const portableTextComponents: PortableTextComponents = {
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
     ),
+    videoEmbed: ({ value }: { value: { url: string; caption?: string } }) => {
+      const embedUrl = getEmbedUrl(value.url)
+      if (!embedUrl) return null
+      return (
+        <figure className="my-8">
+          <div className="relative aspect-video rounded-xl overflow-hidden">
+            <iframe
+              src={embedUrl}
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={value.caption ?? 'Embedded video'}
+            />
+          </div>
+          {value.caption && (
+            <figcaption className="mt-2 text-center text-sm text-textMuted italic">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
   },
   block: {
     h2: ({ children }) => (
