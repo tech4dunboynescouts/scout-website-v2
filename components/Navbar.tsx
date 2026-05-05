@@ -185,14 +185,23 @@ export default function Navbar({ navItems }: Props) {
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen((v) => !v)}
-            className="lg:hidden p-2 text-white rounded-md"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile actions */}
+          <div className="lg:hidden flex items-center gap-1">
+            <button
+              onClick={() => window.dispatchEvent(new Event("open-search"))}
+              className="p-2 text-white rounded-md"
+              aria-label="Search site"
+            >
+              <Search size={22} />
+            </button>
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              className="p-2 text-white rounded-md"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </nav>
 
