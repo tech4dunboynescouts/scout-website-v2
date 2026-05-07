@@ -93,7 +93,20 @@ function getMailTransporter() {
   const pass = process.env.SMTP_PASS
   const secure = process.env.SMTP_SECURE === "true"
 
-  if (!host || !user || !pass) return null
+  const missingVars = [
+    ["SMTP_HOST", host],
+    ["SMTP_USER", user],
+    ["SMTP_PASS", pass],
+  ]
+    .filter(([, value]) => !value)
+    .map(([name]) => name)
+
+  if (missingVars.length > 0) {
+    console.warn(
+      `Join form email not sent: missing SMTP environment variable(s): ${missingVars.join(", ")}`
+    )
+    return null
+  }
 
   return nodemailer.createTransport({
     host,
@@ -122,10 +135,7 @@ async function notifyYouthApplicationByEmail(payload: {
   volunteeringInterest: string
 }) {
   const transporter = getMailTransporter()
-  if (!transporter) {
-    console.warn("Youth application email not sent: SMTP settings are not configured")
-    return
-  }
+  if (!transporter) return
 
   const from = process.env.SMTP_FROM ?? process.env.SMTP_USER
   const subject = `New application submitted via Dunboyne Scouts Website for ${payload.childName || "Unknown Child"}`
@@ -262,10 +272,7 @@ async function notifyVolunteerApplicationByEmail(payload: {
   reasonForVoulenteering: string
 }) {
   const transporter = getMailTransporter()
-  if (!transporter) {
-    console.warn("Volunteer application email not sent: SMTP settings are not configured")
-    return
-  }
+  if (!transporter) return
 
   const from = process.env.SMTP_FROM ?? process.env.SMTP_USER
   const subject = `New adult volunteer application submitted via Dunboyne Scouts Website for ${payload.name || "Unknown Volunteer"}`
