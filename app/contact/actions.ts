@@ -171,9 +171,9 @@ async function sendContactNotificationEmail(payload: {
     <div style="margin:0;padding:24px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;">
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;">
         <tr>
-          <td style="background:#f97316;padding:16px 20px;">
+          <td style="background:#0f172a;padding:16px 20px;">
             <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;">Contact Form Message</p>
-            <p style="margin:6px 0 0;color:#ffedd5;font-size:13px;">Dunboyne Scouts Website</p>
+            <p style="margin:6px 0 0;color:#cbd5e1;font-size:13px;">Dunboyne Scouts Website</p>
           </td>
         </tr>
         <tr>
@@ -181,8 +181,8 @@ async function sendContactNotificationEmail(payload: {
             <p style="margin:0 0 12px;font-size:14px;color:#334155;">A new message has been submitted via the contact form. The details are below:</p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #e2e8f0;">
               <tr>
-                <th align="left" style="padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Field</th>
-                <th align="left" style="padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Value</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #cbd5e1;background:#e2e8f0;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Field</th>
+                <th align="left" style="padding:10px 12px;border:1px solid #cbd5e1;background:#e2e8f0;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Value</th>
               </tr>
               ${rowsHtml}
             </table>
@@ -224,9 +224,9 @@ async function sendContactNotificationEmail(payload: {
       <div style="margin:0;padding:24px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;">
           <tr>
-            <td style="background:#f97316;padding:16px 20px;">
+            <td style="background:#0f172a;padding:16px 20px;">
               <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;">Message Received</p>
-              <p style="margin:6px 0 0;color:#ffedd5;font-size:13px;">Dunboyne Scouts Website</p>
+              <p style="margin:6px 0 0;color:#cbd5e1;font-size:13px;">Dunboyne Scouts Website</p>
             </td>
           </tr>
           <tr>
@@ -240,8 +240,8 @@ async function sendContactNotificationEmail(payload: {
               </p>
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #e2e8f0;margin-bottom:16px;">
                 <tr>
-                  <th align="left" style="padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Field</th>
-                  <th align="left" style="padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Value</th>
+                  <th align="left" style="padding:10px 12px;border:1px solid #cbd5e1;background:#e2e8f0;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Field</th>
+                  <th align="left" style="padding:10px 12px;border:1px solid #cbd5e1;background:#e2e8f0;font-size:12px;color:#111827;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Value</th>
                 </tr>
                 ${rowsHtml}
               </table>
