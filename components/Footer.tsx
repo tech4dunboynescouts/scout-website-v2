@@ -150,6 +150,12 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <Link
+              href="/cookies"
+              className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
+            >
+              Cookie Notice
+            </Link>
+            <Link
               href="/leaders/login"
               className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
             >

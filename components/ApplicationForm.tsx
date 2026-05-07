@@ -14,6 +14,13 @@ function formatPhone(val: string): string {
   return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
 }
 
+// Formats Irish Eircode input to "A86 NV07" shape while typing.
+function formatEircode(val: string): string {
+  const cleaned = val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 7);
+  if (cleaned.length <= 3) return cleaned;
+  return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+}
+
 interface YouthFormData {
   childName: string;
   dob: string;
@@ -23,7 +30,11 @@ interface YouthFormData {
   email: string;
   phone: string;
   section: string;
-  medicalNotes: string;
+  addressLine1: string;
+  addressLine2: string;
+  townCity: string;
+  county: string;
+  eircode: string;
   volunteeringInterest: string;
 }
 
@@ -32,9 +43,7 @@ interface VolunteerFormData {
   email: string;
   phone: string;
   volunteerSection: string;
-  availability: string;
-  interests: string;
-  experience: string;
+  reasonForVoulenteering: string;
 }
 
 function YouthForm() {
@@ -43,6 +52,13 @@ function YouthForm() {
   const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<YouthFormData>();
   const phoneReg = register("phone", { required: "Required" });
+  const eircodeReg = register("eircode", {
+    required: "Required",
+    pattern: {
+      value: /^[AC-FHKNPRTV-Y]\d{2}\s?[AC-FHKNPRTV-Y0-9]{4}$/i,
+      message: "Enter a valid Irish Eircode",
+    },
+  });
 
   const onSubmit = async (data: YouthFormData) => {
     setLoading(true);
@@ -217,14 +233,103 @@ function YouthForm() {
 
       <div>
         <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
-          Medical Notes / Additional Information
+          Address Line 1 <span className="text-orange-main">*</span>
         </label>
-        <textarea
-          {...register("medicalNotes")}
-          rows={3}
-          placeholder="Any allergies, medical conditions, or other information we should know about (optional)"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-navy-light font-body text-sm outline-none transition-colors resize-none"
+        <input
+          {...register("addressLine1", { required: "Required" })}
+          type="text"
+          placeholder="House number/name and street"
+          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.addressLine1 ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         />
+        {errors.addressLine1 && <p className="mt-1 text-xs text-red-500">{errors.addressLine1.message}</p>}
+      </div>
+
+      <div>
+        <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
+          Address Line 2
+        </label>
+        <input
+          {...register("addressLine2")}
+          type="text"
+          placeholder="Area, estate, apartment (optional)"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-navy-light font-body text-sm outline-none transition-colors"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
+            Town / City <span className="text-orange-main">*</span>
+          </label>
+          <input
+            {...register("townCity", { required: "Required" })}
+            type="text"
+            placeholder="e.g. Dunboyne"
+            className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.townCity ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
+          />
+          {errors.townCity && <p className="mt-1 text-xs text-red-500">{errors.townCity.message}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
+            County <span className="text-orange-main">*</span>
+          </label>
+          <select
+            {...register("county", { required: "Required" })}
+            className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.county ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
+          >
+            <option value="">Select county...</option>
+            <option value="Meath">Meath</option>
+            <option value="Antrim">Antrim</option>
+            <option value="Armagh">Armagh</option>
+            <option value="Carlow">Carlow</option>
+            <option value="Cavan">Cavan</option>
+            <option value="Clare">Clare</option>
+            <option value="Cork">Cork</option>
+            <option value="Derry">Derry</option>
+            <option value="Donegal">Donegal</option>
+            <option value="Down">Down</option>
+            <option value="Dublin">Dublin</option>
+            <option value="Fermanagh">Fermanagh</option>
+            <option value="Galway">Galway</option>
+            <option value="Kerry">Kerry</option>
+            <option value="Kildare">Kildare</option>
+            <option value="Kilkenny">Kilkenny</option>
+            <option value="Laois">Laois</option>
+            <option value="Leitrim">Leitrim</option>
+            <option value="Limerick">Limerick</option>
+            <option value="Longford">Longford</option>
+            <option value="Louth">Louth</option>
+            <option value="Mayo">Mayo</option>
+            <option value="Monaghan">Monaghan</option>
+            <option value="Offaly">Offaly</option>
+            <option value="Roscommon">Roscommon</option>
+            <option value="Sligo">Sligo</option>
+            <option value="Tipperary">Tipperary</option>
+            <option value="Tyrone">Tyrone</option>
+            <option value="Waterford">Waterford</option>
+            <option value="Westmeath">Westmeath</option>
+            <option value="Wexford">Wexford</option>
+            <option value="Wicklow">Wicklow</option>
+          </select>
+          {errors.county && <p className="mt-1 text-xs text-red-500">{errors.county.message}</p>}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
+          Eircode <span className="text-orange-main">*</span>
+        </label>
+        <input
+          {...eircodeReg}
+          type="text"
+          placeholder="e.g. A86 NV07"
+          inputMode="text"
+          autoCapitalize="characters"
+          maxLength={8}
+          onChange={(e) => { e.target.value = formatEircode(e.target.value); eircodeReg.onChange(e); }}
+          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.eircode ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
+        />
+        {errors.eircode && <p className="mt-1 text-xs text-red-500">{errors.eircode.message}</p>}
       </div>
 
       <div>
@@ -369,37 +474,15 @@ function VolunteerForm() {
       </div>
       <div>
         <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
-          Availability <span className="text-orange-main">*</span>
+          Reasons for Volunteering <span className="text-orange-main">*</span>
         </label>
-        <select
-          {...register("availability", { required: "Required" })}
-          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.availability ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
-        >
-          <option value="">Select…</option>
-          <option value="weekday-evenings">Weekday Evenings</option>
-          <option value="weekends">Weekends</option>
-          <option value="both">Both</option>
-          <option value="flexible">Flexible</option>
-        </select>
-        {errors.availability && <p className="mt-1 text-xs text-red-500">{errors.availability.message}</p>}
-      </div>
-      <div>
-        <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">Areas of Interest</label>
         <textarea
-          {...register("interests")}
-          rows={2}
-          placeholder="e.g. outdoor activities, water sports, admin, fundraising…"
+          {...register("reasonForVoulenteering", { required: "Required" })}
+          rows={6}
+          placeholder="Tell us why you would like to volunteer with Dunboyne Scout Group"
           className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-navy-light font-body text-sm outline-none transition-colors resize-none"
         />
-      </div>
-      <div>
-        <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">Relevant Experience</label>
-        <textarea
-          {...register("experience")}
-          rows={2}
-          placeholder="Any scouting, youth work, or relevant professional experience (optional)"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-navy-light font-body text-sm outline-none transition-colors resize-none"
-        />
+        {errors.reasonForVoulenteering && <p className="mt-1 text-xs text-red-500">{errors.reasonForVoulenteering.message}</p>}
       </div>
       <button
         type="submit"

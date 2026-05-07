@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Navbar, { type NavItem } from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import CookieNotice from "@/components/CookieNotice"
 
 interface Props {
   children: React.ReactNode
@@ -44,6 +45,7 @@ export default function ConditionalLayout({ children, navItems }: Props) {
     <>
       <Navbar navItems={navItems} />
       <main>{children}</main>
+      <CookieNotice />
       <Footer />
     </>
   )

@@ -81,8 +81,38 @@ export const formSubmission = defineType({
       hidden: ({ document }) => document?.formType !== 'youth',
     }),
     defineField({
+      name: 'addressLine1',
+      title: 'Address Line 1',
+      type: 'string',
+      hidden: ({ document }) => document?.formType !== 'youth',
+    }),
+    defineField({
+      name: 'addressLine2',
+      title: 'Address Line 2',
+      type: 'string',
+      hidden: ({ document }) => document?.formType !== 'youth',
+    }),
+    defineField({
+      name: 'townCity',
+      title: 'Town / City',
+      type: 'string',
+      hidden: ({ document }) => document?.formType !== 'youth',
+    }),
+    defineField({
+      name: 'county',
+      title: 'County',
+      type: 'string',
+      hidden: ({ document }) => document?.formType !== 'youth',
+    }),
+    defineField({
+      name: 'eircode',
+      title: 'Eircode',
+      type: 'string',
+      hidden: ({ document }) => document?.formType !== 'youth',
+    }),
+    defineField({
       name: 'medicalNotes',
-      title: 'Medical Notes / Additional Information',
+      title: 'Full Address (Combined)',
       type: 'text',
       rows: 3,
       hidden: ({ document }) => document?.formType !== 'youth',
@@ -115,29 +145,16 @@ export const formSubmission = defineType({
 
     // ── Volunteer Fields ──────────────────────────────────────────────────────
     defineField({
-      name: 'availability',
-      title: 'Availability',
-      type: 'string',
-      hidden: ({ document }) => document?.formType !== 'volunteer',
-    }),
-    defineField({
       name: 'volunteerSection',
       title: 'Section to Help With',
       type: 'string',
       hidden: ({ document }) => document?.formType !== 'volunteer',
     }),
     defineField({
-      name: 'interests',
-      title: 'Areas of Interest',
+      name: 'reasonForVoulenteering',
+      title: 'Reasons for Volunteering',
       type: 'text',
-      rows: 2,
-      hidden: ({ document }) => document?.formType !== 'volunteer',
-    }),
-    defineField({
-      name: 'experience',
-      title: 'Relevant Experience',
-      type: 'text',
-      rows: 2,
+      rows: 6,
       hidden: ({ document }) => document?.formType !== 'volunteer',
     }),
   ],
