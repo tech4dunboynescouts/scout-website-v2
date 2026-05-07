@@ -97,11 +97,7 @@ export default function ContactPage() {
           </div>
 
           {/* Form */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 lg:p-10">
-            <h2 className="font-display font-bold text-navy-dark text-2xl mb-2">Send a message</h2>
-            <p className="font-body text-textMuted text-sm mb-8">
-              We aim to reply within 48 hours on working days.
-            </p>
+          <div className="lg:pt-14">
             <ContactForm />
           </div>
         </div>

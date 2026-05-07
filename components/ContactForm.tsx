@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { CheckCircle, Send } from "lucide-react";
+import { AlertCircle, CheckCircle, Send } from "lucide-react";
+import { submitContactForm } from "@/app/contact/actions";
 
 interface FormData {
   name: string;
@@ -15,6 +16,7 @@ interface FormData {
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -23,11 +25,17 @@ export default function ContactForm() {
     reset,
   } = useForm<FormData>();
 
-  const onSubmit = async (_data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSubmitted(true);
+    setError(null);
+    try {
+      await submitContactForm(data);
+      setSubmitted(true);
+    } catch {
+      setError("Sorry, something went wrong sending your message. Please try again or email us directly.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -35,18 +43,16 @@ export default function ContactForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center py-16 text-center"
+        className="flex flex-col items-center justify-center py-12 text-center"
       >
-        <CheckCircle size={56} className="text-orange-main mb-4" />
-        <h3 className="font-display font-bold text-navy-dark text-2xl mb-2">
-          Message Sent!
-        </h3>
-        <p className="font-body text-textMuted text-base mb-6">
+        <CheckCircle size={52} className="text-orange-main mb-4" />
+        <h3 className="font-display font-bold text-navy-dark text-xl mb-2">Message Sent!</h3>
+        <p className="font-body text-textMuted text-sm mb-6 max-w-sm">
           Thanks for getting in touch. We&apos;ll get back to you within 48 hours.
         </p>
         <button
           onClick={() => { setSubmitted(false); reset(); }}
-          className="px-6 py-3 bg-navy-dark text-white font-body font-medium rounded-lg hover:bg-navy-mid transition-colors"
+          className="px-5 py-2.5 bg-navy-dark text-white font-body font-medium rounded-lg hover:bg-navy-mid transition-colors text-sm"
         >
           Send another message
         </button>
@@ -55,19 +61,31 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <>
+      <div className="bg-navy-dark rounded-t-lg p-6 sm:p-8">
+        <h2 className="font-display font-bold text-white text-2xl mb-2">Send a message</h2>
+        <p className="font-body text-slate-200 text-sm">
+          Please note, we are an organisation run by volunteers. We will get back to you as soon as we can. Thank you for your patience.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 bg-white rounded-b-lg p-6 sm:p-8">
+        {error && (
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm font-body">
+            <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+            {error}
+          </div>
+        )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-body font-medium text-navy-dark mb-1.5">
             Your Name <span className="text-orange-main">*</span>
           </label>
           <input
-            {...register("name", { required: "Name is required" })}
+            {...register("name", { required: "Required" })}
             type="text"
             placeholder="Jane Smith"
-            className={`w-full px-4 py-3 rounded-lg border font-body text-sm text-navy-dark placeholder:text-textMuted/50 outline-none transition-colors ${
-              errors.name ? "border-red-400 bg-red-50" : "border-gray-200 bg-white focus:border-navy-light"
-            }`}
+            className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.name ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
           />
           {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
         </div>
@@ -77,14 +95,12 @@ export default function ContactForm() {
           </label>
           <input
             {...register("email", {
-              required: "Email is required",
+              required: "Required",
               pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" },
             })}
             type="email"
             placeholder="jane@example.com"
-            className={`w-full px-4 py-3 rounded-lg border font-body text-sm text-navy-dark placeholder:text-textMuted/50 outline-none transition-colors ${
-              errors.email ? "border-red-400 bg-red-50" : "border-gray-200 bg-white focus:border-navy-light"
-            }`}
+            className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.email ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
           />
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
         </div>
@@ -95,10 +111,8 @@ export default function ContactForm() {
           Topic <span className="text-orange-main">*</span>
         </label>
         <select
-          {...register("topic", { required: "Please select a topic" })}
-          className={`w-full px-4 py-3 rounded-lg border font-body text-sm text-navy-dark outline-none transition-colors ${
-            errors.topic ? "border-red-400 bg-red-50" : "border-gray-200 bg-white focus:border-navy-light"
-          }`}
+          {...register("topic", { required: "Required" })}
+          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors ${errors.topic ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         >
           <option value="">Select a topic…</option>
           <option value="joining">Joining the Group</option>
@@ -118,12 +132,10 @@ export default function ContactForm() {
           Message <span className="text-orange-main">*</span>
         </label>
         <textarea
-          {...register("message", { required: "Message is required", minLength: { value: 20, message: "Please write at least 20 characters" } })}
+          {...register("message", { required: "Required", minLength: { value: 20, message: "Please write at least 20 characters" } })}
           rows={5}
           placeholder="How can we help you?"
-          className={`w-full px-4 py-3 rounded-lg border font-body text-sm text-navy-dark placeholder:text-textMuted/50 outline-none transition-colors resize-none ${
-            errors.message ? "border-red-400 bg-red-50" : "border-gray-200 bg-white focus:border-navy-light"
-          }`}
+          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors resize-none ${errors.message ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         />
         {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>}
       </div>
@@ -131,7 +143,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={loading}
-        className="flex items-center justify-center gap-2 w-full py-3.5 bg-orange-main hover:bg-orange-hover disabled:opacity-60 disabled:cursor-not-allowed text-white font-body font-semibold rounded-lg transition-colors"
+        className="flex items-center justify-center gap-2 w-full py-3.5 bg-orange-main hover:bg-orange-hover disabled:opacity-60 text-white font-body font-semibold rounded-lg transition-colors"
       >
         {loading ? (
           <>
@@ -148,5 +160,6 @@ export default function ContactForm() {
         )}
       </button>
     </form>
+    </>
   );
 }
