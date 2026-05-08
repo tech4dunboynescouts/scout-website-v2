@@ -1,16 +1,7 @@
 "use server"
 
-import { createClient } from "next-sanity"
 import { google } from "googleapis"
 import nodemailer from "nodemailer"
-import { apiVersion, dataset, projectId } from "@/sanity/env"
-
-// Write client — server-only, never imported from client components
-function getWriteClient() {
-  const token = process.env.SANITY_WRITE_TOKEN
-  if (!token) throw new Error("SANITY_WRITE_TOKEN is not set")
-  return createClient({ projectId, dataset, apiVersion, useCdn: false, token })
-}
 
 // Basic server-side sanitisation
 function sanitiseString(val: unknown, max = 500): string {
@@ -130,7 +121,7 @@ function getGoogleSheetsClient() {
 
   if (missingVars.length > 0) {
     console.warn(
-      `Youth application Google Sheets write skipped: missing environment variable(s): ${missingVars.join(", ")}`
+      `Google Sheets write skipped: missing environment variable(s): ${missingVars.join(", ")}`
     )
     return null
   }
@@ -161,6 +152,15 @@ type YouthApplicationPayload = {
   eircode: string
   fullAddress: string
   volunteeringInterest: string
+}
+
+type VolunteerApplicationPayload = {
+  submittedAt: string
+  name: string
+  email: string
+  phone: string
+  volunteerSection: string
+  reasonForVoulenteering: string
 }
 
 async function appendYouthApplicationToGoogleSheet(payload: YouthApplicationPayload) {
@@ -207,6 +207,46 @@ async function appendYouthApplicationToGoogleSheet(payload: YouthApplicationPayl
   })
 
   console.info("Youth application appended to Google Sheet", {
+    spreadsheetId,
+    updatedRange: response.data.updates?.updatedRange,
+    updatedRows: response.data.updates?.updatedRows,
+  })
+}
+
+async function appendVolunteerApplicationToGoogleSheet(payload: VolunteerApplicationPayload) {
+  const sheets = getGoogleSheetsClient()
+  if (!sheets) return
+
+  const spreadsheetId = sanitiseString(process.env.VOLUNTEER_APPLICATIONS_SHEET_ID, 200)
+  if (!spreadsheetId) {
+    console.warn("Volunteer application Google Sheets write skipped: VOLUNTEER_APPLICATIONS_SHEET_ID is not configured")
+    return
+  }
+
+  const range =
+    sanitiseString(process.env.VOLUNTEER_APPLICATIONS_SHEET_RANGE, 200) ||
+    "Volunteer Applications!A:F"
+
+  const row = [
+    formatDateTimeIreland(payload.submittedAt),
+    payload.name,
+    payload.email,
+    payload.phone,
+    payload.volunteerSection,
+    payload.reasonForVoulenteering,
+  ]
+
+  const response = await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range,
+    valueInputOption: "USER_ENTERED",
+    insertDataOption: "INSERT_ROWS",
+    requestBody: {
+      values: [row],
+    },
+  })
+
+  console.info("Volunteer application appended to Google Sheet", {
     spreadsheetId,
     updatedRange: response.data.updates?.updatedRange,
     updatedRows: response.data.updates?.updatedRows,
@@ -343,14 +383,7 @@ async function notifyYouthApplicationByEmail(payload: YouthApplicationPayload) {
   }
 }
 
-async function notifyVolunteerApplicationByEmail(payload: {
-  submittedAt: string
-  name: string
-  email: string
-  phone: string
-  volunteerSection: string
-  reasonForVoulenteering: string
-}) {
+async function notifyVolunteerApplicationByEmail(payload: VolunteerApplicationPayload) {
   const transporter = getMailTransporter()
   if (!transporter) return
 
@@ -573,6 +606,19 @@ export async function submitVolunteerApplication(formData: {
   const phone = sanitiseString(formData.phone, 30)
   const volunteerSection = sanitiseString(formData.volunteerSection, 50)
   const reasonForVoulenteering = sanitiseString(formData.reasonForVoulenteering, 2000)
+
+  try {
+    await appendVolunteerApplicationToGoogleSheet({
+      submittedAt,
+      name,
+      email,
+      phone,
+      volunteerSection,
+      reasonForVoulenteering,
+    })
+  } catch (error) {
+    console.error("Volunteer application Google Sheets write failed", error)
+  }
 
   try {
     await notifyVolunteerApplicationByEmail({
