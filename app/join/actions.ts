@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "next-sanity"
+import { google } from "googleapis"
 import nodemailer from "nodemailer"
 import { apiVersion, dataset, projectId } from "@/sanity/env"
 
@@ -116,7 +117,34 @@ function getMailTransporter() {
   })
 }
 
-async function notifyYouthApplicationByEmail(payload: {
+function getGoogleSheetsClient() {
+  const serviceAccountEmail = sanitiseString(process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL, 320)
+  const privateKeyRaw = process.env.GOOGLE_PRIVATE_KEY
+
+  const missingVars = [
+    ["GOOGLE_SERVICE_ACCOUNT_EMAIL", serviceAccountEmail],
+    ["GOOGLE_PRIVATE_KEY", privateKeyRaw],
+  ]
+    .filter(([, value]) => !value)
+    .map(([name]) => name)
+
+  if (missingVars.length > 0) {
+    console.warn(
+      `Youth application Google Sheets write skipped: missing environment variable(s): ${missingVars.join(", ")}`
+    )
+    return null
+  }
+
+  const auth = new google.auth.JWT({
+    email: serviceAccountEmail,
+    key: privateKeyRaw!.replace(/\\n/g, "\n"),
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  })
+
+  return google.sheets({ version: "v4", auth })
+}
+
+type YouthApplicationPayload = {
   submittedAt: string
   childName: string
   dob: string
@@ -133,7 +161,59 @@ async function notifyYouthApplicationByEmail(payload: {
   eircode: string
   fullAddress: string
   volunteeringInterest: string
-}) {
+}
+
+async function appendYouthApplicationToGoogleSheet(payload: YouthApplicationPayload) {
+  const sheets = getGoogleSheetsClient()
+  if (!sheets) return
+
+  const spreadsheetId = sanitiseString(process.env.YOUTH_APPLICATIONS_SHEET_ID, 200)
+  if (!spreadsheetId) {
+    console.warn("Youth application Google Sheets write skipped: YOUTH_APPLICATIONS_SHEET_ID is not configured")
+    return
+  }
+
+  const range =
+    sanitiseString(process.env.YOUTH_APPLICATIONS_SHEET_RANGE, 200) ||
+    "Youth Applications!A:P"
+
+  const row = [
+    formatDateTimeIreland(payload.submittedAt),
+    formatDateOnly(payload.dob),
+    payload.childName,
+    payload.gender,
+    payload.schoolYear,
+    payload.parentName,
+    payload.email,
+    payload.phone,
+    payload.section,
+    payload.addressLine1,
+    payload.addressLine2,
+    payload.townCity,
+    payload.county,
+    payload.eircode,
+    payload.fullAddress,
+    payload.volunteeringInterest,
+  ]
+
+  const response = await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range,
+    valueInputOption: "USER_ENTERED",
+    insertDataOption: "INSERT_ROWS",
+    requestBody: {
+      values: [row],
+    },
+  })
+
+  console.info("Youth application appended to Google Sheet", {
+    spreadsheetId,
+    updatedRange: response.data.updates?.updatedRange,
+    updatedRows: response.data.updates?.updatedRows,
+  })
+}
+
+async function notifyYouthApplicationByEmail(payload: YouthApplicationPayload) {
   const transporter = getMailTransporter()
   if (!transporter) return
 
@@ -429,31 +509,31 @@ export async function submitYouthApplication(formData: {
 
   const fullAddress = [addressLine1, addressLine2, townCity, county, eircode].filter(Boolean).join("\n")
 
-  const doc = {
-    _type: "formSubmission",
-    formType: "youth",
-    submittedAt,
-    childName,
-    dob,
-    gender,
-    schoolYear,
-    parentName,
-    email,
-    phone,
-    section,
-    addressLine1,
-    addressLine2,
-    townCity,
-    county,
-    eircode,
-    medicalNotes: fullAddress,
-    volunteeringInterest,
+  try {
+    await appendYouthApplicationToGoogleSheet({
+      submittedAt,
+      childName,
+      dob,
+      gender,
+      schoolYear,
+      parentName,
+      email,
+      phone,
+      section,
+      addressLine1,
+      addressLine2,
+      townCity,
+      county,
+      eircode,
+      fullAddress,
+      volunteeringInterest,
+    })
+  } catch (error) {
+    console.error("Youth application Google Sheets write failed", error)
   }
 
-  await getWriteClient().create(doc)
-
   // Do not fail the user submission if SMTP credentials are invalid or the mail
-  // provider is temporarily unavailable. The form has already been stored.
+  // provider is temporarily unavailable. Data is stored to Google Sheets and email notifications are sent.
   try {
     await notifyYouthApplicationByEmail({
       submittedAt,
@@ -493,20 +573,6 @@ export async function submitVolunteerApplication(formData: {
   const phone = sanitiseString(formData.phone, 30)
   const volunteerSection = sanitiseString(formData.volunteerSection, 50)
   const reasonForVoulenteering = sanitiseString(formData.reasonForVoulenteering, 2000)
-
-  const doc = {
-    _type: "formSubmission",
-    formType: "volunteer",
-    status: "new",
-    submittedAt,
-    contactName: name,
-    email,
-    phone,
-    volunteerSection,
-    reasonForVoulenteering,
-  }
-
-  await getWriteClient().create(doc)
 
   try {
     await notifyVolunteerApplicationByEmail({

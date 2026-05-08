@@ -16,7 +16,13 @@ export const metadata: Metadata = {
 };
 
 export default async function JoinPage() {
-  const sanityData = await client.fetch(faqListQuery).catch(() => null)
+  // Local environments can intermittently fail TLS handshakes to Sanity,
+  // which surfaces as unhandled timeout rejections in dev. Use static FAQs
+  // locally and keep Sanity-powered FAQs on Vercel.
+  const shouldFetchSanityFaqs = process.env.VERCEL === "1"
+  const sanityData = shouldFetchSanityFaqs
+    ? await client.fetch(faqListQuery).catch(() => null)
+    : null
 
   // Map Sanity items to the shape FAQAccordion expects, falling back to static JSON
   const faqs: { id: number; question: string; answer: string }[] =
