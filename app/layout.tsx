@@ -30,12 +30,19 @@ export const metadata: Metadata = {
     locale: "en_IE",
     siteName: "1st Meath Dunboyne Scout Group",
     url: siteUrl,
-    images: [{ url: "/images/logo.jpg", width: 800, height: 600, alt: "1st Meath Dunboyne Scout Group" }],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "1st Meath Dunboyne Scout Group social preview",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@dunboyne_scouts",
-    images: ["/images/logo.jpg"],
+    images: ["/opengraph-image"],
   },
 };
 
