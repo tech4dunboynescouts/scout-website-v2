@@ -1,6 +1,6 @@
 import type {StructureResolver} from 'sanity/structure'
 
-const EXCLUDED_FROM_DEFAULT = ['faqList']
+const EXCLUDED_FROM_DEFAULT = ['faqList', 'annualSubscriptionPricing']
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -15,6 +15,14 @@ export const structure: StructureResolver = (S) =>
           S.document()
             .schemaType('faqList')
             .documentId('faqList')
+        ),
+      S.listItem()
+        .title('Annual Subscription Pricing')
+        .id('annualSubscriptionPricing')
+        .child(
+          S.document()
+            .schemaType('annualSubscriptionPricing')
+            .documentId('annualSubscriptionPricing')
         ),
       S.divider(),
       // All other document types rendered as normal lists

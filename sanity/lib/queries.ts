@@ -144,6 +144,101 @@ export const searchLeaderTeamQuery = groq`
   }.entries
 `
 
+// ── Payments ──────────────────────────────────────────────────────────────────
+
+export const paymentPlansQuery = groq`
+  *[_type == "paymentPlan" && active == true] | order(section asc, title asc) {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    section,
+    paymentType,
+    checkoutMode,
+    amount,
+    currency,
+    stripePriceId,
+    active,
+  }
+`
+
+export const annualSubscriptionPricingQuery = groq`
+  *[_type == "annualSubscriptionPricing" && _id == "annualSubscriptionPricing"][0] {
+    currency,
+    paymentType,
+    beavers { unitPrice, stripePriceId },
+    cubs { unitPrice, stripePriceId },
+    scouts { unitPrice, stripePriceId },
+    ventures { unitPrice, stripePriceId },
+  }
+`
+
+export const paymentPlanBySlugQuery = groq`
+  *[_type == "paymentPlan" && slug.current == $slug && active == true][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    section,
+    paymentType,
+    checkoutMode,
+    amount,
+    currency,
+    stripePriceId,
+    active,
+  }
+`
+
+export const paymentRecordByCheckoutSessionIdQuery = groq`
+  *[_type == "paymentTransaction" && stripeCheckoutSessionId == $checkoutSessionId][0] {
+    _id,
+    title,
+    status,
+    stripeCheckoutSessionId,
+    planSlug,
+    stripePaymentIntentId,
+    stripeSubscriptionId,
+    stripeCustomerId,
+    paymentType,
+    section,
+    leaderName,
+    leaderEmail,
+    leaderRoles,
+    amount,
+    currency,
+    checkoutMode,
+    stripePaymentStatus,
+    createdAt,
+    completedAt,
+    cancelledAt,
+  }
+`
+
+export const paymentRecordByPaymentIntentIdQuery = groq`
+  *[_type == "paymentTransaction" && stripePaymentIntentId == $paymentIntentId][0] {
+    _id,
+    title,
+    status,
+    stripeCheckoutSessionId,
+    planSlug,
+    stripePaymentIntentId,
+    stripeSubscriptionId,
+    stripeCustomerId,
+    paymentType,
+    section,
+    leaderName,
+    leaderEmail,
+    leaderRoles,
+    amount,
+    currency,
+    checkoutMode,
+    stripePaymentStatus,
+    createdAt,
+    completedAt,
+    cancelledAt,
+  }
+`
+
 // ── Fundraising ────────────────────────────────────────────────────────────────
 
 export const allFundraisingCampaignsQuery = groq`

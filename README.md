@@ -20,6 +20,17 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Environment Variables
+
+For the Leaders Portal payments flow, set these server-side values in your local `.env.local` and in production:
+
+- `STRIPE_SECRET_KEY`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `NEXT_PUBLIC_SITE_URL` or `VERCEL_URL`
+- `SANITY_WRITE_TOKEN`
+
+Leaders payments also require an `annualSubscriptionPricing` singleton document in Sanity with unit prices and Stripe Price IDs for Beavers, Cubs, Scouts, and Ventures.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

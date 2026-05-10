@@ -8,7 +8,10 @@ import { sectionPage } from './sectionPage'
 import { siteNavigation } from './siteNavigation'
 import { leaderTeam } from './leaderTeam'
 import { faqList } from './faqList'
+import { paymentPlan } from './paymentPlan'
+import { paymentTransaction } from './paymentTransaction'
+import { annualSubscriptionPricing } from './annualSubscriptionPricing'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam, faqList],
+  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam, faqList, paymentPlan, paymentTransaction, annualSubscriptionPricing],
 }
