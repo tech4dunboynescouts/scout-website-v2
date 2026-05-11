@@ -72,7 +72,7 @@ export default async function DashboardPage() {
                 Payments
               </p>
               <p className="font-body text-textMuted text-xs mt-0.5">
-                Annual membership Stripe Checkout for scout sections
+                Make secure online payments for Annual Subscriptions, Camps and other activities here.
               </p>
             </div>
             <ChevronRight size={16} className="text-textMuted group-hover:text-orange-main transition-colors flex-shrink-0" />

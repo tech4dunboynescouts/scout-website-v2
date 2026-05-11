@@ -23,9 +23,9 @@ export default async function EmbeddedCheckoutPage({
   const { payment_intent } = await searchParams
   if (!payment_intent) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-white rounded-2xl border border-gray-100 p-8">
-          <h1 className="font-display font-bold text-2xl text-navy-dark mb-2">Checkout not available</h1>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8">
+          <h1 className="font-display font-bold text-xl sm:text-2xl text-navy-dark mb-2">Checkout not available</h1>
           <p className="font-body text-sm text-textMuted">
             Missing payment intent ID. Please return to the payments page and try again.
           </p>
@@ -37,9 +37,9 @@ export default async function EmbeddedCheckoutPage({
   const clientSecret = await getPaymentIntentClientSecret(payment_intent).catch(() => null)
   if (!clientSecret) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-white rounded-2xl border border-gray-100 p-8">
-          <h1 className="font-display font-bold text-2xl text-navy-dark mb-2">Checkout not available</h1>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8">
+          <h1 className="font-display font-bold text-xl sm:text-2xl text-navy-dark mb-2">Checkout not available</h1>
           <p className="font-body text-sm text-textMuted">
             The checkout session could not be loaded. Try starting the payment again.
           </p>
@@ -49,12 +49,12 @@ export default async function EmbeddedCheckoutPage({
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-14">
       <div className="mb-5">
         <p className="text-orange-main font-body font-semibold text-sm uppercase tracking-widest mb-1">
           Leaders Portal
         </p>
-        <h1 className="font-display font-bold text-navy-dark text-3xl">Checkout</h1>
+        <h1 className="font-display font-bold text-navy-dark text-2xl sm:text-3xl">Checkout</h1>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">

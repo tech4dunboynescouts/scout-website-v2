@@ -85,81 +85,11 @@ export const newsArticleBySlugQuery = groq`
         caption,
       }
     },
-    ctaButton {
-      label,
-      url,
-      openInNewTab,
-    },
   }
 `
 
 export const allNewsSlugsQuery = groq`
   *[_type == "newsArticle"] { "slug": slug.current }
-`
-
-export const searchNewsQuery = groq`
-  *[_type == "newsArticle"] | order(date desc) {
-    title,
-    "slug": slug.current,
-    excerpt,
-    "bodyText": pt::text(body),
-  }
-`
-
-export const searchFundraisingQuery = groq`
-  *[_type == "fundraisingCampaign" && defined(body[0])] | order(_createdAt desc) {
-    title,
-    "slug": slug.current,
-    excerpt,
-    "bodyText": pt::text(body),
-  }
-`
-
-export const searchGeneralPagesQuery = groq`
-  *[_type == "generalPage"] | order(_createdAt desc) {
-    title,
-    "slug": slug.current,
-    description,
-    "bodyText": pt::text(body),
-  }
-`
-
-export const searchLeaderTeamQuery = groq`
-  *[_type == "leaderTeam"][0] {
-    "entries": [
-      ...councilMembers[]{
-        "name": name,
-        "role": role,
-        "group": "Group Council"
-      },
-      ...sectionGroups[]{
-        "groupName": name,
-        "members": members[]{
-          "name": name,
-          "role": role,
-          "group": ^.name
-        }
-      }.members[]
-    ]
-  }.entries
-`
-
-// ── Payments ──────────────────────────────────────────────────────────────────
-
-export const paymentPlansQuery = groq`
-  *[_type == "paymentPlan" && active == true] | order(section asc, title asc) {
-    _id,
-    title,
-    "slug": slug.current,
-    description,
-    section,
-    paymentType,
-    checkoutMode,
-    amount,
-    currency,
-    stripePriceId,
-    active,
-  }
 `
 
 export const annualSubscriptionPricingQuery = groq`
@@ -170,76 +100,20 @@ export const annualSubscriptionPricingQuery = groq`
     cubs { unitPrice, stripePriceId },
     scouts { unitPrice, stripePriceId },
     ventures { unitPrice, stripePriceId },
+    maximumSubscriptionFee,
   }
 `
 
-export const paymentPlanBySlugQuery = groq`
-  *[_type == "paymentPlan" && slug.current == $slug && active == true][0] {
+export const summerCampPaymentOptionsQuery = groq`
+  *[_type == "scoutsSummerCampPricing" && active == true] | order(section asc, title asc) {
     _id,
     title,
-    "slug": slug.current,
-    description,
     section,
-    paymentType,
-    checkoutMode,
-    amount,
     currency,
+    paymentType,
     stripePriceId,
+    amountOptions,
     active,
-  }
-`
-
-export const paymentRecordByCheckoutSessionIdQuery = groq`
-  *[_type == "paymentTransaction" && stripeCheckoutSessionId == $checkoutSessionId][0] {
-    _id,
-    title,
-    status,
-    stripeCheckoutSessionId,
-    planSlug,
-    stripePaymentIntentId,
-    stripeSubscriptionId,
-    stripeCustomerId,
-    paymentType,
-    section,
-    payeeName,
-    payeeReference,
-    leaderName,
-    leaderEmail,
-    leaderRoles,
-    amount,
-    currency,
-    checkoutMode,
-    stripePaymentStatus,
-    createdAt,
-    completedAt,
-    cancelledAt,
-  }
-`
-
-export const paymentRecordByPaymentIntentIdQuery = groq`
-  *[_type == "paymentTransaction" && stripePaymentIntentId == $paymentIntentId][0] {
-    _id,
-    title,
-    status,
-    stripeCheckoutSessionId,
-    planSlug,
-    stripePaymentIntentId,
-    stripeSubscriptionId,
-    stripeCustomerId,
-    paymentType,
-    section,
-    payeeName,
-    payeeReference,
-    leaderName,
-    leaderEmail,
-    leaderRoles,
-    amount,
-    currency,
-    checkoutMode,
-    stripePaymentStatus,
-    createdAt,
-    completedAt,
-    cancelledAt,
   }
 `
 
@@ -302,6 +176,15 @@ export const allFundraisingSlugsQuery = groq`
   *[_type == "fundraisingCampaign"] { "slug": slug.current }
 `
 
+export const searchFundraisingQuery = groq`
+  *[_type == "fundraisingCampaign"] | order(_createdAt desc) {
+    "slug": slug.current,
+    title,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
+`
+
 // ── General Pages ──────────────────────────────────────────────────────────────
 
 export const generalPageBySlugQuery = groq`
@@ -340,6 +223,15 @@ export const generalPageBySlugQuery = groq`
 
 export const allGeneralPageSlugsQuery = groq`
   *[_type == "generalPage"] { "slug": slug.current }
+`
+
+export const searchGeneralPagesQuery = groq`
+  *[_type == "generalPage"] | order(_updatedAt desc) {
+    "slug": slug.current,
+    title,
+    description,
+    "bodyText": pt::text(body),
+  }
 `
 
 // ── Sections ───────────────────────────────────────────────────────────────────
@@ -403,6 +295,23 @@ export const allLeaderResourcesQuery = groq`
     visibleToRoles,
     "hasFile": defined(file.asset),
     "bodyText": pt::text(body),
+  }
+`
+
+export const searchNewsQuery = groq`
+  *[_type == "newsArticle"] | order(date desc) {
+    "slug": slug.current,
+    title,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
+`
+
+export const searchLeaderTeamQuery = groq`
+  *[_type == "leaderProfile" && isActive == true] | order(name asc) {
+    name,
+    "role": coalesce(roles[0], "Leader"),
+    "group": "Leader Team",
   }
 `
 

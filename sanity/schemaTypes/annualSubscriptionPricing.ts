@@ -12,6 +12,7 @@ type AnnualPricingDocument = {
   cubs?: SectionValue
   scouts?: SectionValue
   ventures?: SectionValue
+  maximumSubscriptionFee?: number
 }
 
 function sectionField(name: string, title: string) {
@@ -64,6 +65,13 @@ export const annualSubscriptionPricing = defineType({
     sectionField('cubs', 'Cubs'),
     sectionField('scouts', 'Scouts'),
     sectionField('ventures', 'Ventures'),
+    defineField({
+      name: 'maximumSubscriptionFee',
+      title: 'Maximum Subscription Fee',
+      type: 'number',
+      description: 'Optional cap on total subscription charges. Leave blank for no limit.',
+      validation: (Rule) => Rule.min(0),
+    }),
   ],
   validation: (Rule) =>
     Rule.custom((doc) => {
