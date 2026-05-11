@@ -57,6 +57,18 @@ export const paymentTransaction = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'payeeName',
+      title: 'Payee Name',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'payeeReference',
+      title: 'Payee Reference',
+      type: 'string',
+      description: 'Optional identifying note, for example family name or child name.',
+    }),
+    defineField({
       name: 'leaderName',
       title: 'Leader Name',
       type: 'string',
@@ -151,22 +163,31 @@ export const paymentTransaction = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title', status: 'status', section: 'section', amount: 'amount', currency: 'currency' },
+    select: {
+      title: 'title',
+      payeeName: 'payeeName',
+      status: 'status',
+      section: 'section',
+      amount: 'amount',
+      currency: 'currency',
+    },
     prepare({
       title,
+      payeeName,
       status,
       section,
       amount,
       currency,
     }: {
       title?: string
+      payeeName?: string
       status?: string
       section?: string
       amount?: number
       currency?: string
     }) {
       return {
-        title: title ?? 'Untitled',
+        title: title ?? payeeName ?? 'Untitled',
         subtitle: [section, amount != null ? `${currency?.toUpperCase() ?? ''} ${amount}`.trim() : '', status].filter(Boolean).join(' · '),
       }
     },

@@ -80,6 +80,25 @@ function parseQuantity(value: FormDataEntryValue | null): number {
   return Math.min(parsed, 999)
 }
 
+function parseRequiredText(value: FormDataEntryValue | null, fieldName: string): string {
+  if (typeof value !== "string") {
+    throw new Error(`${fieldName} is required`)
+  }
+
+  const trimmed = value.trim()
+  if (!trimmed) {
+    throw new Error(`${fieldName} is required`)
+  }
+
+  return trimmed
+}
+
+function parseOptionalText(value: FormDataEntryValue | null): string | undefined {
+  if (typeof value !== "string") return undefined
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : undefined
+}
+
 function formatAmount(value: number): string {
   return value.toFixed(2)
 }
@@ -134,24 +153,27 @@ async function getLeaderContext(email: string, fallbackName?: string | null, fal
 async function upsertTransactionFromPaymentIntent(params: {
   paymentIntent: Stripe.PaymentIntent
   leader: { name: string; email: string; roles: string[] }
+  payee: { name: string; reference?: string }
   amount: number
   currency: string
   paymentType: string
   status: "pending" | "completed" | "cancelled" | "failed"
 }) {
-  const { paymentIntent, leader, amount, currency, paymentType, status } = params
+  const { paymentIntent, leader, payee, amount, currency, paymentType, status } = params
 
   const existing = await serverClient
     .fetch(paymentRecordByPaymentIntentIdQuery, { paymentIntentId: paymentIntent.id })
     .catch(() => null)
 
   const document = {
-    title: `Annual subscriptions - ${leader.name}`,
+    title: `Annual subscriptions - ${payee.name}`,
     status,
     planSlug: "annual-subscriptions",
     paymentType,
     section: "multiple",
     checkoutMode: "payment",
+    payeeName: payee.name,
+    payeeReference: payee.reference,
     leaderName: leader.name,
     leaderEmail: leader.email,
     leaderRoles: leader.roles,
@@ -207,6 +229,8 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     scouts: parseQuantity(formData.get("scoutsQty")),
     ventures: parseQuantity(formData.get("venturesQty")),
   }
+  const payeeName = parseRequiredText(formData.get("payeeName"), "Payee name")
+  const payeeReference = parseOptionalText(formData.get("payeeReference"))
 
   const summary = buildSelectionSummary(pricing, quantities)
   if (summary.selections.length === 0) {
@@ -227,7 +251,8 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     .create({
       amount: toMinorUnits(summary.total),
       currency,
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: ["card", "revolut_pay"],
+      description: `Annual subscriptions - ${payeeName}`,
       receipt_email: leader.email,
       metadata: {
         paymentType,
@@ -237,6 +262,8 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
         cubsQty: String(quantities.cubs),
         scoutsQty: String(quantities.scouts),
         venturesQty: String(quantities.ventures),
+        payeeName,
+        payeeReference: payeeReference ?? "",
         leaderName: leader.name,
         leaderEmail: leader.email,
       },
@@ -256,6 +283,10 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
   await upsertTransactionFromPaymentIntent({
     paymentIntent,
     leader,
+    payee: {
+      name: payeeName,
+      reference: payeeReference,
+    },
     amount: summary.total,
     currency,
     paymentType,
@@ -335,6 +366,10 @@ export async function markPaymentCancelledAction(paymentIntentId?: string) {
   await upsertTransactionFromPaymentIntent({
     paymentIntent,
     leader,
+    payee: {
+      name: paymentIntent.metadata?.payeeName ?? leader.name,
+      reference: paymentIntent.metadata?.payeeReference,
+    },
     amount,
     currency,
     paymentType,
@@ -370,6 +405,10 @@ export async function markPaymentCompletedAction(paymentIntentId?: string) {
   await upsertTransactionFromPaymentIntent({
     paymentIntent,
     leader,
+    payee: {
+      name: paymentIntent.metadata?.payeeName ?? leader.name,
+      reference: paymentIntent.metadata?.payeeReference,
+    },
     amount,
     currency,
     paymentType,

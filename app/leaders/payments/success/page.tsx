@@ -22,7 +22,7 @@ export default async function PaymentSuccessPage({
   }
 
   const { payment_intent: paymentIntentId } = await searchParams
-  let paymentRecord: { stripePaymentIntentId?: string } | null = null
+  let paymentRecord: { stripePaymentIntentId?: string; payeeName?: string } | null = null
 
   if (paymentIntentId) {
     await markPaymentCompletedAction(paymentIntentId).catch(() => null)
@@ -44,9 +44,16 @@ export default async function PaymentSuccessPage({
         </p>
 
         {paymentRecord?.stripePaymentIntentId && (
-          <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy-dark/5 text-navy-dark text-sm font-body">
-            <ShieldCheck size={16} className="text-orange-main" />
-            Payment Intent: {paymentRecord.stripePaymentIntentId}
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy-dark/5 text-navy-dark text-sm font-body">
+              <ShieldCheck size={16} className="text-orange-main" />
+              Payment Intent: {paymentRecord.stripePaymentIntentId}
+            </div>
+            {paymentRecord.payeeName && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 text-green-700 text-sm font-body">
+                Payee: {paymentRecord.payeeName}
+              </div>
+            )}
           </div>
         )}
 

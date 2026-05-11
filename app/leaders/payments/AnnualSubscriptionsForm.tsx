@@ -41,6 +41,45 @@ export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingD
 
   return (
     <form action={startAnnualSubscriptionsCheckoutAction} className="space-y-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+        <h2 className="font-display font-bold text-navy-dark text-xl">Payee Details</h2>
+        <p className="font-body text-sm text-textMuted mt-1">
+          Add details so this payment can be identified in your transaction records.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label htmlFor="payeeName" className="block font-body text-sm font-semibold text-navy-dark mb-2">
+              Payee Name
+            </label>
+            <input
+              id="payeeName"
+              name="payeeName"
+              type="text"
+              required
+              maxLength={120}
+              placeholder="e.g. John Murphy"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="payeeReference"
+              className="block font-body text-sm font-semibold text-navy-dark mb-2"
+            >
+              Reference (Optional)
+            </label>
+            <input
+              id="payeeReference"
+              name="payeeReference"
+              type="text"
+              maxLength={160}
+              placeholder="e.g. Parent of Alex (Scouts)"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {pricing.sections.map((section) => {
           const quantity = quantities[section.key]

@@ -10,7 +10,7 @@ export const structure: StructureResolver = (S) =>
       // Singleton: only one FAQs document ever exists — link directly to it
       S.listItem()
         .title('FAQs')
-        .id('faqList')
+        .id('singleton-faq-list')
         .child(
           S.document()
             .schemaType('faqList')
@@ -18,7 +18,7 @@ export const structure: StructureResolver = (S) =>
         ),
       S.listItem()
         .title('Annual Subscription Pricing')
-        .id('annualSubscriptionPricing')
+        .id('singleton-annual-subscription-pricing')
         .child(
           S.document()
             .schemaType('annualSubscriptionPricing')
