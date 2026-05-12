@@ -24,16 +24,14 @@ function sectionLabel(section: string): string {
 }
 
 export default function PublicCampPaymentsForm({ pricing }: { pricing: CampPricingData }) {
-  const [selectedOptionId, setSelectedOptionId] = useState(pricing.options[0]?.id ?? "")
+  const [selectedOptionId, setSelectedOptionId] = useState("")
 
   const selectedOption = useMemo(
-    () => pricing.options.find((o) => o.id === selectedOptionId) ?? pricing.options[0],
+    () => pricing.options.find((o) => o.id === selectedOptionId),
     [pricing.options, selectedOptionId]
   )
 
-  const [selectedAmount, setSelectedAmount] = useState(
-    selectedOption?.amountOptions[0]?.toFixed(2) ?? ""
-  )
+  const [selectedAmount, setSelectedAmount] = useState("")
 
   const money = useMemo(
     () => new Intl.NumberFormat("en-IE", { style: "currency", currency: pricing.currency.toUpperCase() }),
@@ -123,10 +121,11 @@ export default function PublicCampPaymentsForm({ pricing }: { pricing: CampPrici
             id="summerCampOption"
             name="summerCampOptionId"
             required
-            value={selectedOption?.id ?? ""}
+            value={selectedOptionId}
             onChange={(e) => handleOptionChange(e.target.value)}
             className="w-full rounded-xl border border-gray-200 px-3 py-2.5 bg-white font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main"
           >
+            <option value="">Select a Camp to make a Payment for.</option>
             {pricing.options.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.title} ({sectionLabel(option.section)})
@@ -146,16 +145,20 @@ export default function PublicCampPaymentsForm({ pricing }: { pricing: CampPrici
             value={selectedAmount}
             onChange={(e) => setSelectedAmount(e.target.value)}
             disabled={!selectedOption}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2.5 bg-white font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main"
+            className="w-full rounded-xl border border-gray-200 px-3 py-2.5 bg-white font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main disabled:bg-gray-100 disabled:text-gray-400"
           >
-            {availableAmounts.map((amount) => {
-              const value = amount.toFixed(2)
-              return (
-                <option key={value} value={value}>
-                  {money.format(amount)}
-                </option>
-              )
-            })}
+            {!selectedOption ? (
+              <option value="">Select a camp first</option>
+            ) : (
+              availableAmounts.map((amount) => {
+                const value = amount.toFixed(2)
+                return (
+                  <option key={value} value={value}>
+                    {money.format(amount)}
+                  </option>
+                )
+              })
+            )}
           </select>
         </div>
       </div>
