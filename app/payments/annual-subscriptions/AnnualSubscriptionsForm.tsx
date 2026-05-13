@@ -41,6 +41,7 @@ export default function PublicAnnualSubscriptionsForm({ pricing }: { pricing: Pr
   const [quantities, setQuantities] = useState<Record<SectionKey, number>>({
     beavers: 0, cubs: 0, scouts: 0, ventures: 0,
   })
+  const [paymentMethod, setPaymentMethod] = useState<"full" | "installments">("full")
 
   const total = useMemo(() => {
     const subtotal = pricing.sections.reduce(
@@ -70,6 +71,8 @@ export default function PublicAnnualSubscriptionsForm({ pricing }: { pricing: Pr
 
   return (
     <form action={startPublicAnnualSubscriptionsCheckoutAction} className="space-y-6">
+      <input type="hidden" name="paymentMethod" value={paymentMethod} />
+
       {/* Payee details */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
         <h2 className="font-display font-bold text-navy-dark text-xl">Your Details</h2>
@@ -120,6 +123,46 @@ export default function PublicAnnualSubscriptionsForm({ pricing }: { pricing: Pr
             />
           </div>
         </div>
+      </div>
+
+      {/* Payment method selector */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
+        <h2 className="font-display font-bold text-navy-dark text-xl">Payment Method</h2>
+        <p className="font-body text-sm text-textMuted mt-1">
+          Choose how you would like to pay for your subscriptions.
+        </p>
+        <fieldset className="mt-4 space-y-3">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="full"
+              checked={paymentMethod === "full"}
+              onChange={(e) => setPaymentMethod(e.target.value as "full" | "installments")}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <div className="flex-1">
+              <p className="font-body font-semibold text-navy-dark">Pay in Full</p>
+              <p className="font-body text-sm text-textMuted">Pay the entire amount today</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="installments"
+              checked={paymentMethod === "installments"}
+              onChange={(e) => setPaymentMethod(e.target.value as "full" | "installments")}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <div className="flex-1">
+              <p className="font-body font-semibold text-navy-dark">4 Monthly Installments</p>
+              <p className="font-body text-sm text-textMuted">
+                Split payment into 4 equal monthly charges
+              </p>
+            </div>
+          </label>
+        </fieldset>
       </div>
 
       {/* Section quantities */}

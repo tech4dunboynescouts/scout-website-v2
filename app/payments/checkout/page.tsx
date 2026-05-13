@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { siteUrl } from "@/lib/siteConfig"
-import { getPublicPaymentIntentClientSecret } from "../actions"
+import { getPublicPaymentIntentClientSecret, getPublicSetupIntentClientSecret } from "../actions"
 import PaymentElementCheckout from "./PaymentElementCheckout"
 
 export const metadata: Metadata = {
@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 export default async function PublicCheckoutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ payment_intent?: string }>
+  searchParams: Promise<{ payment_intent?: string; setup_intent?: string }>
 }) {
-  const { payment_intent } = await searchParams
+  const { payment_intent, setup_intent } = await searchParams
 
-  if (!payment_intent) {
+  if (!payment_intent && !setup_intent) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8">
@@ -38,7 +38,14 @@ export default async function PublicCheckoutPage({
     )
   }
 
-  const clientSecret = await getPublicPaymentIntentClientSecret(payment_intent).catch(() => null)
+  const isSubscription = !!setup_intent
+  let clientSecret: string | null = null
+
+  if (isSubscription && setup_intent) {
+    clientSecret = await getPublicSetupIntentClientSecret(setup_intent).catch(() => null)
+  } else if (payment_intent) {
+    clientSecret = await getPublicPaymentIntentClientSecret(payment_intent).catch(() => null)
+  }
 
   if (!clientSecret) {
     return (
@@ -61,6 +68,10 @@ export default async function PublicCheckoutPage({
     )
   }
 
+  const returnUrl = isSubscription
+    ? `${siteUrl}/payments/complete`
+    : `${siteUrl}/payments/success`
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-14">
       <div className="mb-5">
@@ -73,7 +84,8 @@ export default async function PublicCheckoutPage({
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">
         <PaymentElementCheckout
           clientSecret={clientSecret}
-          returnUrl={`${siteUrl}/payments/success`}
+          returnUrl={returnUrl}
+          isSubscription={isSubscription}
         />
       </div>
 

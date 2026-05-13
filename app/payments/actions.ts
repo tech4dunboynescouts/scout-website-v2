@@ -20,6 +20,7 @@ type SectionKey = "beavers" | "cubs" | "scouts" | "ventures"
 type SectionPricing = {
   unitPrice?: number
   stripePriceId?: string
+  subscriptionStripePriceId?: string
 }
 
 type AnnualSubscriptionPricing = {
@@ -44,6 +45,7 @@ type ScoutsSummerCampPricing = {
 }
 
 const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures"]
+const INSTALLMENT_MONTHS = 4
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -121,8 +123,7 @@ async function sendPaymentConfirmationEmail(params: {
     minute: "2-digit",
   }).format(new Date(timestamp))
 
-  const paymentTypeLabel =
-    paymentType === "annual-membership" ? "Annual Subscriptions" : "Camp Payment"
+  const paymentTypeLabel = getPaymentTypeLabel(paymentType)
 
   const text = [
     "Your payment has been successfully processed.",
@@ -196,6 +197,17 @@ async function sendPaymentConfirmationEmail(params: {
   }
 }
 
+function getPaymentTypeLabel(paymentType: string): string {
+  switch (paymentType) {
+    case "annual-membership":
+      return "Annual Subscriptions"
+    case "annual-membership-installments":
+      return "Annual Subscriptions - Monthly Installments"
+    default:
+      return "Camp Payment"
+  }
+}
+
 function normalizeStripeError(error: unknown): { message: string; requestId?: string } {
   if (!error || typeof error !== "object") return { message: "Unknown Stripe error" }
   const e = error as { message?: string; requestId?: string }
@@ -266,11 +278,83 @@ function normalizeAmountOptions(values: number[] | undefined): number[] {
   return unique
 }
 
+async function getOrCreateStripeCustomer(params: {
+  email: string
+  name: string
+  paymentType: string
+}) {
+  const stripe = getStripeClient()
+  const existingCustomers = await stripe.customers
+    .list({ email: params.email, limit: 1 })
+    .catch(() => null)
+
+  const existingCustomer = existingCustomers?.data.find(
+    (customer) => !("deleted" in customer && customer.deleted)
+  )
+
+  if (existingCustomer && !("deleted" in existingCustomer && existingCustomer.deleted)) {
+    await stripe.customers
+      .update(existingCustomer.id, {
+        email: params.email,
+        name: params.name,
+        metadata: {
+          ...existingCustomer.metadata,
+          paymentType: params.paymentType,
+          source: "public",
+        },
+      })
+      .catch(() => null)
+
+    return existingCustomer.id
+  }
+
+  const customer = await stripe.customers.create({
+    email: params.email,
+    name: params.name,
+    metadata: {
+      paymentType: params.paymentType,
+      source: "public",
+    },
+  })
+
+  return customer.id
+}
+
+async function calculateSubscriptionAmount(
+  lineItems: Array<{ price: string; quantity: number }>,
+  fallbackCurrency: string
+) {
+  const stripe = getStripeClient()
+
+  const lineTotals = await Promise.all(
+    lineItems.map(async (item) => {
+      const price = await stripe.prices.retrieve(item.price)
+      const unitAmount = price.unit_amount
+
+      if (typeof unitAmount !== "number") {
+        throw new Error("Subscription price must use a fixed unit amount")
+      }
+
+      return {
+        total: unitAmount * Math.max(1, item.quantity || 1),
+        currency: price.currency ?? fallbackCurrency,
+      }
+    })
+  )
+
+  return {
+    amount: lineTotals.reduce((sum, item) => sum + item.total, 0) / 100,
+    currency: lineTotals[0]?.currency ?? fallbackCurrency,
+  }
+}
+
 // ── Annual Subscriptions ──────────────────────────────────────────────────────
 
 export async function startPublicAnnualSubscriptionsCheckoutAction(formData: FormData) {
   const pricing = await serverClient.fetch(annualSubscriptionPricingQuery).catch(() => null)
   if (!pricing) throw new Error("Annual subscription pricing is not configured")
+
+  const paymentMethod = String(formData.get("paymentMethod") ?? "full")
 
   const quantities: Record<SectionKey, number> = {
     beavers: parseQuantity(formData.get("beaversQty")),
@@ -290,47 +374,114 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
   const currency = String(pricing.currency ?? "eur").toLowerCase()
   const paymentType = String(pricing.paymentType ?? "annual-membership")
 
-  const stripe = getStripeClient()
-  const paymentIntent = await stripe.paymentIntents
-    .create({
-      amount: toMinorUnits(summary.total),
-      currency,
-      payment_method_types: ["card", "revolut_pay"],
-      description: `Annual subscriptions - ${payeeName}`,
-      receipt_email: payeeEmail,
-      metadata: {
-        paymentType,
+  if (paymentMethod === "installments") {
+    // ── Subscription flow (4 monthly installments) ──────────────────────────────────
+    const subscriptionLineItems = summary.selections.flatMap((item) => {
+      const sectionPricing = pricing[item.section as SectionKey]
+      const subscriptionPriceId = sectionPricing?.subscriptionStripePriceId
+
+      if (!subscriptionPriceId) {
+        throw new Error(
+          `Subscription pricing not configured for ${item.section}. Please contact support.`
+        )
+      }
+
+      return [
+        {
+          price: subscriptionPriceId,
+          quantity: item.quantity,
+        },
+      ]
+    })
+
+    const stripe = getStripeClient()
+    const customerId = await getOrCreateStripeCustomer({
+      email: payeeEmail,
+      name: payeeName,
+      paymentType: "annual-membership-installments",
+    })
+    
+    // For subscriptions, we'll create a setup intent to collect payment method,
+    // then create the subscription. Store setup intent ID in session for checkout flow.
+    const setupIntent = await stripe.setupIntents
+      .create({
+        customer: customerId,
+        payment_method_types: ["card"],
+        usage: "off_session",
+        metadata: {
+          customerId,
+          paymentType: "annual-membership-installments",
+          currency,
+          payeeName,
+          payeeReference,
+          payeeEmail,
+          beaversQty: String(quantities.beavers),
+          cubsQty: String(quantities.cubs),
+          scoutsQty: String(quantities.scouts),
+          venturesQty: String(quantities.ventures),
+          source: "public",
+          lineItemsJson: JSON.stringify(subscriptionLineItems),
+        },
+      })
+      .catch((error: unknown) => {
+        const details = normalizeStripeError(error)
+        const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
+        throw new Error(`Could not prepare subscription setup.${suffix}`)
+      })
+
+    const cookieStore = await cookies()
+    cookieStore.set("public_subscription_setup", setupIntent.id, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: siteUrl.startsWith("https://"),
+      path: "/payments",
+      maxAge: 60 * 60 * 24,
+    })
+
+    redirect(`/payments/checkout?setup_intent=${setupIntent.id}`)
+  } else {
+    // ── One-time payment flow (Pay in full) ─────────────────────────────────────────
+    const paymentIntent = await getStripeClient()
+      .paymentIntents.create({
+        amount: toMinorUnits(summary.total),
         currency,
-        totalDue: formatAmount(summary.total),
-        beaversQty: String(quantities.beavers),
-        cubsQty: String(quantities.cubs),
-        scoutsQty: String(quantities.scouts),
-        venturesQty: String(quantities.ventures),
-        payeeName,
-        payeeReference,
-        payeeEmail,
-        planSlug: "annual-subscriptions",
-        section: "multiple",
-        titlePrefix: "Annual subscriptions",
-        source: "public",
-      },
-    })
-    .catch((error: unknown) => {
-      const details = normalizeStripeError(error)
-      const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
-      throw new Error(`Payment could not be created.${suffix}`)
+        payment_method_types: ["card", "revolut_pay"],
+        description: `Annual subscriptions - ${payeeName}`,
+        receipt_email: payeeEmail,
+        metadata: {
+          paymentType,
+          currency,
+          totalDue: formatAmount(summary.total),
+          beaversQty: String(quantities.beavers),
+          cubsQty: String(quantities.cubs),
+          scoutsQty: String(quantities.scouts),
+          venturesQty: String(quantities.ventures),
+          payeeName,
+          payeeReference,
+          payeeEmail,
+          planSlug: "annual-subscriptions",
+          section: "multiple",
+          titlePrefix: "Annual subscriptions",
+          source: "public",
+        },
+      })
+      .catch((error: unknown) => {
+        const details = normalizeStripeError(error)
+        const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
+        throw new Error(`Payment could not be created.${suffix}`)
+      })
+
+    const cookieStore = await cookies()
+    cookieStore.set("public_payment_intent", paymentIntent.id, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: siteUrl.startsWith("https://"),
+      path: "/payments",
+      maxAge: 60 * 60 * 24,
     })
 
-  const cookieStore = await cookies()
-  cookieStore.set("public_payment_intent", paymentIntent.id, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: siteUrl.startsWith("https://"),
-    path: "/payments",
-    maxAge: 60 * 60 * 24,
-  })
-
-  redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)
+    redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)
+  }
 }
 
 // ── Camp Payments ─────────────────────────────────────────────────────────────
@@ -429,7 +580,209 @@ export async function getPublicPaymentIntentClientSecret(paymentIntentId: string
 
   return paymentIntent.client_secret
 }
+export async function getPublicSetupIntentClientSecret(setupIntentId: string) {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get("public_subscription_setup")?.value
 
+  if (!cookieValue || cookieValue !== setupIntentId) {
+    throw new Error("Subscription setup session not found")
+  }
+
+  const stripe = getStripeClient()
+  const setupIntent = await stripe.setupIntents.retrieve(setupIntentId)
+
+  if (!setupIntent.client_secret) {
+    throw new Error("Missing setup intent client secret")
+  }
+
+  return setupIntent.client_secret
+}
+
+export async function createPublicSubscriptionAction(setupIntentId: string) {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get("public_subscription_setup")?.value
+
+  if (!cookieValue || cookieValue !== setupIntentId) {
+    throw new Error("Subscription setup session not found")
+  }
+
+  const stripe = getStripeClient()
+
+  const setupIntent = await stripe.setupIntents.retrieve(setupIntentId).catch(() => null)
+  if (!setupIntent) {
+    throw new Error("Subscription setup not found")
+  }
+
+  if (setupIntent.status !== "succeeded") {
+    throw new Error("Payment method not confirmed")
+  }
+
+  const paymentMethod = setupIntent.payment_method
+
+  if (!paymentMethod || typeof paymentMethod !== "string") {
+    throw new Error("No payment method available")
+  }
+
+  const metadata = setupIntent.metadata as Record<string, string> | undefined
+  if (!metadata) {
+    throw new Error("Subscription metadata not found")
+  }
+
+  const existingSubscriptionId = metadata.createdSubscriptionId
+  if (existingSubscriptionId) {
+    const existingSubscription = await stripe.subscriptions
+      .retrieve(existingSubscriptionId)
+      .catch(() => null)
+
+    if (existingSubscription) {
+      return existingSubscription as Stripe.Subscription
+    }
+  }
+
+  let lineItems: Array<{ price: string; quantity: number }>
+  try {
+    lineItems = JSON.parse(metadata.lineItemsJson || "[]")
+  } catch {
+    throw new Error("Invalid subscription configuration")
+  }
+
+  let customerId = typeof setupIntent.customer === "string" ? setupIntent.customer : metadata.customerId
+
+  if (!customerId) {
+    customerId = await getOrCreateStripeCustomer({
+      email: sanitiseEmail(metadata.payeeEmail),
+      name: metadata.payeeName ?? "Parent/Guardian",
+      paymentType: metadata.paymentType ?? "annual-membership-installments",
+    })
+  }
+
+  await stripe.paymentMethods.attach(paymentMethod, { customer: customerId }).catch((error: unknown) => {
+    const details = normalizeStripeError(error)
+    if (!details.message.toLowerCase().includes("already attached")) {
+      throw error
+    }
+  })
+
+  await stripe.customers.update(customerId, {
+    email: sanitiseEmail(metadata.payeeEmail),
+    name: metadata.payeeName,
+    invoice_settings: {
+      default_payment_method: paymentMethod,
+    },
+    metadata: {
+      paymentType: metadata.paymentType,
+      source: metadata.source,
+    },
+  })
+
+  const schedule = await stripe.subscriptionSchedules
+    .create({
+      customer: customerId,
+      start_date: "now",
+      end_behavior: "cancel",
+      default_settings: {
+        automatic_tax: { enabled: true },
+        collection_method: "charge_automatically",
+        default_payment_method: paymentMethod,
+        description: `Annual subscriptions installment plan - ${metadata.payeeName}`,
+      },
+      phases: [
+        {
+          automatic_tax: { enabled: true },
+          collection_method: "charge_automatically",
+          currency: metadata.currency,
+          default_payment_method: paymentMethod,
+          duration: {
+            interval: "month",
+            interval_count: INSTALLMENT_MONTHS,
+          },
+          items: lineItems,
+          metadata: {
+            paymentType: metadata.paymentType,
+            currency: metadata.currency,
+            payeeName: metadata.payeeName,
+            payeeReference: metadata.payeeReference,
+            payeeEmail: metadata.payeeEmail,
+            beaversQty: metadata.beaversQty,
+            cubsQty: metadata.cubsQty,
+            scoutsQty: metadata.scoutsQty,
+            venturesQty: metadata.venturesQty,
+            source: metadata.source,
+            installmentCount: String(INSTALLMENT_MONTHS),
+          },
+        },
+      ],
+      metadata: {
+        paymentType: metadata.paymentType,
+        currency: metadata.currency,
+        payeeName: metadata.payeeName,
+        payeeReference: metadata.payeeReference,
+        payeeEmail: metadata.payeeEmail,
+        source: metadata.source,
+        installmentCount: String(INSTALLMENT_MONTHS),
+        setupIntentId: setupIntent.id,
+      },
+    })
+    .catch((error: unknown) => {
+      const details = normalizeStripeError(error)
+      const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
+      throw new Error(`Subscription could not be created.${suffix}`)
+    })
+
+  const subscriptionId =
+    typeof schedule.subscription === "string" ? schedule.subscription : schedule.subscription?.id
+
+  if (!subscriptionId) {
+    throw new Error("Stripe did not return a subscription for the installment plan")
+  }
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId).catch((error: unknown) => {
+    const details = normalizeStripeError(error)
+    const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
+    throw new Error(`Subscription was created but could not be retrieved.${suffix}`)
+  })
+
+  // Send confirmation email for subscription
+  const payeeEmail = sanitiseEmail(metadata.payeeEmail)
+  if (payeeEmail && !metadata.paymentConfirmationEmailSentAt) {
+    const { amount, currency } = await calculateSubscriptionAmount(
+      lineItems,
+      String(metadata.currency ?? subscription.currency ?? "eur")
+    )
+
+    await sendPaymentConfirmationEmail({
+      payeeEmail,
+      payeeName: metadata.payeeName,
+      childNames: metadata.payeeReference,
+      paymentType: "annual-membership-installments",
+      amount,
+      currency,
+      paymentIntentId: String(subscription.id),
+      timestamp: new Date().toISOString(),
+    }).catch(() => null)
+  }
+
+  await stripe.setupIntents
+    .update(setupIntent.id, {
+      metadata: {
+        ...metadata,
+        createdSubscriptionId: subscription.id,
+        createdSubscriptionScheduleId: schedule.id,
+        customerId,
+        paymentConfirmationEmailSentAt:
+          metadata.paymentConfirmationEmailSentAt || new Date().toISOString(),
+      },
+    })
+    .catch((error: unknown) => {
+      const { message } = normalizeStripeError(error)
+      console.error("[public-payments] Failed to persist subscription completion metadata", {
+        setupIntentId: setupIntent.id,
+        message,
+      })
+    })
+
+  return subscription as Stripe.Subscription
+}
 export async function markPublicPaymentCancelledAction(paymentIntentId?: string) {
   const cookieStore = await cookies()
   const intentId = paymentIntentId ?? cookieStore.get("public_payment_intent")?.value

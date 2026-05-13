@@ -3,6 +3,7 @@ import { defineField, defineType } from 'sanity'
 type SectionValue = {
   unitPrice?: number
   stripePriceId?: string
+  subscriptionStripePriceId?: string
 }
 
 type AnnualPricingDocument = {
@@ -30,11 +31,21 @@ function sectionField(name: string, title: string) {
       }),
       defineField({
         name: 'stripePriceId',
-        title: 'Stripe Price ID',
+        title: 'Stripe Price ID (Pay in Full)',
         type: 'string',
-        description: 'Price ID from Stripe dashboard (e.g., price_...).',
+        description: 'One-time payment price from Stripe dashboard (e.g., price_...).',
         validation: (Rule) => Rule.required().regex(/^price_/, {
           name: 'Stripe Price ID',
+          invert: false,
+        }),
+      }),
+      defineField({
+        name: 'subscriptionStripePriceId',
+        title: 'Stripe Subscription Price ID (Monthly Installments)',
+        type: 'string',
+        description: 'Recurring monthly subscription price from Stripe dashboard (e.g., price_...). Used for 4-month installment payments.',
+        validation: (Rule) => Rule.regex(/^price_/, {
+          name: 'Stripe Subscription Price ID',
           invert: false,
         }),
       }),
@@ -95,7 +106,10 @@ export const annualSubscriptionPricing = defineType({
           return `Section '${String(key)}' must have a unit price of 0 or greater.`
         }
         if (!section.stripePriceId) {
-          return `Section '${String(key)}' must have a Stripe Price ID.`
+          return `Section '${String(key)}' must have a Stripe Price ID (Pay in Full).`
+        }
+        if (!section.subscriptionStripePriceId) {
+          return `Section '${String(key)}' must have a Stripe Subscription Price ID (Monthly Installments).`
         }
       }
 

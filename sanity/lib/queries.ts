@@ -96,10 +96,10 @@ export const annualSubscriptionPricingQuery = groq`
   *[_type == "annualSubscriptionPricing" && _id == "annualSubscriptionPricing"][0] {
     currency,
     paymentType,
-    beavers { unitPrice, stripePriceId },
-    cubs { unitPrice, stripePriceId },
-    scouts { unitPrice, stripePriceId },
-    ventures { unitPrice, stripePriceId },
+    beavers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
+    scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
+    ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
     maximumSubscriptionFee,
   }
 `
