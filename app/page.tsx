@@ -9,6 +9,8 @@ import sections from "@/data/sections.json";
 import { client } from "@/sanity/lib/client";
 import { allNewsQuery } from "@/sanity/lib/queries";
 
+const enableStartupLogs = process.env.DEBUG_STARTUP_LOGS === "1";
+
 export const metadata: Metadata = {
   title: "1st Meath Dunboyne Scout Group",
   description:
@@ -51,10 +53,39 @@ interface NewsArticle {
 }
 
 export default async function HomePage() {
+  if (enableStartupLogs) {
+    console.info("[startup] HomePage start", {
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   const latestNews: NewsArticle[] = await client
     .fetch(allNewsQuery)
-    .then((articles: NewsArticle[]) => articles.slice(0, 3))
-    .catch(() => []);
+    .then((articles: NewsArticle[]) => {
+      if (enableStartupLogs) {
+        console.info("[startup] HomePage allNewsQuery resolved", {
+          count: Array.isArray(articles) ? articles.length : 0,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      return articles.slice(0, 3);
+    })
+    .catch((error) => {
+      if (enableStartupLogs) {
+        console.error("[startup] HomePage allNewsQuery failed", {
+          message: error instanceof Error ? error.message : String(error),
+          timestamp: new Date().toISOString(),
+        });
+      }
+      return [];
+    });
+
+  if (enableStartupLogs) {
+    console.info("[startup] HomePage render", {
+      latestNewsCount: latestNews.length,
+      timestamp: new Date().toISOString(),
+    });
+  }
 
   return (
     <>

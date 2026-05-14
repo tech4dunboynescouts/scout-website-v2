@@ -255,13 +255,13 @@ function buildSelectionSummary(
     return [{ section, quantity, unitPrice, stripePriceId, subtotal: unitPrice * quantity }]
   })
 
-  let total = selections.reduce((sum, item) => sum + item.subtotal, 0)
+  const subtotal = selections.reduce((sum, item) => sum + item.subtotal, 0)
+  const maxFee = Number(pricing.maximumSubscriptionFee ?? 0)
+  const hasMaxFee = Number.isFinite(maxFee) && maxFee > 0
+  const isCapped = hasMaxFee && subtotal > maxFee
+  const total = isCapped ? maxFee : subtotal
 
-  if (pricing.maximumSubscriptionFee && total > pricing.maximumSubscriptionFee) {
-    total = pricing.maximumSubscriptionFee
-  }
-
-  return { selections, total }
+  return { selections, subtotal, total, isCapped }
 }
 
 function normalizeAmountOptions(values: number[] | undefined): number[] {
@@ -376,25 +376,68 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
 
   if (paymentMethod === "installments") {
     // ── Subscription flow (4 monthly installments) ──────────────────────────────────
-    const subscriptionLineItems = summary.selections.flatMap((item) => {
-      const sectionPricing = pricing[item.section as SectionKey]
-      const subscriptionPriceId = sectionPricing?.subscriptionStripePriceId
+    const stripe = getStripeClient()
+    let subscriptionLineItems: Array<{ price: string; quantity: number }>
 
-      if (!subscriptionPriceId) {
-        throw new Error(
-          `Subscription pricing not configured for ${item.section}. Please contact support.`
-        )
+    if (summary.isCapped) {
+      const cappedTotalMinorUnits = toMinorUnits(summary.total)
+      const installmentAmountMinorUnits = Math.floor(cappedTotalMinorUnits / INSTALLMENT_MONTHS)
+
+      if (installmentAmountMinorUnits <= 0) {
+        throw new Error("Installment amount is too low to process")
       }
 
-      return [
+      const cappedInstallmentPrice = await stripe.prices
+        .create({
+          currency,
+          unit_amount: installmentAmountMinorUnits,
+          recurring: { interval: "month" },
+          product_data: {
+            name: "Annual subscriptions installment",
+            metadata: {
+              paymentType: "annual-membership-installments",
+              source: "public",
+            },
+          },
+          metadata: {
+            paymentType: "annual-membership-installments",
+            source: "public",
+            cappedByMaximumFee: "true",
+            cappedTotalDue: formatAmount(summary.total),
+          },
+        })
+        .catch((error: unknown) => {
+          const details = normalizeStripeError(error)
+          const suffix = details.requestId ? ` Request ID: ${details.requestId}` : ""
+          throw new Error(`Could not create capped installment pricing.${suffix}`)
+        })
+
+      subscriptionLineItems = [
         {
-          price: subscriptionPriceId,
-          quantity: item.quantity,
+          price: cappedInstallmentPrice.id,
+          quantity: 1,
         },
       ]
-    })
+    } else {
+      subscriptionLineItems = summary.selections.flatMap((item) => {
+        const sectionPricing = pricing[item.section as SectionKey]
+        const subscriptionPriceId = sectionPricing?.subscriptionStripePriceId
 
-    const stripe = getStripeClient()
+        if (!subscriptionPriceId) {
+          throw new Error(
+            `Subscription pricing not configured for ${item.section}. Please contact support.`
+          )
+        }
+
+        return [
+          {
+            price: subscriptionPriceId,
+            quantity: item.quantity,
+          },
+        ]
+      })
+    }
+
     const customerId = await getOrCreateStripeCustomer({
       email: payeeEmail,
       name: payeeName,
@@ -412,6 +455,8 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
           customerId,
           paymentType: "annual-membership-installments",
           currency,
+          totalDue: formatAmount(summary.total),
+          maximumSubscriptionFeeApplied: String(summary.isCapped),
           payeeName,
           payeeReference,
           payeeEmail,
