@@ -16,6 +16,21 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Windows Dev Note
+
+On Windows, this project can hang on `next dev` (Turbopack) even after `Ready` is shown.
+The default `npm run dev` script is configured to use webpack mode for stability.
+
+- Stable local start: `npm run dev`
+- Optional Turbopack test: `npm run dev:turbo`
+
+If you see `Another next dev server is already running`, stop the stale process and restart:
+
+```powershell
+Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object OwningProcess
+taskkill /PID <pid> /F
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
