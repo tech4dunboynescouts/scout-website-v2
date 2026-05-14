@@ -47,6 +47,19 @@ type ScoutsSummerCampPricing = {
 const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures"]
 const INSTALLMENT_MONTHS = 4
 
+type CheckoutCommitmentSummary =
+  | {
+      mode: "full"
+      amount: number
+      currency: string
+    }
+  | {
+      mode: "installments"
+      amount: number
+      currency: string
+      installmentCount: number
+    }
+
 // ── Utilities ─────────────────────────────────────────────────────────────────
 
 function sanitiseEmail(val: unknown): string {
@@ -348,6 +361,30 @@ async function calculateSubscriptionAmount(
   }
 }
 
+async function loadPublicPaymentIntent(paymentIntentId: string) {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get("public_payment_intent")?.value
+
+  if (!cookieValue || cookieValue !== paymentIntentId) {
+    throw new Error("Payment session not found")
+  }
+
+  const stripe = getStripeClient()
+  return stripe.paymentIntents.retrieve(paymentIntentId)
+}
+
+async function loadPublicSetupIntent(setupIntentId: string) {
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get("public_subscription_setup")?.value
+
+  if (!cookieValue || cookieValue !== setupIntentId) {
+    throw new Error("Subscription setup session not found")
+  }
+
+  const stripe = getStripeClient()
+  return stripe.setupIntents.retrieve(setupIntentId)
+}
+
 // ── Annual Subscriptions ──────────────────────────────────────────────────────
 
 export async function startPublicAnnualSubscriptionsCheckoutAction(formData: FormData) {
@@ -609,15 +646,7 @@ export async function startPublicCampPaymentsCheckoutAction(formData: FormData) 
 // ── Checkout helpers ──────────────────────────────────────────────────────────
 
 export async function getPublicPaymentIntentClientSecret(paymentIntentId: string) {
-  const cookieStore = await cookies()
-  const cookieValue = cookieStore.get("public_payment_intent")?.value
-
-  if (!cookieValue || cookieValue !== paymentIntentId) {
-    throw new Error("Payment session not found")
-  }
-
-  const stripe = getStripeClient()
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
+  const paymentIntent = await loadPublicPaymentIntent(paymentIntentId)
 
   if (!paymentIntent.client_secret) {
     throw new Error("Missing payment intent client secret")
@@ -626,21 +655,61 @@ export async function getPublicPaymentIntentClientSecret(paymentIntentId: string
   return paymentIntent.client_secret
 }
 export async function getPublicSetupIntentClientSecret(setupIntentId: string) {
-  const cookieStore = await cookies()
-  const cookieValue = cookieStore.get("public_subscription_setup")?.value
-
-  if (!cookieValue || cookieValue !== setupIntentId) {
-    throw new Error("Subscription setup session not found")
-  }
-
-  const stripe = getStripeClient()
-  const setupIntent = await stripe.setupIntents.retrieve(setupIntentId)
+  const setupIntent = await loadPublicSetupIntent(setupIntentId)
 
   if (!setupIntent.client_secret) {
     throw new Error("Missing setup intent client secret")
   }
 
   return setupIntent.client_secret
+}
+
+export async function getPublicCheckoutCommitmentSummary(options: {
+  paymentIntentId?: string
+  setupIntentId?: string
+}): Promise<CheckoutCommitmentSummary> {
+  if (options.setupIntentId) {
+    const setupIntent = await loadPublicSetupIntent(options.setupIntentId)
+    const metadata = setupIntent.metadata as Record<string, string> | undefined
+
+    if (!metadata) {
+      throw new Error("Subscription metadata not found")
+    }
+
+    let lineItems: Array<{ price: string; quantity: number }>
+    try {
+      lineItems = JSON.parse(metadata.lineItemsJson || "[]")
+    } catch {
+      throw new Error("Invalid subscription configuration")
+    }
+
+    if (!Array.isArray(lineItems) || lineItems.length === 0) {
+      throw new Error("No subscription line items were configured")
+    }
+
+    const { amount, currency } = await calculateSubscriptionAmount(
+      lineItems,
+      String(metadata.currency ?? "eur")
+    )
+
+    return {
+      mode: "installments",
+      amount,
+      currency,
+      installmentCount: INSTALLMENT_MONTHS,
+    }
+  }
+
+  if (!options.paymentIntentId) {
+    throw new Error("Payment session not found")
+  }
+
+  const paymentIntent = await loadPublicPaymentIntent(options.paymentIntentId)
+  return {
+    mode: "full",
+    amount: (paymentIntent.amount ?? 0) / 100,
+    currency: String(paymentIntent.currency ?? "eur"),
+  }
 }
 
 export async function createPublicSubscriptionAction(setupIntentId: string) {

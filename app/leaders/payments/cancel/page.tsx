@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { markPaymentCancelledAction } from "../actions"
 import { XCircle, ArrowLeft, RotateCcw } from "lucide-react"
 import Link from "next/link"
+import LeadersBreadcrumb from "@/components/LeadersBreadcrumb"
 
 export const metadata: Metadata = {
   title: "Payment Cancelled",
@@ -24,6 +25,13 @@ export default async function PaymentCancelPage({
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
+      <LeadersBreadcrumb
+        crumbs={[
+          { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Payments", href: "/leaders/payments" },
+          { label: "Payment Cancelled" },
+        ]}
+      />
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10 text-center">
         <div className="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-5">
           <XCircle size={30} className="text-red-600" />

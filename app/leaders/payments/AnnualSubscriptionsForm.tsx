@@ -40,12 +40,13 @@ const sectionVisuals: Record<
   },
 }
 
-export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingData }) {
+export default function AnnualSubscriptionsForm({ pricing, userEmail = "" }: { pricing: PricingData; userEmail?: string }) {
   const initialState = useMemo(
     () => ({ beavers: 0, cubs: 0, scouts: 0, ventures: 0 }),
     []
   )
   const [quantities, setQuantities] = useState<Record<SectionKey, number>>(initialState)
+  const [paymentMethod, setPaymentMethod] = useState<"full" | "installments">("full")
 
   const total = useMemo(() => {
     const subtotal = pricing.sections.reduce((sum, section) => {
@@ -76,6 +77,8 @@ export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingD
 
   return (
     <form action={startAnnualSubscriptionsCheckoutAction} className="space-y-6">
+      <input type="hidden" name="paymentMethod" value={paymentMethod} />
+
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
         <h2 className="font-display font-bold text-navy-dark text-xl">Payee Details</h2>
         <p className="font-body text-sm text-textMuted mt-1">
@@ -109,6 +112,7 @@ export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingD
               type="email"
               required
               maxLength={254}
+              defaultValue={userEmail}
               placeholder="e.g. parent@example.com"
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 font-body text-navy-dark outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main"
             />
@@ -131,6 +135,43 @@ export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingD
             />
           </div>
         </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
+        <h2 className="font-display font-bold text-navy-dark text-xl">Payment Method</h2>
+        <p className="font-body text-sm text-textMuted mt-1">
+          Choose to pay now in full or split into 4 monthly installments.
+        </p>
+        <fieldset className="mt-4 space-y-3">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="full"
+              checked={paymentMethod === "full"}
+              onChange={(event) => setPaymentMethod(event.target.value as "full" | "installments")}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <div className="flex-1">
+              <p className="font-body font-semibold text-navy-dark">Pay in Full</p>
+              <p className="font-body text-sm text-textMuted">Pay the full capped amount today</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="installments"
+              checked={paymentMethod === "installments"}
+              onChange={(event) => setPaymentMethod(event.target.value as "full" | "installments")}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <div className="flex-1">
+              <p className="font-body font-semibold text-navy-dark">4 Monthly Installments</p>
+              <p className="font-body text-sm text-textMuted">Split payment across four monthly charges</p>
+            </div>
+          </label>
+        </fieldset>
       </div>
 
       <div className="space-y-4">
@@ -212,8 +253,14 @@ export default function AnnualSubscriptionsForm({ pricing }: { pricing: PricingD
       <div className="bg-navy-dark rounded-2xl p-5 sm:p-6 text-white">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <p className="font-body text-white/70 text-sm">Total subscriptions</p>
-            <p className="font-display text-2xl sm:text-3xl font-bold">{totalCount}</p>
+            <p className="font-body text-white/70 text-sm">
+              {totalCount} subscription{totalCount !== 1 ? "s" : ""} selected
+            </p>
+            {pricing.maximumSubscriptionFee && (
+              <p className="font-body text-white/50 text-xs mt-0.5">
+                Maximum fee: {money.format(pricing.maximumSubscriptionFee)}
+              </p>
+            )}
           </div>
           <div className="text-left sm:text-right">
             <p className="font-body text-white/70 text-sm">Total due</p>

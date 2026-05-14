@@ -9,6 +9,7 @@ import { siteNavigation } from './siteNavigation'
 import { leaderTeam } from './leaderTeam'
 import { faqList } from './faqList'
 import { annualSubscriptionPricing } from './annualSubscriptionPricing'
+import { leadersAnnualSubscriptionPricing } from './leadersAnnualSubscriptionPricing'
 import { scoutsSummerCampPricing } from './scoutsSummerCampPricing'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -23,6 +24,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     leaderTeam,
     faqList,
     annualSubscriptionPricing,
+    leadersAnnualSubscriptionPricing,
     scoutsSummerCampPricing,
   ],
 }

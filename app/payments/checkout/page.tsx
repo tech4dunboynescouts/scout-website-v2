@@ -2,8 +2,13 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { siteUrl } from "@/lib/siteConfig"
-import { getPublicPaymentIntentClientSecret, getPublicSetupIntentClientSecret } from "../actions"
+import {
+  getPublicCheckoutCommitmentSummary,
+  getPublicPaymentIntentClientSecret,
+  getPublicSetupIntentClientSecret,
+} from "../actions"
 import PaymentElementCheckout from "./PaymentElementCheckout"
+import CheckoutCommitmentCard from "@/components/CheckoutCommitmentCard"
 
 export const metadata: Metadata = {
   title: "Online Payments — Checkout",
@@ -40,11 +45,14 @@ export default async function PublicCheckoutPage({
 
   const isSubscription = !!setup_intent
   let clientSecret: string | null = null
+  let commitmentSummary: Awaited<ReturnType<typeof getPublicCheckoutCommitmentSummary>> | null = null
 
   if (isSubscription && setup_intent) {
     clientSecret = await getPublicSetupIntentClientSecret(setup_intent).catch(() => null)
+    commitmentSummary = await getPublicCheckoutCommitmentSummary({ setupIntentId: setup_intent }).catch(() => null)
   } else if (payment_intent) {
     clientSecret = await getPublicPaymentIntentClientSecret(payment_intent).catch(() => null)
+    commitmentSummary = await getPublicCheckoutCommitmentSummary({ paymentIntentId: payment_intent }).catch(() => null)
   }
 
   if (!clientSecret) {
@@ -82,6 +90,14 @@ export default async function PublicCheckoutPage({
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">
+        {commitmentSummary && (
+          <CheckoutCommitmentCard
+            amount={commitmentSummary.amount}
+            currency={commitmentSummary.currency}
+            mode={commitmentSummary.mode}
+            installmentCount={commitmentSummary.mode === "installments" ? commitmentSummary.installmentCount : 4}
+          />
+        )}
         <PaymentElementCheckout
           clientSecret={clientSecret}
           returnUrl={returnUrl}

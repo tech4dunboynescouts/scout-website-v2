@@ -1,6 +1,6 @@
 import type {StructureResolver} from 'sanity/structure'
 
-const EXCLUDED_FROM_DEFAULT = ['faqList', 'annualSubscriptionPricing', 'scoutsSummerCampPricing']
+const EXCLUDED_FROM_DEFAULT = ['faqList', 'annualSubscriptionPricing', 'leadersAnnualSubscriptionPricing', 'scoutsSummerCampPricing']
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -23,6 +23,14 @@ export const structure: StructureResolver = (S) =>
           S.document()
             .schemaType('annualSubscriptionPricing')
             .documentId('annualSubscriptionPricing')
+        ),
+      S.listItem()
+        .title('Leaders Annual Subscription Pricing')
+        .id('singleton-leaders-annual-subscription-pricing')
+        .child(
+          S.document()
+            .schemaType('leadersAnnualSubscriptionPricing')
+            .documentId('leadersAnnualSubscriptionPricing')
         ),
       S.documentTypeListItem('scoutsSummerCampPricing').title('Camp Payments'),
       S.divider(),

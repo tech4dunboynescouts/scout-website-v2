@@ -104,6 +104,18 @@ export const annualSubscriptionPricingQuery = groq`
   }
 `
 
+export const leadersAnnualSubscriptionPricingQuery = groq`
+  *[_type == "leadersAnnualSubscriptionPricing" && _id == "leadersAnnualSubscriptionPricing"][0] {
+    currency,
+    paymentType,
+    beavers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
+    scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
+    ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
+    maximumSubscriptionFee,
+  }
+`
+
 export const summerCampPaymentOptionsQuery = groq`
   *[_type == "scoutsSummerCampPricing" && active == true] | order(section asc, title asc) {
     _id,

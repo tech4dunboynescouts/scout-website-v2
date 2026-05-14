@@ -6,6 +6,7 @@ import { allLeaderResourcesQuery, leaderProfileByEmailQuery } from "@/sanity/lib
 import LeadersDashboardSearch from "@/components/LeadersDashboardSearch"
 import type { LeaderResource } from "@/components/LeadersDashboardSearch"
 import { Calculator, ChevronRight, CreditCard } from "lucide-react"
+import PageHero from "@/components/PageHero"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -24,20 +25,16 @@ export default async function DashboardPage() {
     .catch(() => [])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-      {/* Welcome */}
-      <div className="mb-10">
-        <p className="text-orange-main font-body font-semibold text-sm uppercase tracking-widest mb-1">
-          Leaders Portal
-        </p>
-        <h1 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl">
-          Welcome back, {name}
-        </h1>
-        <p className="font-body text-textMuted text-sm mt-2">
-          {resources.length} resource{resources.length !== 1 ? "s" : ""} available to you
-        </p>
-      </div>
-
+    <>
+      <PageHero
+        title={`Welcome back, ${name}`}
+        subtitle={`${resources.length} resource${resources.length !== 1 ? "s" : ""} available to you`}
+        breadcrumbs={[
+          { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Dashboard" },
+        ]}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
       {/* Tools */}
       <div className="mb-10">
         <h2 className="font-display font-bold text-navy-dark text-xl mb-4">Tools</h2>
@@ -82,6 +79,7 @@ export default async function DashboardPage() {
 
       {/* Searchable + filterable resource grid */}
       <LeadersDashboardSearch resources={resources} />
-    </div>
+      </div>
+    </>
   )
 }

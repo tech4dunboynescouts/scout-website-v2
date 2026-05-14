@@ -4,7 +4,7 @@ import { FormEvent, useMemo, useState } from "react"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 
-function CheckoutForm({ returnUrl }: { returnUrl: string }) {
+function CheckoutForm({ returnUrl, isSubscription }: { returnUrl: string; isSubscription: boolean }) {
   const stripe = useStripe()
   const elements = useElements()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -17,15 +17,24 @@ function CheckoutForm({ returnUrl }: { returnUrl: string }) {
     setIsSubmitting(true)
     setErrorMessage(null)
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: returnUrl,
-      },
-    })
+    const { error } = isSubscription
+      ? await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+        })
+      : await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+        })
 
     if (error) {
-      setErrorMessage(error.message ?? "Unable to complete payment")
+      setErrorMessage(
+        error.message ?? (isSubscription ? "Unable to set up payment method" : "Unable to complete payment")
+      )
       setIsSubmitting(false)
     }
   }
@@ -43,7 +52,7 @@ function CheckoutForm({ returnUrl }: { returnUrl: string }) {
         disabled={!stripe || !elements || isSubmitting}
         className="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl bg-orange-main text-white font-body font-semibold hover:bg-orange-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? "Processing..." : "Pay Now"}
+        {isSubmitting ? "Processing..." : isSubscription ? "Set Up Subscription" : "Pay Now"}
       </button>
     </form>
   )
@@ -52,9 +61,11 @@ function CheckoutForm({ returnUrl }: { returnUrl: string }) {
 export default function PaymentElementCheckout({
   clientSecret,
   returnUrl,
+  isSubscription = false,
 }: {
   clientSecret: string
   returnUrl: string
+  isSubscription?: boolean
 }) {
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
@@ -78,10 +89,17 @@ export default function PaymentElementCheckout({
         clientSecret,
         appearance: {
           theme: "stripe",
+          variables: {
+            colorPrimary: "#e86728",
+            colorBackground: "#ffffff",
+            colorText: "#0f172a",
+            colorDanger: "#ef4444",
+            borderRadius: "12px",
+          },
         },
       }}
     >
-      <CheckoutForm returnUrl={returnUrl} />
+      <CheckoutForm returnUrl={returnUrl} isSubscription={isSubscription} />
     </Elements>
   )
 }
