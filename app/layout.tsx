@@ -8,8 +8,6 @@ import { siteNavigationQuery } from "@/sanity/lib/queries";
 import type { NavItem } from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/next";
 
-const enableStartupLogs = process.env.DEBUG_STARTUP_LOGS === "1";
-
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700", "900"],
@@ -73,41 +71,10 @@ const organizationSchema = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  if (enableStartupLogs) {
-    console.info("[startup] RootLayout start", {
-      timestamp: new Date().toISOString(),
-    });
-  }
-
   const navData = await client
     .fetch(siteNavigationQuery)
-    .then((data) => {
-      if (enableStartupLogs) {
-        console.info("[startup] RootLayout siteNavigationQuery resolved", {
-          hasNavItems: Array.isArray(data?.navItems),
-          navCount: Array.isArray(data?.navItems) ? data.navItems.length : 0,
-          timestamp: new Date().toISOString(),
-        });
-      }
-      return data;
-    })
-    .catch((error) => {
-      if (enableStartupLogs) {
-        console.error("[startup] RootLayout siteNavigationQuery failed", {
-          message: error instanceof Error ? error.message : String(error),
-          timestamp: new Date().toISOString(),
-        });
-      }
-      return null;
-    }) as { navItems: NavItem[] } | null;
+    .catch(() => null) as { navItems: NavItem[] } | null;
   const navItems = navData?.navItems ?? undefined;
-
-  if (enableStartupLogs) {
-    console.info("[startup] RootLayout render", {
-      hasNavItems: Array.isArray(navItems),
-      timestamp: new Date().toISOString(),
-    });
-  }
 
   return (
     <html lang="en" className={roboto.variable}>
