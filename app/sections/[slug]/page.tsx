@@ -6,6 +6,7 @@ import { client } from "@/sanity/lib/client";
 import { sectionPageBySlugQuery, allSectionPageSlugsQuery } from "@/sanity/lib/queries";
 import sectionsJson from "@/data/sections.json";
 import BadgePlacementViewer from "@/components/BadgePlacementViewer";
+import PageHero from "@/components/PageHero";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -119,34 +120,17 @@ export default async function SectionPage({ params }: Props) {
 
   return (
     <>
-      {/* Hero */}
-      <section
-        className="relative pt-28 pb-20 lg:pt-40 lg:pb-28 overflow-hidden"
-        style={{ background: `linear-gradient(135deg, ${section.colour}ee 0%, ${section.colour}99 100%)` }}
-      >
-        {section.heroImage && (
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"
-            style={{ backgroundImage: `url(${section.heroImage})` }}
-          />
-        )}
-        <div className="absolute inset-0 bg-navy-dark/50" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/#sections"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm font-body mb-6 transition-colors"
-          >
-            ← All Sections
-          </Link>
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-5xl" role="img" aria-label={section.name}>{section.icon}</span>
-          </div>
-          <h1 className="font-display font-bold text-white text-5xl sm:text-6xl lg:text-7xl mb-4">
-            {section.name}
-          </h1>
-          <p className="font-body text-white/80 text-xl italic">{section.tagline}</p>
-        </div>
-      </section>
+      <PageHero
+        title={`${section.icon} ${section.name}`}
+        subtitle={section.tagline}
+        accentColour={section.colour}
+        bgImage={section.heroImage ?? undefined}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Sections", href: "/#sections" },
+          { label: section.name },
+        ]}
+      />
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
