@@ -7,6 +7,7 @@ import { sectionPageBySlugQuery, allSectionPageSlugsQuery } from "@/sanity/lib/q
 import sectionsJson from "@/data/sections.json";
 import BadgePlacementViewer from "@/components/BadgePlacementViewer";
 import PageHero from "@/components/PageHero";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -89,10 +90,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const section = await getSection(slug);
   if (!section) return {};
-  return {
+  return buildSocialMetadata({
     title: section.name,
     description: section.description,
-  };
+    canonicalPath: `/sections/${slug}`,
+    image: section.heroImage,
+    imageAlt: section.name,
+  });
 }
 
 export default async function SectionPage({ params }: Props) {

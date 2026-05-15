@@ -7,7 +7,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
-import { siteUrl } from "@/lib/siteConfig";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,28 +29,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .catch(() => null);
   if (!article) return {};
 
-  return {
+  return buildSocialMetadata({
     title: article.title,
     description: article.excerpt,
-    alternates: { canonical: `/news/${slug}` },
-    openGraph: {
-      type: "article",
-      title: article.title,
-      description: article.excerpt,
-      url: `${siteUrl}/news/${slug}`,
-      publishedTime: article.date,
-      tags: [article.tag],
-      images: article.image
-        ? [{ url: article.image, alt: article.title }]
-        : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt,
-      images: article.image ? [article.image] : undefined,
-    },
-  };
+    canonicalPath: `/news/${slug}`,
+    image: `/news/${slug}/opengraph-image`,
+    imageAlt: article.title,
+    openGraphType: "article",
+    publishedTime: article.date,
+    tags: [article.tag],
+  });
 }
 
 function getEmbedUrl(url: string): string | null {
