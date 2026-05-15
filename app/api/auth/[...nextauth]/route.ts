@@ -1,6 +1,5 @@
 import { handlers } from "@/auth"
-import type { NextRequest } from "next/server"
-import { NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 
 const { GET: authGet, POST } = handlers
 
@@ -14,7 +13,8 @@ export async function GET(request: NextRequest) {
 		const callbackIssuer = url.searchParams.get("iss")
 		if (callbackIssuer === "accounts.google.com") {
 			url.searchParams.set("iss", "https://accounts.google.com")
-			return NextResponse.redirect(url)
+			const normalizedRequest = new NextRequest(url, request)
+			return authGet(normalizedRequest)
 		}
 	}
 
