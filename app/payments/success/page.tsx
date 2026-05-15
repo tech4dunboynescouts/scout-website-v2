@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowLeft, CheckCircle2, ShieldCheck } from "lucide-react"
+import { ArrowLeft, CheckCircle2, ShieldCheck, AlertCircle } from "lucide-react"
 import { markPublicPaymentCompletedAction } from "../actions"
 import { getStripeClient } from "@/lib/stripe"
 
@@ -25,6 +25,8 @@ export default async function PublicPaymentSuccessPage({
   let transactionId = paymentIntentId || sessionId || subscriptionId
   let subscriptionInfo: { nextBillingDate?: string; amount?: number; currency?: string } | null =
     null
+  let isComplete = false
+  let incompleteReason = "We could not verify that this payment has completed."
 
   if (subscriptionId) {
     const stripe = getStripeClient()
@@ -32,6 +34,10 @@ export default async function PublicPaymentSuccessPage({
 
     if (subscription) {
       transactionId = String(subscription.id)
+      isComplete = ["active", "trialing"].includes(subscription.status)
+      if (!isComplete && subscription?.status) {
+        incompleteReason = `Subscription status is ${String(subscription.status).replaceAll("_", " ")}.`
+      }
       if (subscription?.current_period_end) {
         const nextDate = new Date(subscription.current_period_end * 1000)
         subscriptionInfo = {
@@ -46,6 +52,8 @@ export default async function PublicPaymentSuccessPage({
           currency: subscription?.currency,
         }
       }
+    } else {
+      incompleteReason = "We could not locate the subscription for this checkout."
     }
   } else if (isSubscription && sessionId) {
     const stripe = getStripeClient()
@@ -58,6 +66,10 @@ export default async function PublicPaymentSuccessPage({
 
       if (subscription) {
         transactionId = String(subscription.id)
+        isComplete = ["active", "trialing"].includes(subscription.status)
+        if (!isComplete && subscription?.status) {
+          incompleteReason = `Subscription status is ${String(subscription.status).replaceAll("_", " ")}.`
+        }
         // Calculate next billing date from current period end
         if (subscription?.current_period_end) {
           const nextDate = new Date(subscription.current_period_end * 1000)
@@ -73,13 +85,61 @@ export default async function PublicPaymentSuccessPage({
             currency: subscription?.currency,
           }
         }
+      } else {
+        incompleteReason = "We could not locate the subscription for this checkout."
       }
+    } else {
+      incompleteReason = "The checkout session did not include a subscription."
     }
+  } else if (paymentIntentId) {
+    const stripe = getStripeClient()
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId).catch(() => null)
+    if (paymentIntent?.status === "succeeded") {
+      isComplete = true
+    } else if (paymentIntent?.status) {
+      incompleteReason = `Payment status is ${paymentIntent.status.replaceAll("_", " ")}.`
+    }
+  } else {
+    incompleteReason = "Missing payment details in the return URL."
   }
 
   // For one-time payments, call the completion action
   if (paymentIntentId) {
     await markPublicPaymentCompletedAction(paymentIntentId).catch(() => null)
+  }
+
+  if (!isComplete) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10 text-center">
+          <div className="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-5">
+            <AlertCircle size={30} className="text-red-600" />
+          </div>
+          <h1 className="font-display font-bold text-navy-dark text-2xl sm:text-3xl mb-3">
+            Payment incomplete
+          </h1>
+          <p className="font-body text-textMuted text-sm leading-relaxed max-w-xl mx-auto">
+            {incompleteReason} Please return to Online Payments and try again.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/payments"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-3 rounded-xl bg-orange-main text-white font-body font-semibold hover:bg-orange-dark transition-colors"
+            >
+              Try Again
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-3 rounded-xl bg-navy-dark/5 text-navy-dark font-body font-semibold hover:bg-navy-dark/10 transition-colors"
+            >
+              <ArrowLeft size={15} />
+              Return Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

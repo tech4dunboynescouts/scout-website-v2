@@ -595,7 +595,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     .create({
       amount: toMinorUnits(summary.total),
       currency,
-      payment_method_types: ["card", "revolut_pay"],
+      payment_method_types: ["card"],
       description: `Annual subscriptions - ${payeeName}`,
       receipt_email: payeeEmail,
       metadata: {
@@ -1079,7 +1079,7 @@ export async function startScoutsSummerCampCheckoutAction(formData: FormData) {
     .create({
       amount: toMinorUnits(selectedAmount),
       currency,
-      payment_method_types: ["card", "revolut_pay"],
+      payment_method_types: ["card"],
       description: `${optionTitle} - ${payeeName}`,
       receipt_email: payeeEmail,
       metadata: {

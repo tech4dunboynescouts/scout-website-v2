@@ -1,4 +1,6 @@
 import type { Metadata } from "next"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
 import { siteUrl } from "@/lib/siteConfig"
@@ -23,7 +25,7 @@ export default async function EmbeddedCheckoutPage({
 }) {
   const session = await auth()
   if (!session?.user?.isAuthorizedLeader) {
-    return null
+    redirect("/leaders/login")
   }
 
   const { payment_intent, setup_intent } = await searchParams
@@ -72,26 +74,31 @@ export default async function EmbeddedCheckoutPage({
         ]}
       />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-14">
-
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">
-        {commitmentSummary && (
-          <CheckoutCommitmentCard
-            amount={commitmentSummary.amount}
-            currency={commitmentSummary.currency}
-            mode={commitmentSummary.mode}
-            installmentCount={commitmentSummary.mode === "installments" ? commitmentSummary.installmentCount : 4}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6">
+          {commitmentSummary && (
+            <CheckoutCommitmentCard
+              amount={commitmentSummary.amount}
+              currency={commitmentSummary.currency}
+              mode={commitmentSummary.mode}
+              installmentCount={commitmentSummary.mode === "installments" ? commitmentSummary.installmentCount : 4}
+            />
+          )}
+          <PaymentElementCheckout
+            clientSecret={clientSecret}
+            returnUrl={
+              isSubscription
+                ? `${siteUrl}/leaders/payments/complete`
+                : `${siteUrl}/leaders/payments/success`
+            }
+            isSubscription={isSubscription}
           />
-        )}
-        <PaymentElementCheckout
-          clientSecret={clientSecret}
-          returnUrl={
-            isSubscription
-              ? `${siteUrl}/leaders/payments/complete`
-              : `${siteUrl}/leaders/payments/success`
-          }
-          isSubscription={isSubscription}
-        />
-      </div>
+        </div>
+        <p className="mt-4 text-center font-body text-xs text-textMuted">
+          Changed your mind?{" "}
+          <Link href="/leaders/payments" className="text-orange-main hover:underline">
+            Cancel and go back
+          </Link>
+        </p>
       </div>
     </>
   )
