@@ -1,9 +1,10 @@
 import { handlers } from "@/auth"
+import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 
 const { GET: authGet, POST } = handlers
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 	const url = new URL(request.url)
 
 	// Some mobile in-app browsers can return a non-canonical issuer value
