@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import Link from "next/link"
 import { handleSignOut } from "@/app/leaders/actions"
-import { Shield, LayoutDashboard, LogOut } from "lucide-react"
+import { Shield, LayoutDashboard, CreditCard, LogOut } from "lucide-react"
 
 export default async function LeadersLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
@@ -21,6 +21,12 @@ export default async function LeadersLayout({ children }: { children: React.Reac
                 className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
               >
                 <LayoutDashboard size={11} /> Dashboard
+              </Link>
+              <Link
+                href="/leaders/payments"
+                className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
+              >
+                <CreditCard size={11} /> Payments
               </Link>
             </div>
 

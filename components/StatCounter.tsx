@@ -15,8 +15,12 @@ function useCounter(target: number, duration: number, start: boolean) {
 
   useEffect(() => {
     if (!start) return;
+    
+    let isMounted = true;
     const startTime = Date.now();
     const timer = setInterval(() => {
+      if (!isMounted) return;
+      
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / (duration * 1000), 1);
       // Ease out cubic
@@ -24,7 +28,11 @@ function useCounter(target: number, duration: number, start: boolean) {
       setCount(Math.floor(eased * target));
       if (progress >= 1) clearInterval(timer);
     }, 16);
-    return () => clearInterval(timer);
+    
+    return () => {
+      isMounted = false;
+      clearInterval(timer);
+    };
   }, [start, target, duration]);
 
   return count;
