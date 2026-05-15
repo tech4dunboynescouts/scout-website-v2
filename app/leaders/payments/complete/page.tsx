@@ -18,7 +18,7 @@ export default async function LeadersSubscriptionCompletePage({
 }) {
   const session = await auth()
   if (!session?.user?.isAuthorizedLeader) {
-    return null
+    redirect("/leaders/login")
   }
 
   const { setup_intent: setupIntentId } = await searchParams

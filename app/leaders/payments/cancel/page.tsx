@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { markPaymentCancelledAction } from "../actions"
 import { XCircle, ArrowLeft, RotateCcw } from "lucide-react"
@@ -17,7 +18,7 @@ export default async function PaymentCancelPage({
 }) {
   const session = await auth()
   if (!session?.user?.isAuthorizedLeader) {
-    return null
+    redirect("/leaders/login")
   }
 
   const { payment_intent: paymentIntentId } = await searchParams
