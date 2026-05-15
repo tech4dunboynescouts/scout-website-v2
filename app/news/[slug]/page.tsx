@@ -8,6 +8,7 @@ import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
 import { buildSocialMetadata } from "@/lib/socialMetadata";
+import { siteUrl } from "@/lib/siteConfig";
 
 interface Props {
   params: Promise<{ slug: string }>;
