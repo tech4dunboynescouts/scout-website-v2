@@ -36,9 +36,10 @@ export function buildSocialMetadata(options: BuildSocialMetadataOptions): Metada
   const description = toNonEmptyString(options.description);
   const imageUrl = toAbsoluteUrl(options.image ?? DEFAULT_IMAGE_PATH);
   const imageAlt = toNonEmptyString(options.imageAlt) ?? options.title ?? DEFAULT_IMAGE_ALT;
+  const isArticle = options.openGraphType === "article";
 
   const openGraph: NonNullable<Metadata["openGraph"]> = {
-    type: options.openGraphType ?? "website",
+    type: isArticle ? "article" : "website",
     locale: OG_LOCALE,
     siteName: SITE_NAME,
     title: options.title,
@@ -50,12 +51,13 @@ export function buildSocialMetadata(options: BuildSocialMetadataOptions): Metada
         alt: imageAlt,
       },
     ],
+    ...(isArticle
+      ? {
+          publishedTime: toNonEmptyString(options.publishedTime),
+          tags: options.tags?.filter((tag) => tag && tag.trim().length > 0),
+        }
+      : {}),
   };
-
-  if (openGraph.type === "article") {
-    openGraph.publishedTime = toNonEmptyString(options.publishedTime);
-    openGraph.tags = options.tags?.filter((tag) => tag && tag.trim().length > 0);
-  }
 
   return {
     title: options.title,
