@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const serverActionsConfig = {
+  bodySizeLimit: "10mb",
+}
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -8,11 +12,9 @@ const nextConfig = {
       },
     ],
   },
-  // Server Actions — increase body size limit to support expense claim form with multiple receipt images
+  // Server Actions — increase body size limit to support expense claim form with multiple receipt images.
   experimental: {
-    serverActions: {
-      bodySizeLimit: "10mb",
-    },
+    serverActions: serverActionsConfig,
   },
   // Silence the "custom webpack config" warning — Turbopack doesn't need the
   // canvas alias because PdfViewer is client-only and canvas is never imported
