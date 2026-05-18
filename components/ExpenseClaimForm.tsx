@@ -2,12 +2,11 @@
 
 import { useRef, useState, useCallback } from "react"
 import { PlusCircle, Trash2, Receipt, CheckCircle2, XCircle, Loader2 } from "lucide-react"
-import { submitExpenseClaim } from "@/app/leaders/expense-claim/actions"
 
 const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg"]
 const ALLOWED_ACCEPT = "application/pdf,image/jpeg"
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
-const MAX_COMBINED_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024
+const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024
+const MAX_COMBINED_ATTACHMENT_SIZE_BYTES = 4 * 1024 * 1024
 
 interface ExpenseRow {
   id: number
@@ -87,7 +86,7 @@ export default function ExpenseClaimForm() {
       setRows((prev) =>
         prev.map((r) =>
           r.id === id
-            ? { ...r, receipt: null, receiptError: "File exceeds the 10 MB limit." }
+            ? { ...r, receipt: null, receiptError: "File exceeds the 4 MB limit." }
             : r
         )
       )
@@ -138,10 +137,15 @@ export default function ExpenseClaimForm() {
         }
       }
 
-      const res = await submitExpenseClaim(formData)
+      const response = await fetch("/api/leaders/expense-claim", {
+        method: "POST",
+        body: formData,
+      })
+
+      const res = (await response.json()) as { success: boolean; error?: string }
       setResult(res)
 
-      if (res.success) {
+      if (response.ok && res.success) {
         // Reset form on success
         nextId = 1
         setRows([createRow()])
@@ -375,7 +379,7 @@ export default function ExpenseClaimForm() {
 
       {isCombinedAttachmentLimitExceeded && (
         <p className="font-body text-xs text-red-600">
-          Combined attachment size exceeds 10 MB. Remove one or more receipts before submitting.
+          Combined attachment size exceeds 4 MB. Remove one or more receipts before submitting.
         </p>
       )}
 
