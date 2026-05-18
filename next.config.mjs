@@ -9,8 +9,10 @@ const nextConfig = {
     ],
   },
   // Server Actions — increase body size limit to support expense claim form with multiple receipt images
-  serverActions: {
-    bodyLimit: "10mb",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
   },
   // Silence the "custom webpack config" warning — Turbopack doesn't need the
   // canvas alias because PdfViewer is client-only and canvas is never imported
