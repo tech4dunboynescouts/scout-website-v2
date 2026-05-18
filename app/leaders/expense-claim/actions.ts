@@ -294,7 +294,7 @@ export async function submitExpenseClaim(
           ${itemRowsHtml}
           <tr style="background:#0f172a;">
             <td colspan="4" align="right" style="padding:10px 12px;border:1px solid #334155;font-size:14px;color:#ffffff;font-weight:700;">Total Claimed</td>
-            <td align="right" style="padding:10px 12px;border:1px solid #334155;font-size:14px;color:#f97316;font-weight:700;">${escapeHtml(formatCurrency(total))}</td>
+            <td align="right" style="padding:10px 12px;border:1px solid #334155;font-size:14px;color:#ffffff;font-weight:700;">${escapeHtml(formatCurrency(total))}</td>
           </tr>
         </table>
         ${items.some((i) => i.file) ? `<p style="margin:0;font-size:13px;color:#64748b;">Receipt attachments are included with this email.</p>` : ""}
