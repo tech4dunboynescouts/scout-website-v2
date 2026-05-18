@@ -6,6 +6,8 @@ import { submitExpenseClaim } from "@/app/leaders/expense-claim/actions"
 
 const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg"]
 const ALLOWED_ACCEPT = "application/pdf,image/jpeg"
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+const MAX_COMBINED_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024
 
 interface ExpenseRow {
   id: number
@@ -22,10 +24,10 @@ function createRow(): ExpenseRow {
   return { id: nextId++, date: "", description: "", amount: "", receipt: null, receiptError: "" }
 }
 
-function formatCurrency(value: string): string {
-  const n = parseFloat(value)
-  if (Number.isNaN(n)) return ""
-  return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(n)
+function formatBytes(bytes: number): string {
+  if (bytes <= 0) return "0 MB"
+  const mb = bytes / (1024 * 1024)
+  return `${mb.toFixed(1)} MB`
 }
 
 export default function ExpenseClaimForm() {
@@ -81,7 +83,7 @@ export default function ExpenseClaimForm() {
       )
       return
     }
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       setRows((prev) =>
         prev.map((r) =>
           r.id === id
@@ -102,6 +104,19 @@ export default function ExpenseClaimForm() {
     const n = parseFloat(row.amount)
     return sum + (Number.isNaN(n) ? 0 : n)
   }, 0)
+
+  const totalAttachmentBytes = rows.reduce((sum, row) => sum + (row.receipt?.size ?? 0), 0)
+  const isCombinedAttachmentLimitExceeded =
+    totalAttachmentBytes > MAX_COMBINED_ATTACHMENT_SIZE_BYTES
+  const attachmentUsagePercent = Math.min(
+    100,
+    Math.round((totalAttachmentBytes / MAX_COMBINED_ATTACHMENT_SIZE_BYTES) * 100)
+  )
+  const attachmentBarClass = isCombinedAttachmentLimitExceeded
+    ? "bg-red-400"
+    : attachmentUsagePercent >= 80
+      ? "bg-amber-300"
+      : "bg-emerald-300"
 
   // ── Form submission ────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -304,14 +319,31 @@ export default function ExpenseClaimForm() {
         </button>
       )}
 
-      {/* ── Total ─────────────────────────────────────────────────────────── */}
-      <div className="w-full overflow-x-hidden">
-        <div className="flex justify-center sm:justify-end">
-          <div className="bg-navy-dark rounded-2xl px-3 sm:px-6 py-3 sm:py-4 text-center sm:text-right min-w-0">
-            <p className="font-body text-white/60 text-xs uppercase tracking-wide mb-1 truncate">
+      {/* ── Summary and CTA layout ───────────────────────────────────────── */}
+      <div className="w-full overflow-x-hidden grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-4 lg:gap-6 items-start lg:items-stretch">
+        <div className="w-full h-12 sm:h-14 bg-white border border-gray-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-body font-semibold text-[10px] sm:text-xs uppercase tracking-wide text-navy-dark leading-none">
+              Combined Attachment(s) Size
+            </p>
+            <p className="font-body text-[10px] sm:text-xs text-textMuted whitespace-nowrap leading-none">
+              {formatBytes(totalAttachmentBytes)} / {formatBytes(MAX_COMBINED_ATTACHMENT_SIZE_BYTES)}
+            </p>
+          </div>
+          <div className="mt-1 h-1.5 sm:h-2 w-full rounded-full bg-gray-200 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={attachmentUsagePercent} aria-label="Combined attachment size usage">
+            <div
+              className={`h-full rounded-full transition-all duration-300 ${attachmentBarClass}`}
+              style={{ width: `${attachmentUsagePercent}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col gap-3">
+          <div className="w-full h-12 sm:h-14 bg-navy-dark rounded-2xl border-2 border-orange-main/60 shadow-lg px-3 sm:px-4 py-2 sm:py-2.5 text-left min-w-0 flex items-center justify-between gap-3">
+            <p className="font-body text-white/70 text-[10px] sm:text-xs uppercase tracking-wide truncate leading-none">
               Total Claimed
             </p>
-            <p className="font-display font-bold text-orange-main text-lg sm:text-2xl break-words">
+            <p className="font-display font-bold text-white text-xl sm:text-2xl break-words leading-none whitespace-nowrap">
               {total > 0
                 ? new Intl.NumberFormat("en-IE", {
                     style: "currency",
@@ -320,8 +352,32 @@ export default function ExpenseClaimForm() {
                 : "€0.00"}
             </p>
           </div>
+
+          <button
+            type="submit"
+            disabled={
+              submitting ||
+              rows.some((r) => r.receiptError !== "") ||
+              isCombinedAttachmentLimitExceeded
+            }
+            className="w-full min-h-12 sm:min-h-14 flex items-center justify-center gap-2 bg-orange-main hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-body font-semibold text-sm sm:text-base px-5 sm:px-8 py-3 sm:py-4 rounded-2xl transition-colors shadow-md sm:shadow-lg"
+          >
+            {submitting ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> Submitting…
+              </>
+            ) : (
+              "Submit Claim"
+            )}
+          </button>
         </div>
       </div>
+
+      {isCombinedAttachmentLimitExceeded && (
+        <p className="font-body text-xs text-red-600">
+          Combined attachment size exceeds 10 MB. Remove one or more receipts before submitting.
+        </p>
+      )}
 
       {/* ── Result banner ─────────────────────────────────────────────────── */}
       {result && (
@@ -358,24 +414,6 @@ export default function ExpenseClaimForm() {
         </div>
       )}
 
-      {/* ── Submit ────────────────────────────────────────────────────────── */}
-      <div className="w-full overflow-x-hidden">
-        <div className="flex justify-center sm:justify-end">
-          <button
-            type="submit"
-            disabled={submitting || rows.some((r) => r.receiptError !== "")}
-            className="flex items-center justify-center gap-1 sm:gap-2 bg-orange-main hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-body font-semibold text-xs sm:text-sm px-3 sm:px-8 py-2 sm:py-3 rounded-2xl transition-colors shadow-sm flex-shrink-0"
-        >
-          {submitting ? (
-            <>
-                <Loader2 size={14} className="animate-spin" /> Submitting…
-            </>
-          ) : (
-              "Submit Claim"
-          )}
-          </button>
-        </div>
-      </div>
     </form>
   )
 }

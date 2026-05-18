@@ -56,7 +56,7 @@ export default async function ExpenseClaimPage() {
         {/* Guidance note */}
         <p className="mt-6 font-body text-textMuted text-xs text-center">
           Receipts are sent directly as email attachments and are not stored on this website.
-          Only PDF and JPEG files up to 10 MB per item are accepted.
+          Only PDF and JPEG files up to 10 MB per item are accepted, with a 10 MB combined attachment limit.
         </p>
       </div>
     </>

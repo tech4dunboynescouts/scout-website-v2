@@ -5,6 +5,7 @@ import nodemailer from "nodemailer"
 
 const ALLOWED_MIME_TYPES = ["application/pdf", "image/jpeg", "image/jpg"]
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB per file
+const MAX_COMBINED_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB combined
 const MAX_TOTAL_ATTACHMENTS = 20
 
 function escapeHtml(val: string): string {
@@ -141,6 +142,7 @@ export async function submitExpenseClaim(
   }
 
   const items: ValidatedItem[] = []
+  let combinedAttachmentBytes = 0
 
   for (let i = 0; i < itemCount; i++) {
     const rawDate = sanitiseString(formData.get(`items[${i}][date]`), 20)
@@ -186,6 +188,14 @@ export async function submitExpenseClaim(
         return {
           success: false,
           error: `Item ${i + 1}: receipt file exceeds the 10 MB limit.`,
+        }
+      }
+
+      combinedAttachmentBytes += rawReceipt.size
+      if (combinedAttachmentBytes > MAX_COMBINED_ATTACHMENT_SIZE_BYTES) {
+        return {
+          success: false,
+          error: "Combined receipt attachments exceed the 10 MB limit. Please remove one or more files.",
         }
       }
 
