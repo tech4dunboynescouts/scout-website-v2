@@ -57,7 +57,7 @@ export default function LeadersPortalToolbar({
 
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="text-white/40 text-xs font-body hidden sm:block">{userName}</span>
-          <form action={handleSignOut}>
+          <form action={handleSignOut} className="hidden sm:block">
             <button
               type="submit"
               className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
