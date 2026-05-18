@@ -412,7 +412,19 @@ async function importToSanity(title, isoDate, contentBlocks, featuredPath, urlTo
 
   let created
   try {
-    created = await client.create(doc)
+    const existingBySlug = await client.fetch(
+      `*[_type == "newsArticle" && slug.current == $slug] | order(_createdAt asc) [0]{ _id }`,
+      { slug }
+    )
+
+    if (existingBySlug?._id) {
+      // Idempotent re-runs: replace the existing article for the same slug.
+      created = await client.createOrReplace({ ...doc, _id: existingBySlug._id })
+      console.log(`  Updated existing article with slug "${slug}" (${existingBySlug._id})`)
+    } else {
+      created = await client.create(doc)
+      console.log(`  Created new article with slug "${slug}"`)
+    }
   } catch (err) {
     if (err.statusCode === 401 || err.statusCode === 403) {
       console.error('\n  ERROR: Permission denied creating document.')
@@ -435,13 +447,42 @@ async function importToSanity(title, isoDate, contentBlocks, featuredPath, urlTo
 }
 
 // ── Cleanup ────────────────────────────────────────────────────────────────────
-function clearImagesFolder() {
+async function removeWithRetry(filePath, attempts = 5, delayMs = 250) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      await fs.promises.rm(filePath)
+      return true
+    } catch (err) {
+      const isRetriable = err?.code === 'EBUSY' || err?.code === 'EPERM'
+      if (!isRetriable || i === attempts - 1) {
+        return false
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+    }
+  }
+  return false
+}
+
+async function clearImagesFolder() {
   if (!fs.existsSync(IMAGES_DIR)) return
   const files = fs.readdirSync(IMAGES_DIR)
+  let removed = 0
+  let skipped = 0
+
   for (const file of files) {
-    fs.rmSync(path.join(IMAGES_DIR, file))
+    const filePath = path.join(IMAGES_DIR, file)
+    const ok = await removeWithRetry(filePath)
+    if (ok) {
+      removed++
+    } else {
+      skipped++
+      console.warn(`  [Cleanup] Skipped locked file: ${file}`)
+    }
   }
-  console.log(`\n[Cleanup] Removed ${files.length} file${files.length !== 1 ? 's' : ''} from migration/images/`)
+
+  console.log(
+    `\n[Cleanup] Removed ${removed} file${removed !== 1 ? 's' : ''} from migration/images/${skipped ? ` (${skipped} skipped)` : ''}`
+  )
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────────
@@ -452,7 +493,7 @@ async function main() {
   const { title, isoDate, contentBlocks, featuredImageUrl, allBodyImageUrls } = await scrape(articleUrl)
   const { featuredPath, urlToPath } = await downloadImages(featuredImageUrl, allBodyImageUrls)
   await importToSanity(title, isoDate, contentBlocks, featuredPath, urlToPath, tag)
-  clearImagesFolder()
+  await clearImagesFolder()
 }
 
 main().catch(err => {

@@ -7,6 +7,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery, allFundraisingSlugsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,18 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .fetch(fundraisingCampaignBySlugQuery, { slug })
     .catch(() => null);
   if (!campaign) return {};
-  return {
+  return buildSocialMetadata({
     title: campaign.title,
     description: campaign.excerpt,
-    alternates: { canonical: `/fundraising/${slug}` },
-    openGraph: {
-      title: campaign.title,
-      description: campaign.excerpt,
-      images: campaign.coverImage
-        ? [{ url: campaign.coverImage, alt: campaign.title }]
-        : undefined,
-    },
-  };
+    canonicalPath: `/fundraising/${slug}`,
+    image: `/fundraising/${slug}/opengraph-image`,
+    imageAlt: campaign.title,
+  });
 }
 
 const portableTextComponents: PortableTextComponents = {

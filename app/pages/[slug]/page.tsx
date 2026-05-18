@@ -7,6 +7,7 @@ import BodyImage from "@/components/BodyImage";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
 import { generalPageBySlugQuery, allGeneralPageSlugsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,18 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .fetch(generalPageBySlugQuery, { slug })
     .catch(() => null);
   if (!page) return {};
-  return {
+  return buildSocialMetadata({
     title: page.title,
-    description: page.description ?? undefined,
-    alternates: { canonical: `/pages/${slug}` },
-    openGraph: {
-      title: page.title,
-      description: page.description ?? undefined,
-      images: page.coverImage
-        ? [{ url: page.coverImage, alt: page.title }]
-        : undefined,
-    },
-  };
+    description: page.description,
+    canonicalPath: `/pages/${slug}`,
+    image: page.coverImage,
+    imageAlt: page.title,
+  });
 }
 
 function getEmbedUrl(url: string): string | null {
