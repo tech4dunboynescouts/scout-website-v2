@@ -2,19 +2,16 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { handleSignOut } from "@/app/leaders/actions"
-import { Shield, LayoutDashboard, CreditCard, FileText, LogOut } from "lucide-react"
+import { Shield, LayoutDashboard, CreditCard, FileText } from "lucide-react"
 
 interface LeadersPortalToolbarProps {
   isAuthorized: boolean
-  userName?: string | null
 }
 
 const hiddenPaths = new Set(["/leaders", "/leaders/login", "/leaders/unauthorized"])
 
 export default function LeadersPortalToolbar({
   isAuthorized,
-  userName,
 }: LeadersPortalToolbarProps) {
   const pathname = usePathname()
 
@@ -53,18 +50,6 @@ export default function LeadersPortalToolbar({
           >
             <FileText size={11} /> Expense Claim
           </Link>
-        </div>
-
-        <div className="flex items-center gap-3 sm:gap-4">
-          <span className="text-white/40 text-xs font-body hidden sm:block">{userName}</span>
-          <form action={handleSignOut} className="hidden sm:block">
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
-            >
-              <LogOut size={11} /> Sign Out
-            </button>
-          </form>
         </div>
       </div>
     </div>

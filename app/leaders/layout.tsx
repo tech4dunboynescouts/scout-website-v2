@@ -7,10 +7,7 @@ export default async function LeadersLayout({ children }: { children: React.Reac
 
   return (
     <>
-      <LeadersPortalToolbar
-        isAuthorized={isAuthorized}
-        userName={session?.user?.name}
-      />
+      <LeadersPortalToolbar isAuthorized={isAuthorized} />
       {children}
     </>
   )

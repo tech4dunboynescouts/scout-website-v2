@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { handleSignOut } from "@/app/leaders/actions"
 import { ShieldX } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -27,21 +26,13 @@ export default function UnauthorizedPage() {
           have your email added to the system.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex justify-center">
           <Link
             href="/"
             className="px-5 py-2.5 bg-navy-dark text-white font-body font-semibold rounded-lg text-sm hover:bg-navy-dark/90 transition-colors"
           >
             Return to Main Site
           </Link>
-          <form action={handleSignOut}>
-            <button
-              type="submit"
-              className="px-5 py-2.5 bg-white border border-gray-200 text-textMuted font-body font-semibold rounded-lg text-sm hover:bg-gray-50 transition-colors"
-            >
-              Sign Out
-            </button>
-          </form>
         </div>
       </div>
     </div>
