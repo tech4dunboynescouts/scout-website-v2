@@ -3,8 +3,9 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { siteUrl } from "@/lib/siteConfig";
+import { filterNavItemsByRouteToggles, type RouteToggle } from "@/lib/routeToggles";
 import { client } from "@/sanity/lib/client";
-import { siteNavigationQuery } from "@/sanity/lib/queries";
+import { siteFeatureFlagsQuery, siteNavigationQuery } from "@/sanity/lib/queries";
 import type { NavItem } from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -14,6 +15,8 @@ const roboto = Roboto({
   variable: "--font-roboto",
   display: "swap",
 });
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -71,10 +74,20 @@ const organizationSchema = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const navData = await client
-    .fetch(siteNavigationQuery)
-    .catch(() => null) as { navItems: NavItem[] } | null;
-  const navItems = navData?.navItems ?? undefined;
+  const [navData, featureFlags] = await Promise.all([
+    client
+      .fetch(siteNavigationQuery)
+      .catch(() => null) as Promise<{ navItems: NavItem[] } | null>,
+    client
+      .fetch(siteFeatureFlagsQuery)
+      .catch(() => null) as Promise<{ routes?: RouteToggle[] } | null>,
+  ]);
+
+  const routeToggles = featureFlags?.routes ?? [];
+  const rawNavItems = navData?.navItems ?? undefined;
+  const navItems = rawNavItems
+    ? filterNavItemsByRouteToggles(rawNavItems, routeToggles)
+    : undefined;
 
   return (
     <html lang="en" className={roboto.variable}>
