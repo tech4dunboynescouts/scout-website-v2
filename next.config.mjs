@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const serverActionsConfig = {
+  bodySizeLimit: "10mb",
+}
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -7,6 +11,10 @@ const nextConfig = {
         hostname: "cdn.sanity.io",
       },
     ],
+  },
+  // Server Actions — increase body size limit to support expense claim form with multiple receipt images.
+  experimental: {
+    serverActions: serverActionsConfig,
   },
   // Silence the "custom webpack config" warning — Turbopack doesn't need the
   // canvas alias because PdfViewer is client-only and canvas is never imported

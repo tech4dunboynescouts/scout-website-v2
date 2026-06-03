@@ -3,7 +3,7 @@ import { Lock, BookOpen, GraduationCap, Heart, FileText, ExternalLink } from "lu
 import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
-  title: "Scouter Resources",
+  title: "Resources",
   description:
     "Resources for adult leaders and volunteers at 1st Meath Dunboyne Scout Group.",
 };
@@ -43,29 +43,27 @@ export default function ResourcesPage() {
   return (
     <>
       <PageHero
-        title="Scouter Resources"
-        subtitle="Tools, training, and support for all adult leaders and volunteers at 1st Meath Dunboyne."
+        title="Resources"
+        subtitle="Tools, training, and support for adult leaders and volunteers at 1st Meath Dunboyne Scout Group."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources" }]}
+        bgImage="/images/photo-1551836022-d5d88e9218df.jpg"
       />
 
-      {/* Lock state notice */}
-      <div className="bg-navy-mid/10 border-b border-navy-light/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-3 text-sm font-body text-navy-mid">
-            <Lock size={16} className="text-orange-main" />
-            <span>
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div className="mb-10 rounded-2xl border border-navy-light/20 bg-navy-mid/10 p-5 sm:p-6">
+          <div className="flex items-start gap-3 text-sm font-body text-navy-mid">
+            <Lock size={18} className="mt-0.5 flex-shrink-0 text-orange-main" />
+            <p className="leading-relaxed">
               These resources are intended for registered adult leaders of 1st Meath Dunboyne Scout Group.
               For access to restricted materials, please{" "}
-              <a href="mailto:secretarydunboynescouts@gmail.com" className="text-orange-main hover:underline">
+              <a href="mailto:secretarydunboynescouts@gmail.com" className="font-semibold text-orange-main hover:underline">
                 contact the Group Leader
               </a>
               .
-            </span>
+            </p>
           </div>
         </div>
-      </div>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {resources.map((res, i) => (
             <div

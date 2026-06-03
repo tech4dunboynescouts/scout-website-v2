@@ -63,12 +63,21 @@ export default function HeroSection({ title, titles, subtitle, image, primaryCta
               </Link>
             )}
             {secondaryCta && (
-              <Link
-                href={secondaryCta.href}
-                className="px-8 py-4 border-2 border-white/40 hover:border-white text-white font-body font-semibold rounded-lg transition-all hover:bg-white/10 text-base"
-              >
-                {secondaryCta.label}
-              </Link>
+              secondaryCta.href.startsWith("#") ? (
+                <a
+                  href={secondaryCta.href}
+                  className="px-8 py-4 border-2 border-white/40 hover:border-white text-white font-body font-semibold rounded-lg transition-all hover:bg-white/10 text-base"
+                >
+                  {secondaryCta.label}
+                </a>
+              ) : (
+                <Link
+                  href={secondaryCta.href}
+                  className="px-8 py-4 border-2 border-white/40 hover:border-white text-white font-body font-semibold rounded-lg transition-all hover:bg-white/10 text-base"
+                >
+                  {secondaryCta.label}
+                </Link>
+              )
             )}
           </div>
         </motion.div>

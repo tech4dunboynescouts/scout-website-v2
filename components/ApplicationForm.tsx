@@ -367,8 +367,9 @@ function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<VolunteerFormData>();
+  const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<VolunteerFormData>();
   const phoneReg = register("phone", { required: "Required" });
+  const reasonText = watch("reasonForVoulenteering", "");
 
   const onSubmit = async (data: VolunteerFormData) => {
     setLoading(true);
@@ -477,11 +478,16 @@ function VolunteerForm() {
           Reasons for Volunteering <span className="text-orange-main">*</span>
         </label>
         <textarea
-          {...register("reasonForVoulenteering", { required: "Required" })}
+          {...register("reasonForVoulenteering", {
+            required: "Required",
+            maxLength: { value: 2000, message: "Maximum 2000 characters" },
+          })}
+          maxLength={2000}
           rows={6}
           placeholder="Tell us why you would like to volunteer with Dunboyne Scout Group"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-navy-light font-body text-sm outline-none transition-colors resize-none"
+          className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors resize-none ${errors.reasonForVoulenteering ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         />
+        <p className="mt-1 text-xs text-textMuted text-right">{reasonText.length}/2000</p>
         {errors.reasonForVoulenteering && <p className="mt-1 text-xs text-red-500">{errors.reasonForVoulenteering.message}</p>}
       </div>
       <button

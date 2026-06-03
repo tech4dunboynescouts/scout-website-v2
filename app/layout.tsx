@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import { ScrollRestoration } from "@/components/ScrollRestoration";
 import { siteUrl } from "@/lib/siteConfig";
 import { filterNavItemsByRouteToggles, type RouteToggle } from "@/lib/routeToggles";
 import { client } from "@/sanity/lib/client";
@@ -92,9 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={roboto.variable}>
       <body className="bg-background font-body antialiased">
-        {/* Disable browser scroll restoration synchronously before any replay can occur.
-            This must run before React hydration to reliably fix Android Chrome. */}
-        <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual'}" }} />
+        <ScrollRestoration />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

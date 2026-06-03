@@ -46,7 +46,9 @@ export const generalPage = defineType({
       name: 'ctaLink',
       title: 'Button Link',
       type: 'url',
-      description: 'The URL the button links to.',
+      description: 'The URL the button links to. Can be absolute (https://...) or a relative path starting with / (e.g. /payments).',
+      validation: (rule) =>
+        rule.uri({ scheme: ['http', 'https', 'mailto'], allowRelative: true }),
     }),
     defineField({
       name: 'body',
