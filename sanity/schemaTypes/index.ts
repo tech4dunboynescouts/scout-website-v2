@@ -6,6 +6,7 @@ import { fundraisingCampaign } from './fundraisingCampaign'
 import { generalPage } from './generalPage'
 import { sectionPage } from './sectionPage'
 import { siteNavigation } from './siteNavigation'
+import { siteFeatureFlags } from './siteFeatureFlags'
 import { leaderTeam } from './leaderTeam'
 import { faqList } from './faqList'
 import { annualSubscriptionPricing } from './annualSubscriptionPricing'
@@ -21,6 +22,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     generalPage,
     sectionPage,
     siteNavigation,
+    siteFeatureFlags,
     leaderTeam,
     faqList,
     annualSubscriptionPricing,
