@@ -17,6 +17,14 @@ export const structure: StructureResolver = (S) =>
             .documentId('faqList')
         ),
       S.listItem()
+        .title('Site Feature Flags')
+        .id('singleton-site-feature-flags')
+        .child(
+          S.document()
+            .schemaType('siteFeatureFlags')
+            .documentId('siteFeatureFlags')
+        ),
+      S.listItem()
         .title('Annual Subscription Pricing')
         .id('singleton-annual-subscription-pricing')
         .child(
@@ -31,14 +39,6 @@ export const structure: StructureResolver = (S) =>
           S.document()
             .schemaType('leadersAnnualSubscriptionPricing')
             .documentId('leadersAnnualSubscriptionPricing')
-        ),
-      S.listItem()
-        .title('Site Feature Flags')
-        .id('singleton-site-feature-flags')
-        .child(
-          S.document()
-            .schemaType('siteFeatureFlags')
-            .documentId('siteFeatureFlags')
         ),
       S.documentTypeListItem('scoutsSummerCampPricing').title('Camp Payments'),
       S.divider(),

@@ -37,7 +37,13 @@ export default defineConfig({
     // Prevent duplicate action on singleton documents.
     actions: (prev, {schemaType}) => {
       if (!SINGLETON_TYPES.has(schemaType)) return prev
-      return prev.filter((action) => action !== 'duplicate')
+      return prev.filter((action) => {
+        const actionName =
+          typeof action === 'string'
+            ? action
+            : (action as {action?: string}).action
+        return actionName !== 'duplicate'
+      })
     },
   },
 })
