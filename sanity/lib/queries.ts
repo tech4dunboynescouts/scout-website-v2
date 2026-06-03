@@ -42,6 +42,15 @@ export const siteNavigationQuery = groq`
   }
 `
 
+export const siteFeatureFlagsQuery = groq`
+  *[_type == "siteFeatureFlags"][0] {
+    routes[] {
+      routePath,
+      enabled,
+    }
+  }
+`
+
 export const allNewsQuery = groq`
   *[_type == "newsArticle"] | order(date desc) {
     _id,
