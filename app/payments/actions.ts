@@ -410,6 +410,7 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
 
   const currency = String(pricing.currency ?? "eur").toLowerCase()
   const paymentType = String(pricing.paymentType ?? "annual-membership")
+  const annualStripePriceIds = summary.selections.map((item) => item.stripePriceId).join(",")
 
   if (paymentMethod === "installments") {
     // ── Subscription flow (4 monthly installments) ──────────────────────────────────
@@ -480,6 +481,10 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
       name: payeeName,
       paymentType: "annual-membership-installments",
     })
+
+    const installmentStripePriceIds = subscriptionLineItems
+      .map((item) => item.price)
+      .join(",")
     
     // For subscriptions, we'll create a setup intent to collect payment method,
     // then create the subscription. Store setup intent ID in session for checkout flow.
@@ -502,6 +507,9 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
           scoutsQty: String(quantities.scouts),
           venturesQty: String(quantities.ventures),
           source: "public",
+          titlePrefix: "Annual subscriptions installments",
+          summerCampOptionId: "n/a",
+          stripePriceId: installmentStripePriceIds || annualStripePriceIds || "n/a",
           lineItemsJson: JSON.stringify(subscriptionLineItems),
         },
       })
@@ -544,6 +552,8 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
           planSlug: "annual-subscriptions",
           section: "multiple",
           titlePrefix: "Annual subscriptions",
+          summerCampOptionId: "n/a",
+          stripePriceId: annualStripePriceIds || "n/a",
           source: "public",
         },
       })
@@ -822,6 +832,9 @@ export async function createPublicSubscriptionAction(setupIntentId: string) {
             scoutsQty: metadata.scoutsQty,
             venturesQty: metadata.venturesQty,
             source: metadata.source,
+            titlePrefix: metadata.titlePrefix,
+            summerCampOptionId: metadata.summerCampOptionId,
+            stripePriceId: metadata.stripePriceId,
             installmentCount: String(INSTALLMENT_MONTHS),
           },
         },
@@ -833,6 +846,9 @@ export async function createPublicSubscriptionAction(setupIntentId: string) {
         payeeReference: metadata.payeeReference,
         payeeEmail: metadata.payeeEmail,
         source: metadata.source,
+        titlePrefix: metadata.titlePrefix,
+        summerCampOptionId: metadata.summerCampOptionId,
+        stripePriceId: metadata.stripePriceId,
         installmentCount: String(INSTALLMENT_MONTHS),
         setupIntentId: setupIntent.id,
       },

@@ -488,6 +488,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
 
   const currency = String(pricing.currency ?? "eur").toLowerCase()
   const paymentType = String(pricing.paymentType ?? "leaders-annual-membership")
+  const annualStripePriceIds = summary.selections.map((item) => item.stripePriceId).join(",")
 
   if (paymentMethod === "installments") {
     const stripe = getStripeClient()
@@ -548,6 +549,10 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
       paymentType: `${paymentType}-installments`,
     })
 
+    const installmentStripePriceIds = subscriptionLineItems
+      .map((item) => item.price)
+      .join(",")
+
     const setupIntent = await stripe.setupIntents
       .create({
         customer: customerId,
@@ -569,6 +574,9 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
           leaderName: leader.name,
           leaderEmail: leader.email,
           source: "leaders",
+          titlePrefix: "Leaders annual subscriptions installments",
+          summerCampOptionId: "n/a",
+          stripePriceId: installmentStripePriceIds || annualStripePriceIds || "n/a",
           lineItemsJson: JSON.stringify(subscriptionLineItems),
         },
       })
@@ -615,6 +623,8 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
         planSlug: "leaders-annual-subscriptions",
         section: "multiple",
         titlePrefix: "Leaders annual subscriptions",
+        summerCampOptionId: "n/a",
+        stripePriceId: annualStripePriceIds || "n/a",
         source: "leaders",
       },
     })
@@ -820,6 +830,9 @@ export async function createLeaderSubscriptionAction(setupIntentId: string) {
             leaderName: metadata.leaderName,
             leaderEmail: metadata.leaderEmail,
             source: metadata.source,
+            titlePrefix: metadata.titlePrefix,
+            summerCampOptionId: metadata.summerCampOptionId,
+            stripePriceId: metadata.stripePriceId,
             installmentCount: String(INSTALLMENT_MONTHS),
           },
         },
@@ -833,6 +846,9 @@ export async function createLeaderSubscriptionAction(setupIntentId: string) {
         leaderName: metadata.leaderName,
         leaderEmail: metadata.leaderEmail,
         source: metadata.source,
+        titlePrefix: metadata.titlePrefix,
+        summerCampOptionId: metadata.summerCampOptionId,
+        stripePriceId: metadata.stripePriceId,
         installmentCount: String(INSTALLMENT_MONTHS),
         setupIntentId: setupIntent.id,
       },
@@ -1096,6 +1112,7 @@ export async function startScoutsSummerCampCheckoutAction(formData: FormData) {
         titlePrefix: optionTitle,
         summerCampOptionId: selectedOptionId,
         stripePriceId,
+        source: "leaders",
       },
     })
     .catch((error: unknown) => {

@@ -91,7 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     : undefined;
 
   return (
-    <html lang="en" className={roboto.variable}>
+    <html lang="en" className={roboto.variable} data-scroll-behavior="smooth">
       <body className="bg-background font-body antialiased">
         <ScrollRestoration />
         <script
