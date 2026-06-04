@@ -1,6 +1,6 @@
 "use client"
 
-import { FormEvent, useMemo, useState } from "react"
+import { FormEvent, useEffect, useMemo, useState } from "react"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 
@@ -75,16 +75,44 @@ export default function PaymentElementCheckout({
   isSubscription?: boolean
 }) {
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  const [stripeLoadError, setStripeLoadError] = useState<string | null>(null)
 
   const stripePromise = useMemo(() => {
     if (!publishableKey) return null
-    return loadStripe(publishableKey)
+    return loadStripe(publishableKey).catch(() => {
+      return null
+    })
   }, [publishableKey])
+
+  useEffect(() => {
+    if (!stripePromise) {
+      setStripeLoadError(null)
+      return
+    }
+
+    let isActive = true
+    stripePromise.then((stripe) => {
+      if (!isActive) return
+      setStripeLoadError(stripe ? null : "Stripe.js could not be loaded. Please refresh and try again.")
+    })
+
+    return () => {
+      isActive = false
+    }
+  }, [stripePromise])
 
   if (!stripePromise) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 font-body text-sm">
         Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      </div>
+    )
+  }
+
+  if (stripeLoadError) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 font-body text-sm">
+        {stripeLoadError}
       </div>
     )
   }
