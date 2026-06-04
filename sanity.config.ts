@@ -12,6 +12,13 @@ import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
 
+const SINGLETON_TYPES = new Set([
+  'faqList',
+  'annualSubscriptionPricing',
+  'leadersAnnualSubscriptionPricing',
+  'siteFeatureFlags',
+])
+
 export default defineConfig({
   basePath: '/studio',
   projectId,
@@ -22,8 +29,21 @@ export default defineConfig({
     visionTool({defaultApiVersion: apiVersion}),
   ],
   document: {
-    // Preserve all default actions (publish, unpublish, duplicate, delete, discard changes)
-    // Explicitly returning prev ensures Unpublish is always present for published documents
-    actions: (prev) => prev,
+    // Hide singleton types from the global "Create new" menu.
+    newDocumentOptions: (prev, {creationContext}) => {
+      if (creationContext.type !== 'global') return prev
+      return prev.filter((templateItem) => !SINGLETON_TYPES.has(templateItem.templateId))
+    },
+    // Prevent duplicate action on singleton documents.
+    actions: (prev, {schemaType}) => {
+      if (!SINGLETON_TYPES.has(schemaType)) return prev
+      return prev.filter((action) => {
+        const actionName =
+          typeof action === 'string'
+            ? action
+            : (action as {action?: string}).action
+        return actionName !== 'duplicate'
+      })
+    },
   },
 })
