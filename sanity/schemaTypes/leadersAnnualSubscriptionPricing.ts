@@ -41,7 +41,7 @@ function sectionField(name: string, title: string) {
       }),
       defineField({
         name: 'subscriptionStripePriceId',
-        title: 'Stripe Subscription Price ID (Monthly Installments)',
+        title: 'Stripe Subscription Price ID (Monthly Instalments)',
         type: 'string',
         description:
           'Recurring monthly subscription price from Stripe dashboard (e.g., price_...). Used for 4-month installment payments.',
@@ -111,7 +111,7 @@ export const leadersAnnualSubscriptionPricing = defineType({
           return `Section '${String(key)}' must have a Stripe Price ID (Pay in Full).`
         }
         if (!section.subscriptionStripePriceId) {
-          return `Section '${String(key)}' must have a Stripe Subscription Price ID (Monthly Installments).`
+          return `Section '${String(key)}' must have a Stripe Subscription Price ID (Monthly Instalments).`
         }
       }
 
@@ -127,3 +127,4 @@ export const leadersAnnualSubscriptionPricing = defineType({
     },
   },
 })
+

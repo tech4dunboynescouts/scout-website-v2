@@ -156,7 +156,7 @@ export default function PublicAnnualSubscriptionsForm({ pricing }: { pricing: Pr
               className="w-4 h-4 cursor-pointer"
             />
             <div className="flex-1">
-              <p className="font-body font-semibold text-navy-dark">4 Monthly Installments</p>
+              <p className="font-body font-semibold text-navy-dark">4 Monthly Instalments</p>
               <p className="font-body text-sm text-textMuted">
                 Split payment into 4 equal monthly charges
               </p>
@@ -263,3 +263,4 @@ export default function PublicAnnualSubscriptionsForm({ pricing }: { pricing: Pr
     </form>
   )
 }
+

@@ -215,7 +215,7 @@ function getPaymentTypeLabel(paymentType: string): string {
     case "annual-membership":
       return "Annual Subscriptions"
     case "annual-membership-installments":
-      return "Annual Subscriptions - Monthly Installments"
+      return "Annual Subscriptions - Monthly Instalments"
     default:
       return "Camp Payment"
   }
@@ -982,3 +982,4 @@ export async function markPublicPaymentCompletedAction(paymentIntentId?: string)
     }
   }
 }
+
