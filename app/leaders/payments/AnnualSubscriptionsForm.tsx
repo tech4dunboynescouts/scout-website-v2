@@ -167,7 +167,7 @@ export default function AnnualSubscriptionsForm({ pricing, userEmail = "" }: { p
               className="w-4 h-4 cursor-pointer"
             />
             <div className="flex-1">
-              <p className="font-body font-semibold text-navy-dark">4 Monthly Installments</p>
+              <p className="font-body font-semibold text-navy-dark">4 Monthly Instalments</p>
               <p className="font-body text-sm text-textMuted">Split payment across four monthly charges</p>
             </div>
           </label>
@@ -280,3 +280,4 @@ export default function AnnualSubscriptionsForm({ pricing, userEmail = "" }: { p
     </form>
   )
 }
+
