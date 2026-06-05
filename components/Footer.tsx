@@ -131,6 +131,7 @@ export default function Footer() {
                     ) : (
                       <Link
                         href={link.href}
+                        prefetch={false}
                         className="text-sm font-body text-white/60 hover:text-white transition-colors"
                       >
                         {link.label}
@@ -151,12 +152,14 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <Link
               href="/cookies"
+              prefetch={false}
               className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
             >
               Cookie Notice
             </Link>
             <Link
               href="/leaders/login"
+              prefetch={false}
               className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
             >
               Leader Login
