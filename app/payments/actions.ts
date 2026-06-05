@@ -570,7 +570,13 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
       secure: siteUrl.startsWith("https://"),
       path: "/",
       maxAge: 60 * 60 * 24,
-    }) ─────────────────────────────────────────────────────────────
+    })
+
+    redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)
+  }
+}
+
+// ── Camp Payments ─────────────────────────────────────────────────────────────
 
 export async function startPublicCampPaymentsCheckoutAction(formData: FormData) {
   const selectedOptionId = parseRequiredText(formData.get("summerCampOptionId"), "Camp payment option")
@@ -642,7 +648,12 @@ export async function startPublicCampPaymentsCheckoutAction(formData: FormData) 
     secure: siteUrl.startsWith("https://"),
     path: "/",
     maxAge: 60 * 60 * 24,
-  }) ──────────────────────────────────────────────────────────
+  })
+
+  redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)
+}
+
+// ── Checkout helpers ──────────────────────────────────────────────────────────
 
 export async function getPublicPaymentIntentClientSecret(paymentIntentId: string) {
   const paymentIntent = await loadPublicPaymentIntent(paymentIntentId)
