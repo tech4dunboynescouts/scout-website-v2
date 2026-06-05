@@ -591,7 +591,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
       httpOnly: true,
       sameSite: "lax",
       secure: siteUrl.startsWith("https://"),
-      path: "/leaders/payments",
+      path: "/",
       maxAge: 60 * 60 * 24,
     })
 
@@ -645,7 +645,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     httpOnly: true,
     sameSite: "lax",
     secure: siteUrl.startsWith("https://"),
-    path: "/leaders/payments",
+    path: "/",
     maxAge: 60 * 60 * 24,
   })
 
@@ -1133,7 +1133,7 @@ export async function startScoutsSummerCampCheckoutAction(formData: FormData) {
     httpOnly: true,
     sameSite: "lax",
     secure: siteUrl.startsWith("https://"),
-    path: "/leaders/payments",
+    path: "/",
     maxAge: 60 * 60 * 24,
   })
 
