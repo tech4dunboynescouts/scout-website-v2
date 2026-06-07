@@ -4,7 +4,7 @@ import type Stripe from "stripe"
 
 import { auth } from "@/auth"
 import { getStripeClient } from "@/lib/stripe"
-import { siteUrl } from "@/lib/siteConfig"
+import { buildStripeReturnUrl, getStripeSiteUrl } from "@/lib/stripeSiteUrl"
 import nodemailer from "nodemailer"
 import {
   leadersAnnualSubscriptionPricingQuery,
@@ -450,6 +450,9 @@ async function getLeaderContext(email: string, fallbackName?: string | null, fal
 }
 
 export async function startAnnualSubscriptionsCheckoutAction(formData: FormData) {
+  const stripeSiteUrl = getStripeSiteUrl()
+  const secureCookies = stripeSiteUrl.startsWith("https://")
+
   const session = await auth()
   if (!session?.user?.email || !session.user.isAuthorizedLeader) {
     redirect("/leaders/login")
@@ -590,9 +593,18 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     cookieStore.set("leaders_subscription_setup", setupIntent.id, {
       httpOnly: true,
       sameSite: "lax",
-      secure: siteUrl.startsWith("https://"),
+      secure: secureCookies,
       path: "/",
       maxAge: 60 * 60 * 24,
+    })
+
+    console.info("[leaders-payments] Stripe checkout initialized", {
+      flow: "leaders-annual-subscription",
+      baseSiteUrl: stripeSiteUrl,
+      return_url: buildStripeReturnUrl("/leaders/payments/complete"),
+      cancel_url: buildStripeReturnUrl("/leaders/payments"),
+      vercelEnv: process.env.VERCEL_ENV ?? null,
+      nodeEnv: process.env.NODE_ENV ?? null,
     })
 
     redirect(`/leaders/payments/checkout?setup_intent=${setupIntent.id}`)
@@ -644,9 +656,18 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
   cookieStore.set("leaders_payment_intent", paymentIntent.id, {
     httpOnly: true,
     sameSite: "lax",
-    secure: siteUrl.startsWith("https://"),
+    secure: secureCookies,
     path: "/",
     maxAge: 60 * 60 * 24,
+  })
+
+  console.info("[leaders-payments] Stripe checkout initialized", {
+    flow: "leaders-annual-one-time",
+    baseSiteUrl: stripeSiteUrl,
+    return_url: buildStripeReturnUrl("/leaders/payments/success"),
+    cancel_url: buildStripeReturnUrl("/leaders/payments"),
+    vercelEnv: process.env.VERCEL_ENV ?? null,
+    nodeEnv: process.env.NODE_ENV ?? null,
   })
 
   redirect(`/leaders/payments/checkout?payment_intent=${paymentIntent.id}`)
@@ -1038,6 +1059,9 @@ function normalizeAmountOptions(values: number[] | undefined): number[] {
 }
 
 export async function startScoutsSummerCampCheckoutAction(formData: FormData) {
+  const stripeSiteUrl = getStripeSiteUrl()
+  const secureCookies = stripeSiteUrl.startsWith("https://")
+
   const session = await auth()
   if (!session?.user?.email || !session.user.isAuthorizedLeader) {
     redirect("/leaders/login")
@@ -1132,9 +1156,18 @@ export async function startScoutsSummerCampCheckoutAction(formData: FormData) {
   cookieStore.set("leaders_payment_intent", paymentIntent.id, {
     httpOnly: true,
     sameSite: "lax",
-    secure: siteUrl.startsWith("https://"),
+    secure: secureCookies,
     path: "/",
     maxAge: 60 * 60 * 24,
+  })
+
+  console.info("[leaders-payments] Stripe checkout initialized", {
+    flow: "leaders-camp-one-time",
+    baseSiteUrl: stripeSiteUrl,
+    return_url: buildStripeReturnUrl("/leaders/payments/success"),
+    cancel_url: buildStripeReturnUrl("/leaders/payments"),
+    vercelEnv: process.env.VERCEL_ENV ?? null,
+    nodeEnv: process.env.NODE_ENV ?? null,
   })
 
   redirect(`/leaders/payments/checkout?payment_intent=${paymentIntent.id}`)

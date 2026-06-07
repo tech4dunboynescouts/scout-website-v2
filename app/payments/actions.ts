@@ -3,7 +3,7 @@
 import type Stripe from "stripe"
 
 import { getStripeClient } from "@/lib/stripe"
-import { siteUrl } from "@/lib/siteConfig"
+import { buildStripeReturnUrl, getStripeSiteUrl } from "@/lib/stripeSiteUrl"
 import nodemailer from "nodemailer"
 import {
   annualSubscriptionPricingQuery,
@@ -388,6 +388,9 @@ async function loadPublicSetupIntent(setupIntentId: string) {
 // ── Annual Subscriptions ──────────────────────────────────────────────────────
 
 export async function startPublicAnnualSubscriptionsCheckoutAction(formData: FormData) {
+  const stripeSiteUrl = getStripeSiteUrl()
+  const secureCookies = stripeSiteUrl.startsWith("https://")
+
   const pricing = await serverClient.fetch(annualSubscriptionPricingQuery).catch(() => null)
   if (!pricing) throw new Error("Annual subscription pricing is not configured")
 
@@ -523,9 +526,18 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
     cookieStore.set("public_subscription_setup", setupIntent.id, {
       httpOnly: true,
       sameSite: "lax",
-      secure: siteUrl.startsWith("https://"),
+      secure: secureCookies,
       path: "/",
       maxAge: 60 * 60 * 24,
+    })
+
+    console.info("[payments] Stripe checkout initialized", {
+      flow: "public-annual-subscription",
+      baseSiteUrl: stripeSiteUrl,
+      return_url: buildStripeReturnUrl("/payments/complete"),
+      cancel_url: buildStripeReturnUrl("/payments"),
+      vercelEnv: process.env.VERCEL_ENV ?? null,
+      nodeEnv: process.env.NODE_ENV ?? null,
     })
 
     redirect(`/payments/checkout?setup_intent=${setupIntent.id}`)
@@ -567,9 +579,18 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
     cookieStore.set("public_payment_intent", paymentIntent.id, {
       httpOnly: true,
       sameSite: "lax",
-      secure: siteUrl.startsWith("https://"),
+      secure: secureCookies,
       path: "/",
       maxAge: 60 * 60 * 24,
+    })
+
+    console.info("[payments] Stripe checkout initialized", {
+      flow: "public-annual-one-time",
+      baseSiteUrl: stripeSiteUrl,
+      return_url: buildStripeReturnUrl("/payments/success"),
+      cancel_url: buildStripeReturnUrl("/payments"),
+      vercelEnv: process.env.VERCEL_ENV ?? null,
+      nodeEnv: process.env.NODE_ENV ?? null,
     })
 
     redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)
@@ -579,6 +600,9 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
 // ── Camp Payments ─────────────────────────────────────────────────────────────
 
 export async function startPublicCampPaymentsCheckoutAction(formData: FormData) {
+  const stripeSiteUrl = getStripeSiteUrl()
+  const secureCookies = stripeSiteUrl.startsWith("https://")
+
   const selectedOptionId = parseRequiredText(formData.get("summerCampOptionId"), "Camp payment option")
 
   const options = await serverClient
@@ -645,9 +669,18 @@ export async function startPublicCampPaymentsCheckoutAction(formData: FormData) 
   cookieStore.set("public_payment_intent", paymentIntent.id, {
     httpOnly: true,
     sameSite: "lax",
-    secure: siteUrl.startsWith("https://"),
+    secure: secureCookies,
     path: "/",
     maxAge: 60 * 60 * 24,
+  })
+
+  console.info("[payments] Stripe checkout initialized", {
+    flow: "public-camp-one-time",
+    baseSiteUrl: stripeSiteUrl,
+    return_url: buildStripeReturnUrl("/payments/success"),
+    cancel_url: buildStripeReturnUrl("/payments"),
+    vercelEnv: process.env.VERCEL_ENV ?? null,
+    nodeEnv: process.env.NODE_ENV ?? null,
   })
 
   redirect(`/payments/checkout?payment_intent=${paymentIntent.id}`)

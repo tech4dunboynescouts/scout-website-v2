@@ -2,10 +2,38 @@
 
 import { FormEvent, useEffect, useState } from "react"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
-import { getClientStripePromise } from "@/lib/stripeClient"
+import { getClientStripePromise, getStripeClientLastError } from "@/lib/stripeClient"
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 const stripePromise = getClientStripePromise(publishableKey)
+
+type StripeClientTelemetryEvent = {
+  eventName: "stripe_js_init"
+  checkoutScope: "leaders"
+  status: "success" | "failure"
+  latencyMs: number
+  reason?: string
+  path?: string
+}
+
+function emitStripeClientTelemetry(event: StripeClientTelemetryEvent) {
+  const body = JSON.stringify(event)
+
+  if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+    const blob = new Blob([body], { type: "application/json" })
+    navigator.sendBeacon("/api/telemetry/stripe-client", blob)
+    return
+  }
+
+  void fetch("/api/telemetry/stripe-client", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {
+    // Best-effort telemetry only.
+  })
+}
 
 function CheckoutForm({ returnUrl, isSubscription }: { returnUrl: string; isSubscription: boolean }) {
   const stripe = useStripe()
@@ -98,16 +126,55 @@ export default function PaymentElementCheckout({
     if (!stripePromise) return
 
     let isActive = true
+    const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now()
+
+    const elapsed = () => {
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now()
+      return Math.max(0, Math.round(now - startedAt))
+    }
 
     stripePromise
       .then((stripe) => {
         if (!isActive) return
         if (!stripe) {
+          const reason = getStripeClientLastError() ?? "stripe_object_unavailable"
+          emitStripeClientTelemetry({
+            eventName: "stripe_js_init",
+            checkoutScope: "leaders",
+            status: "failure",
+            latencyMs: elapsed(),
+            reason,
+            path: typeof window !== "undefined" ? window.location.pathname : undefined,
+          })
           setStripeLoadError("Stripe.js could not be initialized. Please refresh and try again.")
+          return
         }
+
+        emitStripeClientTelemetry({
+          eventName: "stripe_js_init",
+          checkoutScope: "leaders",
+          status: "success",
+          latencyMs: elapsed(),
+          path: typeof window !== "undefined" ? window.location.pathname : undefined,
+        })
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         if (!isActive) return
+
+        const reason =
+          error instanceof Error
+            ? error.message
+            : getStripeClientLastError() ?? "stripe_initialization_failed"
+
+        emitStripeClientTelemetry({
+          eventName: "stripe_js_init",
+          checkoutScope: "leaders",
+          status: "failure",
+          latencyMs: elapsed(),
+          reason,
+          path: typeof window !== "undefined" ? window.location.pathname : undefined,
+        })
+
         setStripeLoadError("Stripe.js could not be loaded. Please retry. If this persists, allowlist js.stripe.com on your network.")
       })
 
