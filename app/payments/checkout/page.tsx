@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { siteUrl } from "@/lib/siteConfig"
+import { buildStripeReturnUrl } from "@/lib/stripeSiteUrl"
 import {
   getPublicCheckoutCommitmentSummary,
   getPublicPaymentIntentClientSecret,
@@ -77,8 +77,8 @@ export default async function PublicCheckoutPage({
   }
 
   const returnUrl = isSubscription
-    ? `${siteUrl}/payments/complete`
-    : `${siteUrl}/payments/success`
+    ? buildStripeReturnUrl("/payments/complete")
+    : buildStripeReturnUrl("/payments/success")
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-14">

@@ -61,7 +61,7 @@ export default function PageHero({
               <span key={i} className="flex items-center gap-1.5">
                 {i > 0 && <ChevronRight size={12} />}
                 {crumb.href ? (
-                  <Link href={crumb.href} className="hover:text-white transition-colors">
+                  <Link href={crumb.href} prefetch={false} className="hover:text-white transition-colors">
                     {crumb.label}
                   </Link>
                 ) : (

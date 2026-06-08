@@ -3,7 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { auth } from "@/auth"
-import { siteUrl } from "@/lib/siteConfig"
+import { buildStripeReturnUrl } from "@/lib/stripeSiteUrl"
 import {
   getLeaderCheckoutCommitmentSummary,
   getPaymentIntentClientSecret,
@@ -87,8 +87,8 @@ export default async function EmbeddedCheckoutPage({
             clientSecret={clientSecret}
             returnUrl={
               isSubscription
-                ? `${siteUrl}/leaders/payments/complete`
-                : `${siteUrl}/leaders/payments/success`
+                ? buildStripeReturnUrl("/leaders/payments/complete")
+                : buildStripeReturnUrl("/leaders/payments/success")
             }
             isSubscription={isSubscription}
           />
