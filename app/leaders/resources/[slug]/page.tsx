@@ -7,6 +7,9 @@ import { leaderResourceBySlugQuery, leaderProfileByEmailQuery } from "@/sanity/l
 import { Tag, Clock, FileDown } from "lucide-react"
 import PdfViewerClient from "@/components/PdfViewerClient"
 import PageHero from "@/components/PageHero"
+import ImageCarousel from "@/components/ImageCarousel"
+import TiledImageGallery from "@/components/TiledImageGallery"
+import BodyImage from "@/components/BodyImage"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -26,6 +29,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const portableTextComponents: PortableTextComponents = {
+  types: {
+    bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
+      <BodyImage url={value.url} alt={value.alt} caption={value.caption} />
+    ),
+    imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
+      <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={value.columns ?? 3} />
+    ),
+  },
   block: {
     h2: ({ children }) => (
       <h2 className="font-display font-bold text-navy-dark text-2xl mt-8 mb-3">{children}</h2>
