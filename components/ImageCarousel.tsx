@@ -22,6 +22,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
   const [direction, setDirection] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [portraitByIndex, setPortraitByIndex] = useState<Record<number, boolean>>({});
   const lastTapRef = useRef<number>(0);
   const lockedScrollY = useRef(0);
 
@@ -78,6 +79,31 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxOpen, images.length]);
 
+  // Preload image dimensions so portrait slides can be fitted without clipping.
+  useEffect(() => {
+    if (!images?.length) return;
+
+    let cancelled = false;
+
+    images.forEach((image, index) => {
+      if (portraitByIndex[index] !== undefined) return;
+
+      const probe = new Image();
+      probe.onload = () => {
+        if (cancelled) return;
+        setPortraitByIndex(prev => {
+          if (prev[index] !== undefined) return prev;
+          return { ...prev, [index]: probe.naturalHeight > probe.naturalWidth };
+        });
+      };
+      probe.src = image.url;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [images, portraitByIndex]);
+
   const go = (index: number) => {
     setDirection(index > current ? 1 : -1);
     setCurrent(index);
@@ -85,6 +111,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
   const prev = () => go((current - 1 + images.length) % images.length);
   const next = () => go((current + 1) % images.length);
   const openLightbox = () => setLightboxOpen(true);
+  const isCurrentPortrait = portraitByIndex[current] === true;
 
   // Double-tap detection for mobile
   const handleTouchEnd = () => {
@@ -115,7 +142,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full ${isCurrentPortrait ? "object-contain" : "object-cover"}`}
             />
           </AnimatePresence>
 
