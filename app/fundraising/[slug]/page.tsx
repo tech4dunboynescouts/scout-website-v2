@@ -47,7 +47,7 @@ const portableTextComponents: PortableTextComponents = {
       <ImageCarousel images={value.images ?? []} />
     ),
     tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
-      <TiledImageGallery images={value.images ?? []} columns={value.columns ?? 3} />
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
     ),
   },
   block: {
