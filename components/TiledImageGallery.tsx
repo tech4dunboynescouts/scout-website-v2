@@ -9,7 +9,7 @@ interface GalleryImage {
   url: string;
   alt?: string;
   caption?: string;
-  aspectRatio?: "square" | "landscape" | "portrait";
+  aspectRatio?: string;
 }
 
 interface TiledImageGalleryProps {
