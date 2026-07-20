@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
+import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery, allFundraisingSlugsQuery } from "@/sanity/lib/queries";
@@ -44,6 +45,9 @@ const portableTextComponents: PortableTextComponents = {
     ),
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
     ),
   },
   block: {

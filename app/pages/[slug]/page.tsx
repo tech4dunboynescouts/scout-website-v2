@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import ImageCarousel from "@/components/ImageCarousel";
+import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
@@ -89,6 +90,9 @@ const portableTextComponents: PortableTextComponents = {
     ),
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
     ),
     videoEmbed: ({ value }: { value: { url: string; caption?: string; _paddingTop?: number } }) => {
       const embedUrl = getEmbedUrl(value.url)

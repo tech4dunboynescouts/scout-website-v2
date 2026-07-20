@@ -89,6 +89,17 @@ export const newsArticleBySlugQuery = groq`
           caption,
         }
       },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
       _type == "videoEmbed" => {
         url,
         caption,
@@ -189,6 +200,17 @@ export const fundraisingCampaignBySlugQuery = groq`
           caption,
         }
       },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
     },
   }
 `
@@ -223,7 +245,18 @@ export const generalPageBySlugQuery = groq`
         ...,
         "url": asset->url,
         alt,
-        caption,
+        caption,tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
+      _type == "
       },
       _type == "imageGallery" => {
         ...,
@@ -343,7 +376,35 @@ export const leaderResourceBySlugQuery = groq`
     "slug": slug.current,
     category,
     publishedAt,
-    body,
+    body[] {
+      ...,
+      _type == "bodyImage" => {
+        ...,
+        "url": asset->url,
+        alt,
+        caption,
+      },
+      _type == "imageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+        }
+      },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
+    },
     visibleToRoles,
     "fileUrl": file.asset->url,
     "fileName": file.asset->originalFilename,
