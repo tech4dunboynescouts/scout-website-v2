@@ -112,6 +112,10 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
   const next = () => go((current + 1) % images.length);
   const openLightbox = () => setLightboxOpen(true);
   const isCurrentPortrait = portraitByIndex[current] === true;
+  const currentFrameAspectRatio = isCurrentPortrait ? "4 / 5" : "16 / 9";
+  const currentFrameWidthClass = isCurrentPortrait
+    ? "max-w-full sm:max-w-[30rem] md:max-w-[34rem] lg:max-w-[38rem] xl:max-w-[42rem] 2xl:max-w-[44rem]"
+    : "max-w-none";
 
   // Double-tap detection for mobile
   const handleTouchEnd = () => {
@@ -127,9 +131,10 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
       <figure className="my-8">
         {/* Image frame */}
         <div
-          className="relative overflow-hidden rounded-xl bg-navy-dark aspect-[16/9] cursor-zoom-in"
+          className={`relative mx-auto w-full overflow-hidden rounded-xl bg-navy-dark cursor-zoom-in transition-[max-width] duration-300 ease-in-out ${currentFrameWidthClass}`}
           onDoubleClick={openLightbox}
           onTouchEnd={handleTouchEnd}
+          style={{ aspectRatio: currentFrameAspectRatio, maxHeight: isCurrentPortrait ? "min(78vh, 56rem)" : "min(60vh, 45rem)" }}
         >
           <AnimatePresence custom={direction} mode="popLayout">
             <motion.img
