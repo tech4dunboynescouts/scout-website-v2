@@ -245,18 +245,7 @@ export const generalPageBySlugQuery = groq`
         ...,
         "url": asset->url,
         alt,
-        caption,tiledImageGallery" => {
-        ...,
-        images[] {
-          ...,
-          "url": asset->url,
-          alt,
-          caption,
-          aspectRatio,
-        },
-        columns,
-      },
-      _type == "
+        caption,
       },
       _type == "imageGallery" => {
         ...,
@@ -266,6 +255,17 @@ export const generalPageBySlugQuery = groq`
           alt,
           caption,
         }
+      },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
       },
       _type == "videoEmbed" => {
         url,
