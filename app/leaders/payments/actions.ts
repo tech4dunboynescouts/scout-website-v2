@@ -113,11 +113,12 @@ async function sendPaymentConfirmationEmail(params: {
   currency: string
   paymentIntentId: string
   timestamp: string
+  treasurerEmail?: string
 }) {
   const transporter = getMailTransporter()
   if (!transporter) return
 
-  const { payeeEmail, payeeName, childNames, paymentType, amount, currency, paymentIntentId, timestamp } = params
+  const { payeeEmail, payeeName, childNames, paymentType, amount, currency, paymentIntentId, timestamp, treasurerEmail } = params
 
   const email = sanitiseEmail(payeeEmail)
   if (!email) {
@@ -209,15 +210,18 @@ async function sendPaymentConfirmationEmail(params: {
     </div>
   `
 
+  const bcc = treasurerEmail ? sanitiseEmail(treasurerEmail) || undefined : undefined
+
   try {
     await transporter.sendMail({
       from,
       to: email,
+      ...(bcc ? { bcc } : {}),
       subject,
       text,
       html,
     })
-    console.info("Payment confirmation email sent", { to: email, paymentIntentId })
+    console.info("Payment confirmation email sent", { to: email, bcc, paymentIntentId })
   } catch (error) {
     console.error("Payment confirmation email failed to send", { error, to: email, paymentIntentId })
   }
@@ -908,6 +912,7 @@ export async function createLeaderSubscriptionAction(setupIntentId: string) {
       currency,
       paymentIntentId: String(subscription.id),
       timestamp: new Date().toISOString(),
+      treasurerEmail: process.env.EXPENSE_CLAIM_EMAIL,
     }).catch(() => null)
   }
 
@@ -1022,6 +1027,7 @@ export async function markPaymentCompletedAction(paymentIntentId?: string) {
         currency,
         paymentIntentId: paymentIntent.id,
         timestamp: new Date().toISOString(),
+        treasurerEmail: process.env.EXPENSE_CLAIM_EMAIL,
       })
 
       await stripe.paymentIntents
