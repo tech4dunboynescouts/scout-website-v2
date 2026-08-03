@@ -60,3 +60,22 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+# Use Stripe’s standard test cards in sandbox mode. The easiest one:
+
+Card number: 4242 4242 4242 4242
+Expiry: any future date (for example 12/34)
+CVC: any 3 digits (for example 123)
+ZIP/Postcode: any value
+Useful additional test cards for flow testing:
+
+4000 0025 0000 3155 : requires 3D Secure authentication
+4000 0000 0000 0002 : generic card decline
+4000 0000 0000 9995 : insufficient funds
+4000 0000 0000 0069 : expired card
+Tips:
+
+Make sure you’re using Stripe test API keys.
+In test mode, never use real card details.
+If Stripe shows an auth challenge (3DS), follow the on-screen test prompts to complete/fail as needed.
