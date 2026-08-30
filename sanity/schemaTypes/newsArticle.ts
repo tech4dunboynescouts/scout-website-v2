@@ -171,8 +171,6 @@ export const newsArticle = defineType({
         }),
         defineArrayMember({
           type: 'object',
-        defineArrayMember({
-          type: 'object',
           name: 'tiledImageGallery',
           title: 'Tiled Image Gallery',
           fields: [

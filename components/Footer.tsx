@@ -21,7 +21,6 @@ const footerSections = [
       { href: "/leaders", label: "Leader Team" },
       { href: "/news", label: "News & Events" },
       { href: "/fundraising", label: "Fundraising" },
-      { href: "/resources", label: "Scouter Resources" },
     ],
   },
   {
