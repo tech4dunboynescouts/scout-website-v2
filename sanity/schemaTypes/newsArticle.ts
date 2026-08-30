@@ -41,6 +41,7 @@ export const newsArticle = defineType({
           { title: 'Cubs', value: 'Cubs' },
           { title: 'Scouts', value: 'Scouts' },
           { title: 'Ventures', value: 'Ventures' },
+          { title: 'Rovers', value: 'Rovers' },
           { title: 'Water Section', value: 'Water Section' },
         ],
         layout: 'radio',

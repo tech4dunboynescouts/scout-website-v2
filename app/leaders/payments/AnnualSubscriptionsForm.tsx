@@ -6,7 +6,7 @@ import { ArrowRight, Minus, Plus } from "lucide-react"
 
 import { startAnnualSubscriptionsCheckoutAction } from "./actions"
 
-type SectionKey = "beavers" | "cubs" | "scouts" | "ventures"
+type SectionKey = "beavers" | "cubs" | "scouts" | "ventures" | "rovers"
 
 type PricingData = {
   currency: string
@@ -38,11 +38,16 @@ const sectionVisuals: Record<
     alt: "Ventures section visual",
     accentClass: "bg-violet-50 border-violet-100",
   },
+  rovers: {
+    src: "/images/Rover-Scout.jpg",
+    alt: "Rovers section visual",
+    accentClass: "bg-purple-50 border-purple-100",
+  },
 }
 
 export default function AnnualSubscriptionsForm({ pricing, userEmail = "" }: { pricing: PricingData; userEmail?: string }) {
   const initialState = useMemo(
-    () => ({ beavers: 0, cubs: 0, scouts: 0, ventures: 0 }),
+    () => ({ beavers: 0, cubs: 0, scouts: 0, ventures: 0, rovers: 0 }),
     []
   )
   const [quantities, setQuantities] = useState<Record<SectionKey, number>>(initialState)

@@ -35,7 +35,7 @@ export default function PaymentsPage() {
               Annual Subscriptions
             </h2>
             <p className="font-body text-textMuted text-sm leading-relaxed flex-1">
-              Pay annual membership subscriptions for Beavers, Cubs, Scouts, and Ventures. Select
+              Pay annual membership subscriptions for Beavers, Cubs, Scouts, Ventures, and Rovers. Select
               quantities per section and complete payment securely online.
             </p>
             <div className="mt-6 inline-flex items-center gap-2 text-orange-main font-body font-semibold text-sm group-hover:gap-3 transition-all">

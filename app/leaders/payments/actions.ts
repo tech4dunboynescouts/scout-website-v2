@@ -15,7 +15,7 @@ import { serverClient } from "@/sanity/lib/serverClient"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-type SectionKey = "beavers" | "cubs" | "scouts" | "ventures"
+type SectionKey = "beavers" | "cubs" | "scouts" | "ventures" | "rovers"
 
 type SectionPricing = {
   unitPrice?: number
@@ -30,6 +30,7 @@ type AnnualSubscriptionPricing = {
   cubs?: SectionPricing
   scouts?: SectionPricing
   ventures?: SectionPricing
+  rovers?: SectionPricing
   maximumSubscriptionFee?: number
 }
 
@@ -44,7 +45,7 @@ type ScoutsSummerCampPricing = {
   amountOptions?: number[]
 }
 
-const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures"]
+const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures", "rovers"]
 const INSTALLMENT_MONTHS = 4
 
 type CheckoutCommitmentSummary =
@@ -474,6 +475,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
     cubs: parseQuantity(formData.get("cubsQty")),
     scouts: parseQuantity(formData.get("scoutsQty")),
     ventures: parseQuantity(formData.get("venturesQty")),
+    rovers: parseQuantity(formData.get("roversQty")),
   }
   const payeeName = parseRequiredText(formData.get("payeeName"), "Payee name")
   const payeeReference = parseRequiredText(formData.get("payeeReference"), "Childs Name or Names")
@@ -578,6 +580,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
           cubsQty: String(quantities.cubs),
           scoutsQty: String(quantities.scouts),
           venturesQty: String(quantities.ventures),
+          roversQty: String(quantities.rovers),
           leaderName: leader.name,
           leaderEmail: leader.email,
           source: "leaders",
@@ -631,6 +634,7 @@ export async function startAnnualSubscriptionsCheckoutAction(formData: FormData)
         cubsQty: String(quantities.cubs),
         scoutsQty: String(quantities.scouts),
         venturesQty: String(quantities.ventures),
+        roversQty: String(quantities.rovers),
         payeeName,
         payeeReference,
         payeeEmail,
@@ -852,6 +856,7 @@ export async function createLeaderSubscriptionAction(setupIntentId: string) {
             cubsQty: metadata.cubsQty,
             scoutsQty: metadata.scoutsQty,
             venturesQty: metadata.venturesQty,
+            roversQty: metadata.roversQty,
             leaderName: metadata.leaderName,
             leaderEmail: metadata.leaderEmail,
             source: metadata.source,

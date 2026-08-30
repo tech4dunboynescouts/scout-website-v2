@@ -6,6 +6,7 @@ const ROLES = [
   { title: 'Cubs',          value: 'cubs' },
   { title: 'Scouts',        value: 'scouts' },
   { title: 'Ventures',      value: 'ventures' },
+  { title: 'Rovers',        value: 'rovers' },
 ]
 
 export const leaderProfile = defineType({

@@ -25,6 +25,7 @@ const staticNavItems: NavItem[] = [
       { label: "Cubs", href: "/sections/cubs" },
       { label: "Scouts", href: "/sections/scouts" },
       { label: "Ventures", href: "/sections/ventures" },
+      { label: "Rovers", href: "/sections/rovers" },
     ],
   },
   {

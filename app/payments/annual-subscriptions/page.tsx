@@ -7,7 +7,7 @@ import AnnualSubscriptionsForm from "./AnnualSubscriptionsForm"
 
 export const metadata: Metadata = {
   title: "Annual Subscriptions",
-  description: "Pay annual membership subscriptions for Beavers, Cubs, Scouts, and Ventures.",
+  description: "Pay annual membership subscriptions for Beavers, Cubs, Scouts, Ventures, and Rovers.",
 }
 
 export default async function PublicAnnualSubscriptionsPage() {
@@ -21,6 +21,7 @@ export default async function PublicAnnualSubscriptionsPage() {
           { key: "cubs" as const, label: "Cubs", unitPrice: Number(pricing.cubs?.unitPrice ?? 0) },
           { key: "scouts" as const, label: "Scouts", unitPrice: Number(pricing.scouts?.unitPrice ?? 0) },
           { key: "ventures" as const, label: "Ventures", unitPrice: Number(pricing.ventures?.unitPrice ?? 0) },
+          { key: "rovers" as const, label: "Rovers", unitPrice: Number(pricing.rovers?.unitPrice ?? 0) },
         ],
         maximumSubscriptionFee: pricing.maximumSubscriptionFee
           ? Number(pricing.maximumSubscriptionFee)

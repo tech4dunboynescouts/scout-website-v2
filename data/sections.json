@@ -108,6 +108,29 @@
     "sectionName": "Unit",
     "leaderTitle": "Venture Scout Leader",
     "image": "/images/photo-1464822759023-fed622ff2c3b.jpg"
+  },
+  {
+    "slug": "rovers",
+    "name": "Rovers",
+    "ageRange": "18–21",
+    "colour": "#6B4E71",
+    "meetings": [],
+    "location": "Rooske Road Scout Den, Dunboyne",
+    "icon": "🧭",
+    "tagline": "Keep exploring. Keep leading.",
+    "description": "Rovers is the section for young adults aged 18–21 who want to continue their scouting journey. It is a welcoming space to build friendships, take on new challenges, and shape the kind of scouting experience that fits this stage of life.",
+    "programme": "The Rover programme is led by its members and can include outdoor adventure, community service, personal development, international opportunities, and supporting the wider Scout Group. Rovers help decide what the unit does and how it makes a difference.",
+    "activities": [
+      "Member-led outdoor adventures and expeditions",
+      "Community service and volunteering",
+      "Leadership and personal development",
+      "International scouting opportunities",
+      "Supporting younger sections and group activities",
+      "Water activities and outdoor skills"
+    ],
+    "sectionName": "Unit",
+    "leaderTitle": "Self Led",
+    "image": "/images/photo-1464822759023-fed622ff2c3b.jpg"
   }
 ]
 

@@ -9,6 +9,7 @@ const tagColours: Record<string, string> = {
   Cubs: "#2A5298",
   Scouts: "#1A3A6B",
   Ventures: "#0D2044",
+  Rovers: "#6B4E71",
   Group: "#5A6A8A",
 };
 

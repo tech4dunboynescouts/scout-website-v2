@@ -122,6 +122,7 @@ export default function ContactForm() {
           <option value="cubs">Cubs Section</option>
           <option value="scouts">Scouts Section</option>
           <option value="ventures">Ventures Section</option>
+          <option value="rovers">Rovers Section</option>
           <option value="volunteering">Volunteering</option>
           <option value="fundraising">Fundraising</option>
           <option value="other">Other</option>

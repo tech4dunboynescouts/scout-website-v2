@@ -11,6 +11,7 @@ const footerSections = [
       { href: "/sections/cubs", label: "Cubs" },
       { href: "/sections/scouts", label: "Scouts" },
       { href: "/sections/ventures", label: "Ventures" },
+      { href: "/sections/rovers", label: "Rovers" },
     ],
   },
   {
@@ -62,7 +63,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/60 text-sm font-body leading-relaxed mb-6 max-w-xs">
-              Founded in 1973 and highly active to this day. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section serving the whole group.
+              Founded in 1973 and highly active to this day. Five youth sections from Beavers to Rovers, plus a Water Section open to the whole group.
             </p>
             <div className="space-y-2 text-sm font-body text-white/70">
               <div className="flex items-start gap-2">

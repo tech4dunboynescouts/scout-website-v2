@@ -120,6 +120,7 @@ export const annualSubscriptionPricingQuery = groq`
     cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
     scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
     ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
+    rovers { unitPrice, stripePriceId, subscriptionStripePriceId },
     maximumSubscriptionFee,
   }
 `
@@ -132,6 +133,7 @@ export const leadersAnnualSubscriptionPricingQuery = groq`
     cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
     scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
     ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
+    rovers { unitPrice, stripePriceId, subscriptionStripePriceId },
     maximumSubscriptionFee,
   }
 `

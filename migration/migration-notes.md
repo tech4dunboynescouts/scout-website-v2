@@ -12,6 +12,7 @@ Beavers — #E8640A (orange)
 Cubs — #2A5298 (mid blue)
 Scouts — #1A3A6B (dark blue)
 Ventures — #0D2044 (very dark navy)
+Rovers — #6B4E71 (plum)
 
 
 Section	Hex
@@ -20,4 +21,4 @@ Beavers	#E8640A
 Cubs	#2A5298
 Scouts	#1A3A6B
 Ventures	#0D2044
-
+Rovers	#6B4E71

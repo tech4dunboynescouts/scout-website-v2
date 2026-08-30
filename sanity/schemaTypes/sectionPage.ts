@@ -10,7 +10,7 @@ export const sectionPage = defineType({
       name: 'name',
       title: 'Section Name',
       type: 'string',
-      description: 'e.g. Beavers, Cubs, Scouts, Ventures',
+      description: 'e.g. Beavers, Cubs, Scouts, Ventures, Rovers',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
