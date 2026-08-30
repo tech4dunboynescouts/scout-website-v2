@@ -15,7 +15,7 @@ export default function AboutPage() {
     <>
       <PageHero
         title="About the Group"
-        subtitle="Founded in 1973 and highly active to this day, two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section that serves the whole group."
+        subtitle="Founded in 1973 and highly active to this day, two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, a Rovers section and a Water Section that serves the whole group."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
         bgImage="/images/photo-1529156069898-49953e39b3ac.jpg"
       />

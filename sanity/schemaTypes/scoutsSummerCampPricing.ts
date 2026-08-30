@@ -5,6 +5,7 @@ const SECTION_OPTIONS = [
   { title: 'Cubs', value: 'cubs' },
   { title: 'Scouts', value: 'scouts' },
   { title: 'Ventures', value: 'ventures' },
+  { title: 'Rovers', value: 'rovers' },
   { title: 'Other', value: 'other' },
 ]
 

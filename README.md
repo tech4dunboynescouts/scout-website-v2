@@ -44,7 +44,7 @@ For the Leaders Portal payments flow, set these server-side values in your local
 - `NEXT_PUBLIC_SITE_URL` or `VERCEL_URL`
 - `SANITY_WRITE_TOKEN`
 
-Leaders payments also require an `annualSubscriptionPricing` singleton document in Sanity with unit prices and Stripe Price IDs for Beavers, Cubs, Scouts, and Ventures.
+Leaders payments also require an `annualSubscriptionPricing` singleton document in Sanity with unit prices and Stripe Price IDs for the five youth sections: Beavers, Cubs, Scouts, Ventures, and Rovers.
 
 ## Learn More
 

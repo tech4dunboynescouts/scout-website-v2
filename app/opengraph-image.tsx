@@ -42,7 +42,7 @@ export default function OpenGraphImage() {
             Adventure For Everyone.
           </div>
           <div style={{ fontSize: 32, opacity: 0.9 }}>
-            Beavers, Cubs, Scouts, Ventures and Water Section
+            Beavers, Cubs, Scouts, Ventures, Rovers and Water Section
           </div>
         </div>
       </div>

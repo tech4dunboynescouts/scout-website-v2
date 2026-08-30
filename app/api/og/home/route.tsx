@@ -109,7 +109,7 @@ export function GET() {
                   opacity: 0.95,
                 }}
               >
-                Beavers, Cubs, Scouts, Ventures and a unique Water Section in Dunboyne, Co. Meath.
+                Beavers, Cubs, Scouts, Ventures, Rovers and a unique Water Section in Dunboyne, Co. Meath.
               </div>
             </div>
           </div>

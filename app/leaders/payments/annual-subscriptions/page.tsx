@@ -39,6 +39,11 @@ export default async function AnnualSubscriptionsPage() {
             label: "Leaders Ventures Subs",
             unitPrice: Number(pricing.ventures?.unitPrice ?? 0),
           },
+          {
+            key: "rovers" as const,
+            label: "Leaders Rovers Subs",
+            unitPrice: Number(pricing.rovers?.unitPrice ?? 0),
+          },
         ],
         maximumSubscriptionFee: pricing.maximumSubscriptionFee ? Number(pricing.maximumSubscriptionFee) : undefined,
       }
@@ -48,7 +53,7 @@ export default async function AnnualSubscriptionsPage() {
     <>
       <PageHero
         title="Leaders Annual Subscriptions"
-        subtitle="Choose quantities for Leaders Beaver Subs, Leaders Cubs Subs, Leaders Scout Subs and Leaders Ventures Subs, then pay in full or in 4 monthly installments."
+        subtitle="Choose quantities for Leaders Beaver Subs, Leaders Cubs Subs, Leaders Scout Subs, Leaders Ventures Subs and Leaders Rovers Subs, then pay in full or in 4 monthly installments."
         breadcrumbs={[
           { label: "Leaders Portal", href: "/leaders/dashboard" },
           { label: "Payments", href: "/leaders/payments" },

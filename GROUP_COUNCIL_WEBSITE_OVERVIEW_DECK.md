@@ -23,6 +23,7 @@ Use this document as a slide-by-slide script when building your PowerPoint, Goog
 - Cubs: `#2A5298`
 - Scouts: `#1A3A6B`
 - Ventures: `#0D2044`
+- Rovers: `#6B4E71`
 
 ### Typography
 - Headings: Roboto Bold (700-900)

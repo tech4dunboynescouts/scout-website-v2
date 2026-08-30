@@ -135,6 +135,7 @@ async function sendContactNotificationEmail(payload: {
     cubs: "Cubs Section",
     scouts: "Scouts Section",
     ventures: "Ventures Section",
+    rovers: "Rovers Section",
     volunteering: "Volunteering",
     fundraising: "Fundraising",
     other: "Other",

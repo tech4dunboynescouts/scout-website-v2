@@ -15,7 +15,7 @@ import { redirect } from "next/navigation"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-type SectionKey = "beavers" | "cubs" | "scouts" | "ventures"
+type SectionKey = "beavers" | "cubs" | "scouts" | "ventures" | "rovers"
 
 type SectionPricing = {
   unitPrice?: number
@@ -30,6 +30,7 @@ type AnnualSubscriptionPricing = {
   cubs?: SectionPricing
   scouts?: SectionPricing
   ventures?: SectionPricing
+  rovers?: SectionPricing
   maximumSubscriptionFee?: number
 }
 
@@ -44,7 +45,7 @@ type ScoutsSummerCampPricing = {
   amountOptions?: number[]
 }
 
-const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures"]
+const SECTION_KEYS: SectionKey[] = ["beavers", "cubs", "scouts", "ventures", "rovers"]
 const INSTALLMENT_MONTHS = 4
 
 type CheckoutCommitmentSummary =
@@ -401,6 +402,7 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
     cubs: parseQuantity(formData.get("cubsQty")),
     scouts: parseQuantity(formData.get("scoutsQty")),
     ventures: parseQuantity(formData.get("venturesQty")),
+    rovers: parseQuantity(formData.get("roversQty")),
   }
 
   const payeeName = parseRequiredText(formData.get("payeeName"), "Payee Name")
@@ -509,6 +511,7 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
           cubsQty: String(quantities.cubs),
           scoutsQty: String(quantities.scouts),
           venturesQty: String(quantities.ventures),
+          roversQty: String(quantities.rovers),
           source: "public",
           titlePrefix: "Annual subscriptions installments",
           summerCampOptionId: "n/a",
@@ -558,6 +561,7 @@ export async function startPublicAnnualSubscriptionsCheckoutAction(formData: For
           cubsQty: String(quantities.cubs),
           scoutsQty: String(quantities.scouts),
           venturesQty: String(quantities.ventures),
+          roversQty: String(quantities.rovers),
           payeeName,
           payeeReference,
           payeeEmail,
@@ -864,6 +868,7 @@ export async function createPublicSubscriptionAction(setupIntentId: string) {
             cubsQty: metadata.cubsQty,
             scoutsQty: metadata.scoutsQty,
             venturesQty: metadata.venturesQty,
+            roversQty: metadata.roversQty,
             source: metadata.source,
             titlePrefix: metadata.titlePrefix,
             summerCampOptionId: metadata.summerCampOptionId,

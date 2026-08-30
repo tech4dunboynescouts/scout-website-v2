@@ -10,7 +10,7 @@ import readline from 'readline'
 // ── Config ─────────────────────────────────────────────────────────────────────
 const IMAGES_DIR = path.resolve('migration/images')
 
-const TAGS = ['Group', 'Beavers', 'Cubs', 'Scouts', 'Ventures', 'Water Section']
+const TAGS = ['Group', 'Beavers', 'Cubs', 'Scouts', 'Ventures', 'Rovers', 'Water Section']
 
 const HEADING_STYLES = { h1: 'h1', h2: 'h2', h3: 'h3', h4: 'h4', h5: 'h5', h6: 'h6' }
 

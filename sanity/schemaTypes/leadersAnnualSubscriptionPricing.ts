@@ -13,6 +13,7 @@ type LeadersAnnualPricingDocument = {
   cubs?: SectionValue
   scouts?: SectionValue
   ventures?: SectionValue
+  rovers?: SectionValue
   maximumSubscriptionFee?: number
 }
 
@@ -78,6 +79,7 @@ export const leadersAnnualSubscriptionPricing = defineType({
     sectionField('cubs', 'Leaders Cubs Subs'),
     sectionField('scouts', 'Leaders Scout Subs'),
     sectionField('ventures', 'Leaders Ventures Subs'),
+    sectionField('rovers', 'Leaders Rovers Subs'),
     defineField({
       name: 'maximumSubscriptionFee',
       title: 'Maximum Subscription Fee',
@@ -98,7 +100,7 @@ export const leadersAnnualSubscriptionPricing = defineType({
         return 'Payment type is required.'
       }
 
-      const sections: Array<keyof LeadersAnnualPricingDocument> = ['beavers', 'cubs', 'scouts', 'ventures']
+      const sections: Array<keyof LeadersAnnualPricingDocument> = ['beavers', 'cubs', 'scouts', 'ventures', 'rovers']
       for (const key of sections) {
         const section = value[key] as SectionValue | undefined
         if (!section) {

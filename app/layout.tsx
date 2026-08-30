@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     template: "%s | 1st Meath Dunboyne Scouts",
   },
   description:
-    "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Founded 1973.",
-  keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "scouting ireland", "youth group"],
+    "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Founded 1973.",
+  keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "rovers", "scouting ireland", "youth group"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -57,7 +57,7 @@ const organizationSchema = {
   url: siteUrl,
   logo: `${siteUrl}/images/logo.jpg`,
   description:
-    "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a Water Section. Founded 1973.",
+    "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a Water Section. Founded 1973.",
   foundingDate: "1973",
   address: {
     "@type": "PostalAddress",

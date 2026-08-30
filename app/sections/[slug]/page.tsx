@@ -249,7 +249,7 @@ export default async function SectionPage({ params }: Props) {
                 We&apos;d love to welcome your child into our {section.sectionName}. Apply online and a leader will be in touch.
               </p>
               <Link
-                href="/join"
+                href={section.slug === "rovers" ? "/contact" : "/join"}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-navy-dark font-body font-semibold rounded-lg hover:bg-white/90 transition-colors text-sm"
               >
                 Apply Now <ArrowRight size={14} />
