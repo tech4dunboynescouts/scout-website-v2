@@ -36,7 +36,7 @@ const sectionVisuals: Record<SectionKey, { src: string; alt: string; accentClass
     accentClass: "bg-violet-50 border-violet-100",
   },
   rovers: {
-    src: "/images/photo-1464822759023-fed622ff2c3b.jpg",
+    src: "/images/Rover-Scout.jpg",
     alt: "Rovers",
     accentClass: "bg-purple-50 border-purple-100",
   },
