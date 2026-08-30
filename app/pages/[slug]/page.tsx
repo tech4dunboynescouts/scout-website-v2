@@ -5,6 +5,7 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import ImageCarousel from "@/components/ImageCarousel";
 import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
+import PdfDocumentBlock from "@/components/PdfDocumentBlock";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
 import { generalPageBySlugQuery, allGeneralPageSlugsQuery } from "@/sanity/lib/queries";
@@ -117,6 +118,10 @@ const portableTextComponents: PortableTextComponents = {
         </figure>
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pdfDocument: ({ value }: { value: any }) => (
+      <PdfDocumentBlock value={value} />
+    ),
   },
   block: {
     h2: ({ children }) => (

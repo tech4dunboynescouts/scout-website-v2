@@ -171,6 +171,8 @@ export const newsArticle = defineType({
         }),
         defineArrayMember({
           type: 'object',
+        defineArrayMember({
+          type: 'object',
           name: 'tiledImageGallery',
           title: 'Tiled Image Gallery',
           fields: [
@@ -230,6 +232,53 @@ export const newsArticle = defineType({
             prepare({ images, columns }: { images?: unknown[]; columns?: number }) {
               const count = Array.isArray(images) ? images.length : 0
               return { title: `Tiled Gallery (${count} images, ${columns || 3} columns)` }
+            },
+          },
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'pdfDocument',
+          title: 'PDF / Form Document',
+          fields: [
+            defineField({
+              name: 'file',
+              title: 'PDF / Document File',
+              type: 'file',
+              description: 'Upload a PDF or form document (e.g. Managing Medication Form).',
+              options: { accept: '.pdf,application/pdf' },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'title',
+              title: 'Document Title',
+              type: 'string',
+              description: 'e.g. "Managing Medication Form". If left blank, the file name will be used.',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 2,
+              description: 'Optional notes or instructions for downloading/filling out this form.',
+            }),
+            defineField({
+              name: 'showInlineViewer',
+              title: 'Show Embedded PDF Viewer',
+              type: 'boolean',
+              description: 'Display an interactive embedded PDF viewer on the page in addition to the download button.',
+              initialValue: true,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              fileName: 'file.asset.originalFilename',
+            },
+            prepare({ title, fileName }: { title?: string; fileName?: string }) {
+              return {
+                title: title || fileName || 'PDF Document',
+                subtitle: 'PDF Document / Download',
+              }
             },
           },
         }),

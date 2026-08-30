@@ -74,6 +74,14 @@ const organizationSchema = {
   ],
 };
 
+// Reinforces canonical site identity/nav for Google Sitelinks eligibility (no forced search action: no URL-based search route exists)
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "1st Meath Dunboyne Scout Group",
+  url: siteUrl,
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [navData, featureFlags] = await Promise.all([
     client
@@ -97,6 +105,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <ConditionalLayout navItems={navItems}>{children}</ConditionalLayout>
         <Analytics />

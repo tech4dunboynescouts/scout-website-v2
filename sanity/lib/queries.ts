@@ -103,6 +103,16 @@ export const newsArticleBySlugQuery = groq`
       _type == "videoEmbed" => {
         url,
         caption,
+      },
+      _type == "pdfDocument" => {
+        ...,
+        "fileUrl": file.asset->url,
+        "fileName": file.asset->originalFilename,
+        "fileMimeType": file.asset->mimeType,
+        "fileSize": file.asset->size,
+        title,
+        description,
+        showInlineViewer,
       }
     },
   }
@@ -272,6 +282,16 @@ export const generalPageBySlugQuery = groq`
       _type == "videoEmbed" => {
         url,
         caption,
+      },
+      _type == "pdfDocument" => {
+        ...,
+        "fileUrl": file.asset->url,
+        "fileName": file.asset->originalFilename,
+        "fileMimeType": file.asset->mimeType,
+        "fileSize": file.asset->size,
+        title,
+        description,
+        showInlineViewer,
       }
     },
   }

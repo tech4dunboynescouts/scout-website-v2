@@ -6,6 +6,7 @@ import { Calendar, ArrowLeft, Tag, ExternalLink } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
 import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
+import PdfDocumentBlock from "@/components/PdfDocumentBlock";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
 import { buildSocialMetadata } from "@/lib/socialMetadata";
@@ -122,6 +123,10 @@ const portableTextComponents: PortableTextComponents = {
         </figure>
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pdfDocument: ({ value }: { value: any }) => (
+      <PdfDocumentBlock value={value} />
+    ),
   },
   block: {
     h2: ({ children }) => (
