@@ -6,9 +6,27 @@ import { fundraisingCampaign } from './fundraisingCampaign'
 import { generalPage } from './generalPage'
 import { sectionPage } from './sectionPage'
 import { siteNavigation } from './siteNavigation'
+import { siteFeatureFlags } from './siteFeatureFlags'
 import { leaderTeam } from './leaderTeam'
 import { faqList } from './faqList'
+import { annualSubscriptionPricing } from './annualSubscriptionPricing'
+import { leadersAnnualSubscriptionPricing } from './leadersAnnualSubscriptionPricing'
+import { scoutsSummerCampPricing } from './scoutsSummerCampPricing'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [newsArticle, leaderProfile, leaderResource, fundraisingCampaign, generalPage, sectionPage, siteNavigation, leaderTeam, faqList],
+  types: [
+    newsArticle,
+    leaderProfile,
+    leaderResource,
+    fundraisingCampaign,
+    generalPage,
+    sectionPage,
+    siteNavigation,
+    siteFeatureFlags,
+    leaderTeam,
+    faqList,
+    annualSubscriptionPricing,
+    leadersAnnualSubscriptionPricing,
+    scoutsSummerCampPricing,
+  ],
 }

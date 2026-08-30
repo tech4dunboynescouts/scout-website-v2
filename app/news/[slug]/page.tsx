@@ -4,9 +4,11 @@ import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { Calendar, ArrowLeft, Tag, ExternalLink } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
+import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery, allNewsSlugsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 import { siteUrl } from "@/lib/siteConfig";
 
 interface Props {
@@ -29,28 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .catch(() => null);
   if (!article) return {};
 
-  return {
+  return buildSocialMetadata({
     title: article.title,
     description: article.excerpt,
-    alternates: { canonical: `/news/${slug}` },
-    openGraph: {
-      type: "article",
-      title: article.title,
-      description: article.excerpt,
-      url: `${siteUrl}/news/${slug}`,
-      publishedTime: article.date,
-      tags: [article.tag],
-      images: article.image
-        ? [{ url: article.image, alt: article.title }]
-        : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt,
-      images: article.image ? [article.image] : undefined,
-    },
-  };
+    canonicalPath: `/news/${slug}`,
+    image: `/news/${slug}/opengraph-image`,
+    imageAlt: article.title,
+    openGraphType: "article",
+    publishedTime: article.date,
+    tags: [article.tag],
+  });
 }
 
 function getEmbedUrl(url: string): string | null {
@@ -106,6 +96,9 @@ const portableTextComponents: PortableTextComponents = {
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
     ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
+    ),
     videoEmbed: ({ value }: { value: { url: string; caption?: string; _paddingTop?: number } }) => {
       const embedUrl = getEmbedUrl(value.url)
       if (!embedUrl) return null
@@ -156,6 +149,7 @@ const tagColours: Record<string, string> = {
   Cubs: "#2A5298",
   Scouts: "#1A3A6B",
   Ventures: "#0D2044",
+  Rovers: "#6B4E71",
   Group: "#5A6A8A",
   "Water Section": "#0077B6",
 };

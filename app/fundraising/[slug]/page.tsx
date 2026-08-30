@@ -4,9 +4,11 @@ import Link from "next/link";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import ImageCarousel from "@/components/ImageCarousel";
+import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery, allFundraisingSlugsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,18 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .fetch(fundraisingCampaignBySlugQuery, { slug })
     .catch(() => null);
   if (!campaign) return {};
-  return {
+  return buildSocialMetadata({
     title: campaign.title,
     description: campaign.excerpt,
-    alternates: { canonical: `/fundraising/${slug}` },
-    openGraph: {
-      title: campaign.title,
-      description: campaign.excerpt,
-      images: campaign.coverImage
-        ? [{ url: campaign.coverImage, alt: campaign.title }]
-        : undefined,
-    },
-  };
+    canonicalPath: `/fundraising/${slug}`,
+    image: `/fundraising/${slug}/opengraph-image`,
+    imageAlt: campaign.title,
+  });
 }
 
 const portableTextComponents: PortableTextComponents = {
@@ -48,6 +45,9 @@ const portableTextComponents: PortableTextComponents = {
     ),
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
     ),
   },
   block: {

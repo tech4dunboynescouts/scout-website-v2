@@ -25,6 +25,7 @@ const staticNavItems: NavItem[] = [
       { label: "Cubs", href: "/sections/cubs" },
       { label: "Scouts", href: "/sections/scouts" },
       { label: "Ventures", href: "/sections/ventures" },
+      { label: "Rovers", href: "/sections/rovers" },
     ],
   },
   {
@@ -33,8 +34,16 @@ const staticNavItems: NavItem[] = [
     children: [
       { label: "About the Group", href: "/about" },
       { label: "Leader Team", href: "/leaders" },
-      { label: "Fundraising", href: "/fundraising" },
       { label: "Contact Us", href: "/contact" },
+    ],
+  },
+  {
+    _type: "navGroup",
+    label: "Support Us",
+    children: [
+      { label: "Annual Subscriptions", href: "/payments/annual-subscriptions" },
+      { label: "Camp Payments", href: "/payments/camp-payments" },
+      { label: "Fundraising", href: "/fundraising" },
     ],
   },
 ];
@@ -83,7 +92,7 @@ export default function Navbar({ navItems }: Props) {
         <div className="flex items-center justify-between h-16 lg:h-20">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" prefetch={false} className="flex items-center gap-3 group">
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white/20 group-hover:ring-orange-main transition-all">
               <Image
                 src="/images/logo.jpg"
@@ -137,6 +146,7 @@ export default function Navbar({ navItems }: Props) {
                           <Link
                             key={child.href}
                             href={child.href}
+                            prefetch={false}
                             className={`block px-4 py-2.5 text-sm font-body transition-colors ${
                               isActive(child.href)
                                 ? "bg-orange-main text-white"
@@ -154,6 +164,7 @@ export default function Navbar({ navItems }: Props) {
                 <Link
                   key={item.href}
                   href={item.href!}
+                  prefetch={false}
                   className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
                     isActive(item.href!)
                       ? "text-orange-main"
@@ -168,6 +179,7 @@ export default function Navbar({ navItems }: Props) {
             {/* Fixed items — not editable via Studio */}
             <Link
               href="/leaders/login"
+              prefetch={false}
               className={`px-3 py-2 rounded-md text-sm font-body font-medium transition-colors ${
                 pathname.startsWith("/leaders/")
                   ? "text-orange-main"
@@ -179,6 +191,7 @@ export default function Navbar({ navItems }: Props) {
             <SearchModal />
             <Link
               href="/join"
+              prefetch={false}
               className="ml-1 px-5 py-2.5 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
             >
               Join Now
@@ -226,6 +239,7 @@ export default function Navbar({ navItems }: Props) {
                       <Link
                         key={child.href}
                         href={child.href}
+                        prefetch={false}
                         className={`block px-6 py-2.5 rounded-md text-sm font-body transition-colors ${
                           isActive(child.href)
                             ? "bg-orange-main text-white"
@@ -240,6 +254,7 @@ export default function Navbar({ navItems }: Props) {
                   <Link
                     key={item.href}
                     href={item.href!}
+                    prefetch={false}
                     className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
                       isActive(item.href!)
                         ? "bg-orange-main text-white"
@@ -255,6 +270,7 @@ export default function Navbar({ navItems }: Props) {
               <div className="pt-3 flex flex-col gap-2">
                 <Link
                   href="/leaders/login"
+                  prefetch={false}
                   className={`block px-3 py-2.5 rounded-md text-sm font-body transition-colors ${
                     pathname.startsWith("/leaders/")
                       ? "bg-orange-main text-white"
@@ -275,6 +291,7 @@ export default function Navbar({ navItems }: Props) {
                 </button>
                 <Link
                   href="/join"
+                  prefetch={false}
                   className="block w-full text-center px-5 py-3 bg-orange-main hover:bg-orange-hover text-white text-sm font-body font-semibold rounded-lg transition-colors"
                 >
                   Join Now

@@ -21,9 +21,11 @@ export default function ContactForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<FormData>();
+  const messageText = watch("message", "");
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -120,6 +122,7 @@ export default function ContactForm() {
           <option value="cubs">Cubs Section</option>
           <option value="scouts">Scouts Section</option>
           <option value="ventures">Ventures Section</option>
+          <option value="rovers">Rovers Section</option>
           <option value="volunteering">Volunteering</option>
           <option value="fundraising">Fundraising</option>
           <option value="other">Other</option>
@@ -132,11 +135,17 @@ export default function ContactForm() {
           Message <span className="text-orange-main">*</span>
         </label>
         <textarea
-          {...register("message", { required: "Required", minLength: { value: 20, message: "Please write at least 20 characters" } })}
+          {...register("message", {
+            required: "Required",
+            minLength: { value: 20, message: "Please write at least 20 characters" },
+            maxLength: { value: 2000, message: "Maximum 2000 characters" },
+          })}
+          maxLength={2000}
           rows={5}
           placeholder="How can we help you?"
           className={`w-full px-4 py-2.5 rounded-lg border font-body text-sm outline-none transition-colors resize-none ${errors.message ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-navy-light"}`}
         />
+        <p className="mt-1 text-xs text-textMuted text-right">{messageText.length}/2000</p>
         {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>}
       </div>
 

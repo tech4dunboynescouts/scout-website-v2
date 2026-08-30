@@ -46,7 +46,9 @@ export const generalPage = defineType({
       name: 'ctaLink',
       title: 'Button Link',
       type: 'url',
-      description: 'The URL the button links to.',
+      description: 'The URL the button links to. Can be absolute (https://...) or a relative path starting with / (e.g. /payments).',
+      validation: (rule) =>
+        rule.uri({ scheme: ['http', 'https', 'mailto'], allowRelative: true }),
     }),
     defineField({
       name: 'body',
@@ -125,6 +127,70 @@ export const generalPage = defineType({
             prepare({ images }: { images?: unknown[] }) {
               const count = Array.isArray(images) ? images.length : 0
               return { title: `Image Carousel (${count} images)` }
+            },
+          },
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'tiledImageGallery',
+          title: 'Tiled Image Gallery',
+          fields: [
+            defineField({
+              name: 'images',
+              title: 'Images',
+              type: 'array',
+              description: 'Add multiple images — they will display in a responsive grid (WordPress-style masonry layout).',
+              of: [
+                defineArrayMember({
+                  type: 'image',
+                  options: { hotspot: true },
+                  fields: [
+                    defineField({
+                      name: 'alt',
+                      type: 'string',
+                      title: 'Alt text',
+                      description: 'Describe the image for screen readers.',
+                    }),
+                    defineField({
+                      name: 'caption',
+                      type: 'string',
+                      title: 'Caption',
+                      description: 'Optional caption shown in the lightbox when viewing this image.',
+                    }),
+                    defineField({
+                      name: 'aspectRatio',
+                      type: 'string',
+                      title: 'Aspect Ratio',
+                      description: 'Hint for how to display this image in the grid.',
+                      options: {
+                        list: [
+                          { title: 'Square (1:1)', value: 'square' },
+                          { title: 'Landscape (16:9)', value: 'landscape' },
+                          { title: 'Portrait (3:4)', value: 'portrait' },
+                        ],
+                      },
+                    }),
+                  ],
+                }),
+              ],
+              validation: (Rule) => Rule.min(2),
+            }),
+            defineField({
+              name: 'columns',
+              title: 'Columns',
+              type: 'number',
+              description: 'Number of columns on desktop (2, 3, or 4).',
+              options: {
+                list: [2, 3, 4],
+              },
+              initialValue: 3,
+            }),
+          ],
+          preview: {
+            select: { images: 'images', columns: 'columns' },
+            prepare({ images, columns }: { images?: unknown[]; columns?: number }) {
+              const count = Array.isArray(images) ? images.length : 0
+              return { title: `Tiled Gallery (${count} images, ${columns || 3} columns)` }
             },
           },
         }),

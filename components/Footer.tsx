@@ -11,6 +11,7 @@ const footerSections = [
       { href: "/sections/cubs", label: "Cubs" },
       { href: "/sections/scouts", label: "Scouts" },
       { href: "/sections/ventures", label: "Ventures" },
+      { href: "/sections/rovers", label: "Rovers" },
     ],
   },
   {
@@ -62,7 +63,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/60 text-sm font-body leading-relaxed mb-6 max-w-xs">
-              Founded in 1973 and highly active to this day. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit, and a Water Section serving the whole group.
+              Founded in 1973 and highly active to this day. Five youth sections from Beavers to Rovers, plus a Water Section open to the whole group.
             </p>
             <div className="space-y-2 text-sm font-body text-white/70">
               <div className="flex items-start gap-2">
@@ -131,6 +132,7 @@ export default function Footer() {
                     ) : (
                       <Link
                         href={link.href}
+                        prefetch={false}
                         className="text-sm font-body text-white/60 hover:text-white transition-colors"
                       >
                         {link.label}
@@ -151,12 +153,14 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <Link
               href="/cookies"
+              prefetch={false}
               className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
             >
               Cookie Notice
             </Link>
             <Link
               href="/leaders/login"
+              prefetch={false}
               className="text-white/25 hover:text-white/50 text-xs font-body transition-colors"
             >
               Leader Login

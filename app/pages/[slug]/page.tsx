@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import ImageCarousel from "@/components/ImageCarousel";
+import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
 import { generalPageBySlugQuery, allGeneralPageSlugsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,18 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .fetch(generalPageBySlugQuery, { slug })
     .catch(() => null);
   if (!page) return {};
-  return {
+  return buildSocialMetadata({
     title: page.title,
-    description: page.description ?? undefined,
-    alternates: { canonical: `/pages/${slug}` },
-    openGraph: {
-      title: page.title,
-      description: page.description ?? undefined,
-      images: page.coverImage
-        ? [{ url: page.coverImage, alt: page.title }]
-        : undefined,
-    },
-  };
+    description: page.description,
+    canonicalPath: `/pages/${slug}`,
+    image: page.coverImage,
+    imageAlt: page.title,
+  });
 }
 
 function getEmbedUrl(url: string): string | null {
@@ -93,6 +90,9 @@ const portableTextComponents: PortableTextComponents = {
     ),
     imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
       <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
     ),
     videoEmbed: ({ value }: { value: { url: string; caption?: string; _paddingTop?: number } }) => {
       const embedUrl = getEmbedUrl(value.url)

@@ -12,7 +12,25 @@ import { allNewsQuery } from "@/sanity/lib/queries";
 export const metadata: Metadata = {
   title: "1st Meath Dunboyne Scout Group",
   description:
-    "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Join us today.",
+    "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Join us today.",
+  openGraph: {
+    type: "website",
+    title: "1st Meath Dunboyne Scout Group",
+    description:
+      "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Join us today.",
+    images: [
+      {
+        url: "/api/og/home",
+        width: 1200,
+        height: 630,
+        alt: "Branded social share image for 1st Meath Dunboyne Scout Group",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/api/og/home"],
+  },
 };
 
 const pillars = [
@@ -74,7 +92,7 @@ export default async function HomePage() {
           "Be part of something bigger.",
           "Prepared for everything. Ready for anything.",
         ]}
-        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath. Two Beaver colonies, three Cub packs, two Scout troops, a Venture unit and a very active Water Section."
+        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath, with five youth sections from Beavers to Rovers, plus a very active Water Section open to every member."
         image="/images/photo-1501854140801-50d01698950b.jpg"
         primaryCta={{ label: "Join Our Group", href: "/join" }}
         secondaryCta={{ label: "Explore Sections", href: "#sections" }}
@@ -85,7 +103,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6">
             <StatCounter value={50} suffix="+" label="Years Active" />
-            <StatCounter value={4} label="Sections" />
+            <StatCounter value={5} label="Youth Sections" />
             <StatCounter value={200} suffix="+" label="Young Members" />
           </div>
         </div>
@@ -103,7 +121,7 @@ export default async function HomePage() {
                 Over 50 years of scouting in Dunboyne
               </h2>
               <p className="font-body text-white/70 text-base leading-relaxed mb-6">
-                1st Meath Dunboyne Scout Group was founded in 1973 and remains a highly active group to this day. We comprise two Beaver colonies, three Cub packs, two Scout troops and a Venture unit, plus a very active Water Section that serves the entire group.
+                1st Meath Dunboyne Scout Group was founded in 1973 and remains a highly active group to this day. We comprise two Beaver colonies, three Cub packs, two Scout troops, a Venture unit and a Rovers section, plus a very active Water Section that serves the entire group.
               </p>
               <p className="font-body text-white/70 text-base leading-relaxed mb-8">
                 We are part of Scouting Ireland, and our programme aims to encourage the physical, intellectual, character, emotional, social and spiritual development of young people so they may achieve their full potential.
@@ -144,10 +162,10 @@ export default async function HomePage() {
               Find your section
             </h2>
             <p className="font-body text-textMuted mt-4 text-base max-w-xl mx-auto">
-              From age 6 to 18, there&apos;s a place in 1st Meath Dunboyne for every young person ready for adventure.
+              From age 6 to 25, there&apos;s a place in 1st Meath Dunboyne for every young person ready for adventure.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {sections.map((section, i) => (
               <SectionCard key={section.slug} {...section} index={i} />
             ))}

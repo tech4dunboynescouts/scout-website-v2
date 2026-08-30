@@ -42,6 +42,15 @@ export const siteNavigationQuery = groq`
   }
 `
 
+export const siteFeatureFlagsQuery = groq`
+  *[_type == "siteFeatureFlags" && _id == "siteFeatureFlags"][0] {
+    routes[] {
+      routePath,
+      enabled,
+    }
+  }
+`
+
 export const allNewsQuery = groq`
   *[_type == "newsArticle"] | order(date desc) {
     _id,
@@ -80,15 +89,21 @@ export const newsArticleBySlugQuery = groq`
           caption,
         }
       },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
       _type == "videoEmbed" => {
         url,
         caption,
       }
-    },
-    ctaButton {
-      label,
-      url,
-      openInNewTab,
     },
   }
 `
@@ -97,51 +112,43 @@ export const allNewsSlugsQuery = groq`
   *[_type == "newsArticle"] { "slug": slug.current }
 `
 
-export const searchNewsQuery = groq`
-  *[_type == "newsArticle"] | order(date desc) {
-    title,
-    "slug": slug.current,
-    excerpt,
-    "bodyText": pt::text(body),
+export const annualSubscriptionPricingQuery = groq`
+  *[_type == "annualSubscriptionPricing" && _id == "annualSubscriptionPricing"][0] {
+    currency,
+    paymentType,
+    beavers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
+    scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
+    ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
+    rovers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    maximumSubscriptionFee,
   }
 `
 
-export const searchFundraisingQuery = groq`
-  *[_type == "fundraisingCampaign" && defined(body[0])] | order(_createdAt desc) {
-    title,
-    "slug": slug.current,
-    excerpt,
-    "bodyText": pt::text(body),
+export const leadersAnnualSubscriptionPricingQuery = groq`
+  *[_type == "leadersAnnualSubscriptionPricing" && _id == "leadersAnnualSubscriptionPricing"][0] {
+    currency,
+    paymentType,
+    beavers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    cubs { unitPrice, stripePriceId, subscriptionStripePriceId },
+    scouts { unitPrice, stripePriceId, subscriptionStripePriceId },
+    ventures { unitPrice, stripePriceId, subscriptionStripePriceId },
+    rovers { unitPrice, stripePriceId, subscriptionStripePriceId },
+    maximumSubscriptionFee,
   }
 `
 
-export const searchGeneralPagesQuery = groq`
-  *[_type == "generalPage"] | order(_createdAt desc) {
+export const summerCampPaymentOptionsQuery = groq`
+  *[_type == "scoutsSummerCampPricing" && active == true] | order(section asc, title asc) {
+    _id,
     title,
-    "slug": slug.current,
-    description,
-    "bodyText": pt::text(body),
+    section,
+    currency,
+    paymentType,
+    stripePriceId,
+    amountOptions,
+    active,
   }
-`
-
-export const searchLeaderTeamQuery = groq`
-  *[_type == "leaderTeam"][0] {
-    "entries": [
-      ...councilMembers[]{
-        "name": name,
-        "role": role,
-        "group": "Group Council"
-      },
-      ...sectionGroups[]{
-        "groupName": name,
-        "members": members[]{
-          "name": name,
-          "role": role,
-          "group": ^.name
-        }
-      }.members[]
-    ]
-  }.entries
 `
 
 // ── Fundraising ────────────────────────────────────────────────────────────────
@@ -195,12 +202,32 @@ export const fundraisingCampaignBySlugQuery = groq`
           caption,
         }
       },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
     },
   }
 `
 
 export const allFundraisingSlugsQuery = groq`
   *[_type == "fundraisingCampaign"] { "slug": slug.current }
+`
+
+export const searchFundraisingQuery = groq`
+  *[_type == "fundraisingCampaign"] | order(_createdAt desc) {
+    "slug": slug.current,
+    title,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
 `
 
 // ── General Pages ──────────────────────────────────────────────────────────────
@@ -231,6 +258,17 @@ export const generalPageBySlugQuery = groq`
           caption,
         }
       },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
       _type == "videoEmbed" => {
         url,
         caption,
@@ -241,6 +279,15 @@ export const generalPageBySlugQuery = groq`
 
 export const allGeneralPageSlugsQuery = groq`
   *[_type == "generalPage"] { "slug": slug.current }
+`
+
+export const searchGeneralPagesQuery = groq`
+  *[_type == "generalPage"] | order(_updatedAt desc) {
+    "slug": slug.current,
+    title,
+    description,
+    "bodyText": pt::text(body),
+  }
 `
 
 // ── Sections ───────────────────────────────────────────────────────────────────
@@ -307,6 +354,23 @@ export const allLeaderResourcesQuery = groq`
   }
 `
 
+export const searchNewsQuery = groq`
+  *[_type == "newsArticle"] | order(date desc) {
+    "slug": slug.current,
+    title,
+    excerpt,
+    "bodyText": pt::text(body),
+  }
+`
+
+export const searchLeaderTeamQuery = groq`
+  *[_type == "leaderProfile" && isActive == true] | order(name asc) {
+    name,
+    "role": coalesce(roles[0], "Leader"),
+    "group": "Leader Team",
+  }
+`
+
 export const leaderResourceBySlugQuery = groq`
   *[_type == "leaderResource" && slug.current == $slug][0] {
     _id,
@@ -314,7 +378,35 @@ export const leaderResourceBySlugQuery = groq`
     "slug": slug.current,
     category,
     publishedAt,
-    body,
+    body[] {
+      ...,
+      _type == "bodyImage" => {
+        ...,
+        "url": asset->url,
+        alt,
+        caption,
+      },
+      _type == "imageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+        }
+      },
+      _type == "tiledImageGallery" => {
+        ...,
+        images[] {
+          ...,
+          "url": asset->url,
+          alt,
+          caption,
+          aspectRatio,
+        },
+        columns,
+      },
+    },
     visibleToRoles,
     "fileUrl": file.asset->url,
     "fileName": file.asset->originalFilename,

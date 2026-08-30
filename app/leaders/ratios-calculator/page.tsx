@@ -3,7 +3,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowLeft, Calculator, AlertTriangle, CheckCircle2, Users, UsersRound } from "lucide-react"
+import { Calculator, AlertTriangle, CheckCircle2, Users, UsersRound } from "lucide-react"
+import PageHero from "@/components/PageHero"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -120,36 +121,18 @@ export default function RatiosCalculatorPage() {
   const colourDot = sectionColours[section]
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <PageHero
+        title="Leader to Youth Member Ratio Calculator"
+        subtitle="Based on Scouting Ireland policy. Select your section, activity type, and number of youth members to calculate the minimum number of Scouters required."
+        breadcrumbs={[
+          { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Dashboard", href: "/leaders/dashboard" },
+          { label: "Ratios Calculator" },
+        ]}
+      />
+      <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-
-        {/* Back link */}
-        <Link
-          href="/leaders/dashboard"
-          className="inline-flex items-center gap-2 text-sm font-body text-textMuted hover:text-navy-dark transition-colors mb-8"
-        >
-          <ArrowLeft size={15} /> Back to Dashboard
-        </Link>
-
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-orange-main/10 rounded-xl flex items-center justify-center">
-              <Calculator size={20} className="text-orange-main" />
-            </div>
-            <p className="text-orange-main font-body font-semibold text-sm uppercase tracking-widest">
-              Leaders Portal Tool
-            </p>
-          </div>
-          <h1 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl leading-tight">
-            Leader to Youth Member Ratio Calculator
-          </h1>
-          <p className="font-body text-textMuted text-sm mt-3">
-            Based on Scouting Ireland policy. Select your section, activity type,
-            and number of youth members to calculate the minimum number of Scouters required.
-          </p>
-        </div>
-
         {/* Calculator card */}
         <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
 
@@ -408,5 +391,6 @@ export default function RatiosCalculatorPage() {
         )}
       </div>
     </div>
+    </>
   )
 }

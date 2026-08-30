@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import { ScrollRestoration } from "@/components/ScrollRestoration";
+import { filterNavItemsByRouteToggles, type RouteToggle } from "@/lib/routeToggles";
 import { siteUrl } from "@/lib/siteConfig";
 import { client } from "@/sanity/lib/client";
-import { siteNavigationQuery } from "@/sanity/lib/queries";
+import { siteFeatureFlagsQuery, siteNavigationQuery } from "@/sanity/lib/queries";
 import type { NavItem } from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -15,6 +17,8 @@ const roboto = Roboto({
   display: "swap",
 });
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -22,8 +26,8 @@ export const metadata: Metadata = {
     template: "%s | 1st Meath Dunboyne Scouts",
   },
   description:
-    "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a unique Water Section. Founded 1973.",
-  keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "scouting ireland", "youth group"],
+    "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Founded 1973.",
+  keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "rovers", "scouting ireland", "youth group"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -53,7 +57,7 @@ const organizationSchema = {
   url: siteUrl,
   logo: `${siteUrl}/images/logo.jpg`,
   description:
-    "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, and a Water Section. Founded 1973.",
+    "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a Water Section. Founded 1973.",
   foundingDate: "1973",
   address: {
     "@type": "PostalAddress",
@@ -71,17 +75,25 @@ const organizationSchema = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const navData = await client
-    .fetch(siteNavigationQuery)
-    .catch(() => null) as { navItems: NavItem[] } | null;
-  const navItems = navData?.navItems ?? undefined;
+  const [navData, featureFlags] = await Promise.all([
+    client
+      .fetch(siteNavigationQuery)
+      .catch(() => null) as Promise<{ navItems: NavItem[] } | null>,
+    client
+      .fetch(siteFeatureFlagsQuery)
+      .catch(() => null) as Promise<{ routes?: RouteToggle[] } | null>,
+  ]);
+
+  const routeToggles = featureFlags?.routes ?? [];
+  const rawNavItems = navData?.navItems ?? undefined;
+  const navItems = rawNavItems
+    ? filterNavItemsByRouteToggles(rawNavItems, routeToggles)
+    : undefined;
 
   return (
-    <html lang="en" className={roboto.variable}>
+    <html lang="en" className={roboto.variable} data-scroll-behavior="smooth">
       <body className="bg-background font-body antialiased">
-        {/* Disable browser scroll restoration synchronously before any replay can occur.
-            This must run before React hydration to reliably fix Android Chrome. */}
-        <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual'}" }} />
+        <ScrollRestoration />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

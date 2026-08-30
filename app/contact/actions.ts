@@ -92,7 +92,7 @@ export async function submitContactForm(formData: {
   const name = sanitiseString(formData.name, 200)
   const email = sanitiseEmail(formData.email)
   const topic = sanitiseString(formData.topic, 100)
-  const message = sanitiseString(formData.message, 5000)
+  const message = sanitiseString(formData.message, 2000)
 
   if (!name || !email || !topic || !message) {
     throw new Error("Invalid form data")
@@ -135,6 +135,7 @@ async function sendContactNotificationEmail(payload: {
     cubs: "Cubs Section",
     scouts: "Scouts Section",
     ventures: "Ventures Section",
+    rovers: "Rovers Section",
     volunteering: "Volunteering",
     fundraising: "Fundraising",
     other: "Other",

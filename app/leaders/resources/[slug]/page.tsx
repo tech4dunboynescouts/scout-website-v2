@@ -1,12 +1,15 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { PortableText, type PortableTextComponents } from "@portabletext/react"
 import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
 import { leaderResourceBySlugQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
-import { ArrowLeft, Tag, Clock, FileDown } from "lucide-react"
-import PdfViewer from "@/components/PdfViewer"
+import { Tag, Clock, FileDown } from "lucide-react"
+import PdfViewerClient from "@/components/PdfViewerClient"
+import PageHero from "@/components/PageHero"
+import ImageCarousel from "@/components/ImageCarousel"
+import TiledImageGallery from "@/components/TiledImageGallery"
+import BodyImage from "@/components/BodyImage"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -26,6 +29,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const portableTextComponents: PortableTextComponents = {
+  types: {
+    bodyImage: ({ value }: { value: { url: string; alt?: string; caption?: string } }) => (
+      <BodyImage url={value.url} alt={value.alt} caption={value.caption} />
+    ),
+    imageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string }[] } }) => (
+      <ImageCarousel images={value.images ?? []} />
+    ),
+    tiledImageGallery: ({ value }: { value: { images: { url: string; alt?: string; caption?: string; aspectRatio?: string }[]; columns?: number } }) => (
+      <TiledImageGallery images={value.images ?? []} columns={(value.columns as 2 | 3 | 4) ?? 3} />
+    ),
+  },
   block: {
     h2: ({ children }) => (
       <h2 className="font-display font-bold text-navy-dark text-2xl mt-8 mb-3">{children}</h2>
@@ -85,53 +99,53 @@ export default async function ResourcePage({ params }: Props) {
   const isPdf = resource.fileMimeType === "application/pdf"
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-      <Link
-        href="/leaders/dashboard"
-        className="inline-flex items-center gap-2 text-textMuted hover:text-navy-dark text-sm font-body mb-8 transition-colors"
-      >
-        <ArrowLeft size={14} /> Back to Dashboard
-      </Link>
+    <>
+      <PageHero
+        title={resource.title}
+        breadcrumbs={[
+          { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Resources" },
+          { label: resource.title },
+        ]}
+      />
 
-      <div className="flex flex-wrap items-center gap-3 mb-6">
-        <span
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-body font-semibold ${colourClass}`}
-        >
-          <Tag size={10} /> {resource.category}
-        </span>
-        <span className="flex items-center gap-1.5 text-textMuted text-sm font-body">
-          <Clock size={13} /> {formatted}
-        </span>
-      </div>
-
-      <h1 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl leading-tight mb-8">
-        {resource.title}
-      </h1>
-
-      {/* File download */}
-      {resource.fileUrl && (
-        <a
-          href={resource.fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-dark hover:bg-navy-dark/90 text-white font-body font-semibold rounded-lg text-sm transition-colors mb-10"
-        >
-          <FileDown size={15} />
-          {resource.fileName ?? "Download file"}
-        </a>
-      )}
-
-      {/* Inline PDF viewer — uses PDF.js (works on Android/mobile) */}
-      {resource.fileUrl && isPdf && (
-        <PdfViewer url={resource.fileUrl} fileName={resource.fileName} />
-      )}
-
-      {/* Body */}
-      {resource.body && (
-        <div className="font-body text-textMuted text-base">
-          <PortableText value={resource.body} components={portableTextComponents} />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="flex flex-wrap items-center gap-3 mb-8">
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-body font-semibold ${colourClass}`}
+          >
+            <Tag size={10} /> {resource.category}
+          </span>
+          <span className="flex items-center gap-1.5 text-textMuted text-sm font-body">
+            <Clock size={13} /> {formatted}
+          </span>
         </div>
-      )}
-    </div>
+
+        {/* File download */}
+        {resource.fileUrl && (
+          <a
+            href={resource.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-dark hover:bg-navy-dark/90 text-white font-body font-semibold rounded-lg text-sm transition-colors mb-10"
+          >
+            <FileDown size={15} />
+            {resource.fileName ?? "Download file"}
+          </a>
+        )}
+
+        {/* Inline PDF viewer */}
+        {resource.fileUrl && isPdf && (
+          <PdfViewerClient url={resource.fileUrl} fileName={resource.fileName} />
+        )}
+
+        {/* Body */}
+        {resource.body && (
+          <div className="font-body text-textMuted text-base">
+            <PortableText value={resource.body} components={portableTextComponents} />
+          </div>
+        )}
+      </div>
+    </>
   )
 }
