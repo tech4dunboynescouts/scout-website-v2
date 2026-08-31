@@ -37,6 +37,9 @@ export function buildSocialMetadata(options: BuildSocialMetadataOptions): Metada
   const imageUrl = toAbsoluteUrl(options.image ?? DEFAULT_IMAGE_PATH);
   const imageAlt = toNonEmptyString(options.imageAlt) ?? options.title ?? DEFAULT_IMAGE_ALT;
   const isArticle = options.openGraphType === "article";
+  // Our generated opengraph-image routes are always a fixed 1200x630 PNG; raw Sanity
+  // image URLs (pages/sections) have unknown dimensions, so leave those unspecified.
+  const isGeneratedImage = /\/opengraph-image$/.test(imageUrl);
 
   const openGraph: NonNullable<Metadata["openGraph"]> = {
     type: isArticle ? "article" : "website",
@@ -49,6 +52,7 @@ export function buildSocialMetadata(options: BuildSocialMetadataOptions): Metada
       {
         url: imageUrl,
         alt: imageAlt,
+        ...(isGeneratedImage ? { width: 1200, height: 630, type: "image/png" } : {}),
       },
     ],
     ...(isArticle
