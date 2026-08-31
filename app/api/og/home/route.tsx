@@ -12,6 +12,8 @@ export const contentType = "image/png";
 
 export function GET() {
   const logoUrl = new URL("/images/logo.jpg", siteUrl).toString();
+  const heroUrl = new URL("/images/photo-1501854140801-50d01698950b.jpg", siteUrl).toString();
+  const siteDomain = new URL(siteUrl).hostname;
 
   return new ImageResponse(
     (
@@ -22,15 +24,43 @@ export function GET() {
           height: "100%",
           position: "relative",
           overflow: "hidden",
-          background: "linear-gradient(140deg, #0D2044 0%, #17376B 58%, #E8640A 100%)",
           color: "#FFFFFF",
           fontFamily: "Arial",
         }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={heroUrl}
+          alt=""
+          width={size.width}
+          height={size.height}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
         <div
           style={{
             position: "absolute",
-            inset: 0,
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            background: "linear-gradient(140deg, rgba(13,32,68,0.97) 0%, rgba(23,55,107,0.93) 58%, rgba(232,100,10,0.78) 100%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
             display: "flex",
             background:
               "radial-gradient(circle at top right, rgba(255,255,255,0.16) 0, rgba(255,255,255,0.06) 18%, transparent 42%), radial-gradient(circle at bottom left, rgba(255,255,255,0.12) 0, transparent 36%)",
@@ -54,10 +84,9 @@ export function GET() {
               justifyContent: "space-between",
               padding: 24,
               borderRadius: 32,
-              background: "rgba(255,255,255,0.12)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 18px 45px rgba(7, 15, 31, 0.24)",
-              backdropFilter: "blur(6px)",
+              background: "rgba(13,32,68,0.55)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              boxShadow: "0 18px 45px rgba(7, 15, 31, 0.35)",
             }}
           >
             <div
@@ -247,7 +276,7 @@ export function GET() {
                   color: "#FFE5D4",
                 }}
               >
-                dunboynescouts.com
+                {siteDomain}
               </div>
             </div>
           </div>
