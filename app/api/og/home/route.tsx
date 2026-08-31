@@ -79,9 +79,11 @@ export function GET() {
           <div
             style={{
               display: "flex",
-              width: 320,
+              width: 280,
               flexDirection: "column",
-              justifyContent: "space-between",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
               padding: 24,
               borderRadius: 32,
               background: "rgba(13,32,68,0.55)",
@@ -98,7 +100,6 @@ export function GET() {
                 justifyContent: "center",
                 borderRadius: 999,
                 background: "rgba(13, 32, 68, 0.85)",
-                alignSelf: "center",
                 overflow: "hidden",
                 border: "6px solid rgba(255,255,255,0.18)",
               }}
@@ -114,32 +115,14 @@ export function GET() {
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
-                gap: 12,
+                fontSize: 20,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 2.2,
+                color: "#FFD7BB",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 20,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 2.2,
-                  color: "#FFD7BB",
-                }}
-              >
-                Established 1973
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 28,
-                  lineHeight: 1.25,
-                  opacity: 0.95,
-                }}
-              >
-                Beavers, Cubs, Scouts, Ventures, Rovers and a unique Water Section in Dunboyne, Co. Meath.
-              </div>
+              Established 1973
             </div>
           </div>
           <div
@@ -206,78 +189,17 @@ export function GET() {
               >
                 Adventure for Everyone.
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 30,
-                  lineHeight: 1.35,
-                  color: "rgba(255,255,255,0.9)",
-                  maxWidth: 640,
-                }}
-              >
-                A highly active scout group serving young people and families across Dunboyne with outdoor adventure, community and leadership.
-              </div>
             </div>
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
+                fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: 1.2,
+                color: "#FFE5D4",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 14,
-                  fontSize: 20,
-                  color: "#FFF3EA",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    padding: "10px 16px",
-                    borderRadius: 999,
-                    background: "rgba(255,255,255,0.12)",
-                    border: "1px solid rgba(255,255,255,0.14)",
-                  }}
-                >
-                  Outdoors
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    padding: "10px 16px",
-                    borderRadius: 999,
-                    background: "rgba(255,255,255,0.12)",
-                    border: "1px solid rgba(255,255,255,0.14)",
-                  }}
-                >
-                  Community
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    padding: "10px 16px",
-                    borderRadius: 999,
-                    background: "rgba(255,255,255,0.12)",
-                    border: "1px solid rgba(255,255,255,0.14)",
-                  }}
-                >
-                  Water Section
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 20,
-                  fontWeight: 700,
-                  letterSpacing: 1.2,
-                  color: "#FFE5D4",
-                }}
-              >
-                {siteDomain}
-              </div>
+              {siteDomain}
             </div>
           </div>
         </div>
