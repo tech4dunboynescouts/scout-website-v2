@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery } from "@/sanity/lib/queries";
+import { stripEmoji } from "@/lib/stripEmoji";
 
 export const runtime = "edge";
 export const contentType = "image/png";
@@ -21,7 +22,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const campaign = await client.fetch(fundraisingCampaignBySlugQuery, { slug }).catch(() => null);
 
-  const title = campaign?.title ?? "Fundraising Campaign";
+  const title = stripEmoji(campaign?.title ?? "Fundraising Campaign");
   const raised = typeof campaign?.raised === "number" ? campaign.raised : 0;
   const target = typeof campaign?.target === "number" ? campaign.target : 0;
   const progress = target > 0 ? Math.min((raised / target) * 100, 100) : 0;

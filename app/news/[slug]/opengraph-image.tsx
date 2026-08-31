@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery } from "@/sanity/lib/queries";
+import { stripEmoji } from "@/lib/stripEmoji";
 
 export const runtime = "edge";
 export const contentType = "image/png";
@@ -13,7 +14,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const article = await client.fetch(newsArticleBySlugQuery, { slug }).catch(() => null);
 
-  const title = article?.title ?? "News & Events";
+  const title = stripEmoji(article?.title ?? "News & Events");
   const tag = article?.tag ?? "Latest Update";
   const coverImage: string | undefined = article?.image;
 
