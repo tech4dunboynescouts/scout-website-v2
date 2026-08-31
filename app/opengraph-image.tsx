@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
-import { siteUrl } from "@/lib/siteConfig";
+import { publicAssetToDataUri } from "@/lib/ogImageAssets";
 
-export const runtime = "edge";
 export const alt = "1st Meath Dunboyne Scout Group social preview";
 export const size = {
   width: 1200,
@@ -9,9 +8,11 @@ export const size = {
 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
-  const heroImage = new URL("/images/photo-1501854140801-50d01698950b.jpg", siteUrl).toString();
-  const logo = new URL("/images/logo.jpg", siteUrl).toString();
+export default async function OpenGraphImage() {
+  const [heroImage, logo] = await Promise.all([
+    publicAssetToDataUri("/images/photo-1501854140801-50d01698950b.jpg"),
+    publicAssetToDataUri("/images/logo.jpg"),
+  ]);
 
   return new ImageResponse(
     (

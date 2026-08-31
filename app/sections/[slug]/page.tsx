@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: section.name,
     description: section.description,
     canonicalPath: `/sections/${slug}`,
-    image: section.heroImage,
+    image: `/sections/${slug}/opengraph-image`,
     imageAlt: section.name,
   });
 }

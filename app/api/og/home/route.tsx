@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteUrl } from "@/lib/siteConfig";
-
-export const runtime = "edge";
+import { publicAssetToDataUri } from "@/lib/ogImageAssets";
 
 const size = {
   width: 1200,
@@ -10,9 +9,11 @@ const size = {
 
 export const contentType = "image/png";
 
-export function GET() {
-  const logoUrl = new URL("/images/logo.jpg", siteUrl).toString();
-  const heroUrl = new URL("/images/photo-1501854140801-50d01698950b.jpg", siteUrl).toString();
+export async function GET() {
+  const [logoUrl, heroUrl] = await Promise.all([
+    publicAssetToDataUri("/images/logo.jpg"),
+    publicAssetToDataUri("/images/photo-1501854140801-50d01698950b.jpg"),
+  ]);
   const siteDomain = new URL(siteUrl).hostname;
 
   return new ImageResponse(
@@ -175,7 +176,7 @@ export function GET() {
                   letterSpacing: -2,
                 }}
               >
-                Skills for Life.
+                Over 50 years of
               </div>
               <div
                 style={{
@@ -187,7 +188,7 @@ export function GET() {
                   color: "#FFD7BB",
                 }}
               >
-                Adventure for Everyone.
+                Scouting in Dunboyne.
               </div>
             </div>
             <div
