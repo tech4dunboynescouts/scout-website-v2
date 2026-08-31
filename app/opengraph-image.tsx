@@ -88,12 +88,9 @@ export default async function OpenGraphImage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 980 }}>
             <div style={{ display: "flex", fontSize: 64, fontWeight: 800, lineHeight: 1.06 }}>
-              Skills For Life.
+              Over 50 years of
               <br />
-              Adventure For Everyone.
-            </div>
-            <div style={{ display: "flex", fontSize: 32, opacity: 0.9 }}>
-              Beavers, Cubs, Scouts, Ventures, Rovers and Water Section
+              Scouting in Dunboyne.
             </div>
           </div>
         </div>
