@@ -41,7 +41,7 @@ For the Leaders Portal payments flow, set these server-side values in your local
 
 - `STRIPE_SECRET_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `NEXT_PUBLIC_SITE_URL` or `VERCEL_URL`
+- `NEXT_PUBLIC_SITE_URL=https://1stmeathdunboynescouts.ie` (set this in Vercel for Production, Preview, and Development)
 - `SANITY_WRITE_TOKEN`
 
 Leaders payments also require an `annualSubscriptionPricing` singleton document in Sanity with unit prices and Stripe Price IDs for the five youth sections: Beavers, Cubs, Scouts, Ventures, and Rovers.

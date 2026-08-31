@@ -1,6 +1,5 @@
-const vercelSiteUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
-
-export const siteUrl =
+const configuredSiteUrl =
 	process.env.NEXT_PUBLIC_SITE_URL ??
-	vercelSiteUrl ??
-	"http://localhost:3000";
+	"https://1stmeathdunboynescouts.ie";
+
+export const siteUrl = configuredSiteUrl.replace(/\/+$/, "");

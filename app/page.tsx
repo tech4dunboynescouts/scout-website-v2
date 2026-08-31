@@ -92,7 +92,7 @@ export default async function HomePage() {
           "Be part of something bigger.",
           "Prepared for everything. Ready for anything.",
         ]}
-        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath, with five youth sections from Beavers to Rovers, plus a very active Water Section that supports all sections."
+        subtitle="Founded in 1973, we are a highly active Scout group based in Dunboyne, Co. Meath, with five youth sections from Beavers to Rovers, plus a very active Water Section that supports the entire group."
         image="/images/photo-1501854140801-50d01698950b.jpg"
         primaryCta={{ label: "Join Our Group", href: "/join" }}
         secondaryCta={{ label: "Explore Sections", href: "#sections" }}
