@@ -25,6 +25,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const raised = typeof campaign?.raised === "number" ? campaign.raised : 0;
   const target = typeof campaign?.target === "number" ? campaign.target : 0;
   const progress = target > 0 ? Math.min((raised / target) * 100, 100) : 0;
+  const coverImage: string | undefined = campaign?.coverImage;
 
   return new ImageResponse(
     (
@@ -40,6 +41,37 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           fontFamily: "Arial",
         }}
       >
+        {coverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={coverImage}
+            alt=""
+            width={size.width}
+            height={size.height}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+        {coverImage && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background:
+                "linear-gradient(180deg, rgba(11,45,79,0.35) 0%, rgba(11,45,79,0.55) 55%, rgba(11,45,79,0.92) 100%)",
+            }}
+          />
+        )}
+
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div

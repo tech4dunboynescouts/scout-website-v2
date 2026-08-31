@@ -229,7 +229,7 @@ export default function ExpenseClaimForm() {
                   type="text"
                   required
                   maxLength={200}
-                  placeholder="e.g. Badge supplies…"
+                  placeholder="e.g. Fuel or camping supplies…"
                   value={row.description}
                   onChange={(e) => updateRow(row.id, "description", e.target.value)}
                   className="w-full h-9 sm:h-11 px-2 sm:px-3 rounded-xl border border-gray-200 font-body text-xs sm:text-sm text-navy-dark placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main bg-gray-50 box-border"

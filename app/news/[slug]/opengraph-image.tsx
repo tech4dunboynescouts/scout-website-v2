@@ -15,6 +15,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
 
   const title = article?.title ?? "News & Events";
   const tag = article?.tag ?? "Latest Update";
+  const coverImage: string | undefined = article?.image;
 
   return new ImageResponse(
     (
@@ -31,6 +32,37 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           overflow: "hidden",
         }}
       >
+        {coverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={coverImage}
+            alt=""
+            width={size.width}
+            height={size.height}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+        {coverImage && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background:
+                "linear-gradient(180deg, rgba(15,44,82,0.35) 0%, rgba(15,44,82,0.55) 55%, rgba(15,44,82,0.92) 100%)",
+            }}
+          />
+        )}
+
         <div
           style={{
             position: "absolute",
