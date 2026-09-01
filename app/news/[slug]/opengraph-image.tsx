@@ -2,9 +2,9 @@ import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery } from "@/sanity/lib/queries";
 import { stripEmoji } from "@/lib/stripEmoji";
+import { toJpegResponse } from "@/lib/ogImageAssets";
 
-export const runtime = "edge";
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 export const size = {
   width: 1200,
   height: 630,
@@ -18,7 +18,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const tag = article?.tag ?? "Latest Update";
   const coverImage: string | undefined = article?.image;
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -110,4 +110,6 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     ),
     size,
   );
+
+  return toJpegResponse(image);
 }

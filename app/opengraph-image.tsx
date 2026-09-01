@@ -1,12 +1,12 @@
 import { ImageResponse } from "next/og";
-import { publicAssetToDataUri } from "@/lib/ogImageAssets";
+import { publicAssetToDataUri, toJpegResponse } from "@/lib/ogImageAssets";
 
 export const alt = "1st Meath Dunboyne Scout Group social preview";
 export const size = {
   width: 1200,
   height: 630,
 };
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 
 export default async function OpenGraphImage() {
   const [heroImage, logo] = await Promise.all([
@@ -14,7 +14,7 @@ export default async function OpenGraphImage() {
     publicAssetToDataUri("/images/logo.jpg"),
   ]);
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -131,4 +131,6 @@ export default async function OpenGraphImage() {
     ),
     size,
   );
+
+  return toJpegResponse(image);
 }

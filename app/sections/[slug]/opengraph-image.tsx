@@ -3,10 +3,9 @@ import { client } from "@/sanity/lib/client";
 import { sectionPageBySlugQuery } from "@/sanity/lib/queries";
 import sectionsJson from "@/data/sections.json";
 import { stripEmoji } from "@/lib/stripEmoji";
-import { publicAssetToDataUri } from "@/lib/ogImageAssets";
+import { publicAssetToDataUri, toJpegResponse } from "@/lib/ogImageAssets";
 
-export const runtime = "nodejs";
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 export const size = {
   width: 1200,
   height: 630,
@@ -129,12 +128,5 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     size,
   );
 
-  const buffer = await image.arrayBuffer();
-  return new Response(buffer, {
-    headers: {
-      "Content-Type": "image/png",
-      "Content-Length": String(buffer.byteLength),
-      "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
-    },
-  });
+  return toJpegResponse(image);
 }

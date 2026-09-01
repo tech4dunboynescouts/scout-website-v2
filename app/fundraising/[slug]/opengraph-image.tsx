@@ -2,9 +2,9 @@ import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery } from "@/sanity/lib/queries";
 import { stripEmoji } from "@/lib/stripEmoji";
+import { toJpegResponse } from "@/lib/ogImageAssets";
 
-export const runtime = "edge";
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 export const size = {
   width: 1200,
   height: 630,
@@ -28,7 +28,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const progress = target > 0 ? Math.min((raised / target) * 100, 100) : 0;
   const coverImage: string | undefined = campaign?.coverImage;
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -123,4 +123,6 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     ),
     size,
   );
+
+  return toJpegResponse(image);
 }

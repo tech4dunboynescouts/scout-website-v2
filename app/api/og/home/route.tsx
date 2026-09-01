@@ -1,13 +1,13 @@
 import { ImageResponse } from "next/og";
 import { siteUrl } from "@/lib/siteConfig";
-import { publicAssetToDataUri } from "@/lib/ogImageAssets";
+import { publicAssetToDataUri, toJpegResponse } from "@/lib/ogImageAssets";
 
 const size = {
   width: 1200,
   height: 630,
 };
 
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 
 export async function GET() {
   const [logoUrl, heroUrl] = await Promise.all([
@@ -151,15 +151,5 @@ export async function GET() {
     size,
   );
 
-  // Buffer the response so we can send an explicit Content-Length instead of
-  // chunked transfer with no length — some crawlers (incl. Facebook's) reject
-  // images they can't validate the size of up front.
-  const buffer = await image.arrayBuffer();
-  return new Response(buffer, {
-    headers: {
-      "Content-Type": "image/png",
-      "Content-Length": String(buffer.byteLength),
-      "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
-    },
-  });
+  return toJpegResponse(image);
 }
