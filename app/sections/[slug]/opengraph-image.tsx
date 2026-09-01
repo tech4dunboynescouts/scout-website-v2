@@ -29,7 +29,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     : undefined;
   const logoUrl = await publicAssetToDataUri("/images/logo.jpg");
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     (
       <div
         style={{
@@ -128,4 +128,13 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     ),
     size,
   );
+
+  const buffer = await image.arrayBuffer();
+  return new Response(buffer, {
+    headers: {
+      "Content-Type": "image/png",
+      "Content-Length": String(buffer.byteLength),
+      "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
+    },
+  });
 }
