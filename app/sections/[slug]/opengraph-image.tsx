@@ -5,6 +5,7 @@ import sectionsJson from "@/data/sections.json";
 import { stripEmoji } from "@/lib/stripEmoji";
 import { publicAssetToDataUri } from "@/lib/ogImageAssets";
 
+export const runtime = "nodejs";
 export const contentType = "image/png";
 export const size = {
   width: 1200,
