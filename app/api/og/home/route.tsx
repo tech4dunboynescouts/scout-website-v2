@@ -70,137 +70,79 @@ export async function GET() {
         <div
           style={{
             display: "flex",
-            flex: 1,
-            padding: "56px 64px",
-            alignItems: "stretch",
-            justifyContent: "space-between",
-            gap: 40,
+            position: "relative",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: "100%",
+            padding: "56px 72px",
           }}
         >
           <div
             style={{
               display: "flex",
-              width: 280,
-              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
               gap: 20,
-              padding: 24,
-              borderRadius: 32,
-              background: "rgba(13,32,68,0.55)",
-              border: "1px solid rgba(255,255,255,0.22)",
-              boxShadow: "0 18px 45px rgba(7, 15, 31, 0.35)",
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoUrl}
+              alt=""
+              width={76}
+              height={76}
+              style={{ borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)" }}
+            />
             <div
               style={{
                 display: "flex",
-                width: 180,
-                height: 180,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 999,
-                background: "rgba(13, 32, 68, 0.85)",
-                overflow: "hidden",
-                border: "6px solid rgba(255,255,255,0.18)",
-              }}
-            >
-              <img
-                src={logoUrl}
-                alt="1st Meath Dunboyne Scout Group logo"
-                width="160"
-                height="160"
-                style={{ display: "flex", width: 160, height: 160, objectFit: "cover" }}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: 700,
+                letterSpacing: 1.4,
                 textTransform: "uppercase",
-                letterSpacing: 2.2,
-                color: "#FFD7BB",
+                opacity: 0.95,
               }}
             >
-              Established 1973
+              1st Meath Dunboyne Scout Group
             </div>
           </div>
           <div
             style={{
               display: "flex",
-              flex: 1,
               flexDirection: "column",
-              justifyContent: "space-between",
-              paddingTop: 8,
-              paddingBottom: 8,
+              marginTop: 104,
+              maxWidth: 920,
             }}
           >
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
-                gap: 14,
-                fontSize: 22,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 2.8,
-                color: "#FFE5D4",
+                width: 88,
+                height: 5,
+                marginBottom: 24,
+                background: "#f97316",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                fontSize: 70,
+                fontWeight: 800,
+                lineHeight: 1.04,
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  width: 56,
-                  height: 4,
-                  borderRadius: 999,
-                  background: "#FFB27A",
-                }}
-              />
-              1st Meath Dunboyne Scout Group
+              Over 50 years of
             </div>
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
-                gap: 22,
-                maxWidth: 680,
+                marginTop: 8,
+                fontSize: 70,
+                fontWeight: 800,
+                lineHeight: 1.04,
+                color: "#fed7aa",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 78,
-                  fontWeight: 800,
-                  lineHeight: 1.02,
-                  letterSpacing: -2,
-                }}
-              >
-                Over 50 years of
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 78,
-                  fontWeight: 800,
-                  lineHeight: 1.02,
-                  letterSpacing: -2,
-                  color: "#FFD7BB",
-                }}
-              >
-                Scouting in Dunboyne.
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 20,
-                fontWeight: 700,
-                letterSpacing: 1.2,
-                color: "#FFE5D4",
-              }}
-            >
-              {siteDomain}
+              Scouting in Dunboyne.
             </div>
           </div>
         </div>

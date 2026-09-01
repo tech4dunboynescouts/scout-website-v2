@@ -58,42 +58,75 @@ export default async function OpenGraphImage() {
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
+              justifyContent: "center",
             position: "relative",
             width: "100%",
-            padding: "64px 72px",
+              padding: "56px 72px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logo}
-              alt=""
-              width={72}
-              height={72}
-              style={{ borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)" }}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logo}
+                alt=""
+                width={76}
+                height={76}
+                style={{ borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)" }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 24,
+                  fontWeight: 700,
+                  letterSpacing: 1.4,
+                  textTransform: "uppercase",
+                  opacity: 0.95,
+                }}
+              >
+                1st Meath Dunboyne Scout Group
+              </div>
+            </div>
             <div
               style={{
                 display: "flex",
-                fontSize: 26,
-                fontWeight: 700,
-                letterSpacing: 1,
-                textTransform: "uppercase",
-                opacity: 0.95,
+                flexDirection: "column",
+                marginTop: 104,
+                maxWidth: 920,
               }}
             >
-              1st Meath Dunboyne Scout Group
+              <div
+                style={{
+                  display: "flex",
+                  width: 88,
+                  height: 5,
+                  marginBottom: 24,
+                  background: "#f97316",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 70,
+                  fontWeight: 800,
+                  lineHeight: 1.04,
+                }}
+              >
+                Over 50 years of
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  marginTop: 8,
+                  fontSize: 70,
+                  fontWeight: 800,
+                  lineHeight: 1.04,
+                  color: "#fed7aa",
+                }}
+              >
+                Scouting in Dunboyne.
+              </div>
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 980 }}>
-            <div style={{ display: "flex", fontSize: 64, fontWeight: 800, lineHeight: 1.06 }}>
-              Over 50 years of
-              <br />
-              Scouting in Dunboyne.
-            </div>
-          </div>
-        </div>
       </div>
     ),
     size,
