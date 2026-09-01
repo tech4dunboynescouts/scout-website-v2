@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { newsArticleBySlugQuery } from "@/sanity/lib/queries";
 import { stripEmoji } from "@/lib/stripEmoji";
-import { toJpegResponse } from "@/lib/ogImageAssets";
+import { publicAssetToDataUri, toJpegResponse } from "@/lib/ogImageAssets";
 
 export const contentType = "image/jpeg";
 export const size = {
@@ -12,7 +12,10 @@ export const size = {
 
 export default async function OpenGraphImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = await client.fetch(newsArticleBySlugQuery, { slug }).catch(() => null);
+  const [article, logoUrl] = await Promise.all([
+    client.fetch(newsArticleBySlugQuery, { slug }).catch(() => null),
+    publicAssetToDataUri("/images/logo.jpg"),
+  ]);
 
   const title = stripEmoji(article?.title ?? "News & Events");
   const tag = article?.tag ?? "Latest Update";
@@ -28,7 +31,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           position: "relative",
           background: "linear-gradient(135deg, #0f2c52 0%, #1d4a7a 65%, #f97316 100%)",
           color: "#ffffff",
-          padding: "72px",
+          padding: "64px 72px",
           fontFamily: "Arial",
           overflow: "hidden",
         }}
@@ -67,7 +70,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         <div
           style={{
             position: "absolute",
-            top: "72px",
+            top: "64px",
             right: "72px",
             display: "flex",
             alignItems: "center",
@@ -84,17 +87,27 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%" }}>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 30,
-              fontWeight: 700,
-              letterSpacing: 0.8,
-              textTransform: "uppercase",
-              opacity: 0.95,
-            }}
-          >
-            1st Meath Dunboyne Scout Group
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoUrl}
+              alt=""
+              width={72}
+              height={72}
+              style={{ borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)" }}
+            />
+            <div
+              style={{
+                display: "flex",
+                fontSize: 26,
+                fontWeight: 700,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                opacity: 0.95,
+              }}
+            >
+              1st Meath Dunboyne Scout Group
+            </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 980 }}>

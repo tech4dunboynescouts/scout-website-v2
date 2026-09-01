@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { client } from "@/sanity/lib/client";
 import { fundraisingCampaignBySlugQuery } from "@/sanity/lib/queries";
 import { stripEmoji } from "@/lib/stripEmoji";
-import { toJpegResponse } from "@/lib/ogImageAssets";
+import { publicAssetToDataUri, toJpegResponse } from "@/lib/ogImageAssets";
 
 export const contentType = "image/jpeg";
 export const size = {
@@ -20,7 +20,10 @@ function formatEuro(value: number): string {
 
 export default async function OpenGraphImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const campaign = await client.fetch(fundraisingCampaignBySlugQuery, { slug }).catch(() => null);
+  const [campaign, logoUrl] = await Promise.all([
+    client.fetch(fundraisingCampaignBySlugQuery, { slug }).catch(() => null),
+    publicAssetToDataUri("/images/logo.jpg"),
+  ]);
 
   const title = stripEmoji(campaign?.title ?? "Fundraising Campaign");
   const raised = typeof campaign?.raised === "number" ? campaign.raised : 0;
@@ -38,7 +41,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           position: "relative",
           background: "linear-gradient(135deg, #0b2d4f 0%, #154a78 60%, #f97316 100%)",
           color: "#ffffff",
-          padding: "72px",
+          padding: "64px 72px",
           fontFamily: "Arial",
         }}
       >
@@ -74,20 +77,30 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         )}
 
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 30,
-                fontWeight: 700,
-                letterSpacing: 0.8,
-                textTransform: "uppercase",
-                opacity: 0.95,
-              }}
-            >
-              1st Meath Dunboyne Scout Group
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoUrl}
+              alt=""
+              width={72}
+              height={72}
+              style={{ borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)" }}
+            />
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 26,
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                  textTransform: "uppercase",
+                  opacity: 0.95,
+                }}
+              >
+                1st Meath Dunboyne Scout Group
+              </div>
+              <div style={{ display: "flex", fontSize: 22, opacity: 0.9 }}>Fundraising Campaign</div>
             </div>
-            <div style={{ display: "flex", fontSize: 28, opacity: 0.9 }}>Fundraising Campaign</div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 26, maxWidth: 980 }}>
