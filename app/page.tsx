@@ -8,6 +8,9 @@ import StatCounter from "@/components/StatCounter";
 import sections from "@/data/sections.json";
 import { client } from "@/sanity/lib/client";
 import { allNewsQuery } from "@/sanity/lib/queries";
+import { siteUrl } from "@/lib/siteConfig";
+
+const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
 
 export const metadata: Metadata = {
   title: "1st Meath Dunboyne Scout Group",
@@ -15,21 +18,23 @@ export const metadata: Metadata = {
     "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Join us today.",
   openGraph: {
     type: "website",
+    url: siteUrl,
     title: "1st Meath Dunboyne Scout Group",
     description:
       "1st Meath Dunboyne Scout Group serves the Dunboyne community with Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Join us today.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/api/og/home",
         width: 1200,
         height: 630,
         alt: "Branded social share image for 1st Meath Dunboyne Scout Group",
       },
     ],
   },
+  facebook: facebookAppId ? { appId: facebookAppId } : undefined,
   twitter: {
     card: "summary_large_image",
-    images: ["/opengraph-image"],
+    images: ["/api/og/home"],
   },
 };
 
