@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Timeline from "@/components/Timeline";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 import { ArrowRight } from "lucide-react";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "About Us",
   description:
     "Learn about 1st Meath Dunboyne Scout Group, our history since 1973, our leaders, and our commitment to the Dunboyne community.",
-};
+  canonicalPath: "/about",
+});
 
 export default function AboutPage() {
   return (

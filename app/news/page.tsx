@@ -3,12 +3,14 @@ import PageHero from "@/components/PageHero";
 import NewsFilterGrid from "@/components/NewsFilterGrid";
 import { client } from "@/sanity/lib/client";
 import { allNewsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "News & Events",
   description:
     "The latest from 1st Meath Dunboyne, adventures, achievements, and upcoming activities.",
-};
+  canonicalPath: "/news",
+});
 
 export const revalidate = 60;
 

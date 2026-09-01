@@ -1,6 +1,10 @@
 import type { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
-import { allNewsSlugsQuery } from '@/sanity/lib/queries'
+import {
+  allFundraisingSlugsQuery,
+  allGeneralPageSlugsQuery,
+  allNewsSlugsQuery,
+} from '@/sanity/lib/queries'
 import sections from '@/data/sections.json'
 import { siteUrl } from '@/lib/siteConfig'
 
@@ -28,5 +32,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...sectionPages, ...newsPages]
+  const generalPageSlugs: { slug: string }[] = await client
+    .fetch(allGeneralPageSlugsQuery)
+    .catch(() => [])
+  const generalPages: MetadataRoute.Sitemap = generalPageSlugs.map(({ slug }) => ({
+    url: `${siteUrl}/pages/${slug}`,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }))
+
+  const fundraisingSlugs: { slug: string }[] = await client
+    .fetch(allFundraisingSlugsQuery)
+    .catch(() => [])
+  const fundraisingPages: MetadataRoute.Sitemap = fundraisingSlugs.map(({ slug }) => ({
+    url: `${siteUrl}/fundraising/${slug}`,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...sectionPages, ...newsPages, ...generalPages, ...fundraisingPages]
 }

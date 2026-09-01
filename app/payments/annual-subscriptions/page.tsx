@@ -4,11 +4,13 @@ import PageHero from "@/components/PageHero"
 import { annualSubscriptionPricingQuery } from "@/sanity/lib/queries"
 import { serverClient } from "@/sanity/lib/serverClient"
 import AnnualSubscriptionsForm from "./AnnualSubscriptionsForm"
+import { buildSocialMetadata } from "@/lib/socialMetadata"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Annual Subscriptions",
   description: "Pay annual membership subscriptions for Beavers, Cubs, Scouts, Ventures, and Rovers.",
-}
+  canonicalPath: "/payments/annual-subscriptions",
+})
 
 export default async function PublicAnnualSubscriptionsPage() {
   const pricing = await serverClient.fetch(annualSubscriptionPricingQuery).catch(() => null)

@@ -4,12 +4,14 @@ import PageHero from "@/components/PageHero";
 import { ArrowRight } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { leaderTeamQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Leader Team",
   description:
     "Meet the volunteer leader team of 1st Meath Dunboyne Scout Group for the 2025/26 scouting year.",
-};
+  canonicalPath: "/leaders",
+});
 
 export const revalidate = 60;
 

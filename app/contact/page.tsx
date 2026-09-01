@@ -4,12 +4,14 @@ import { FacebookIcon, InstagramIcon, YoutubeIcon } from "@/components/SocialIco
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
 import MapEmbed from "@/components/MapEmbed";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Contact Us",
   description:
     "Get in touch with 1st Meath Dunboyne Scout Group. Find us on Rooske Road, Dunboyne, Co. Meath, or email secretarydunboynescouts@gmail.com.",
-};
+  canonicalPath: "/contact",
+});
 
 export default function ContactPage() {
   return (

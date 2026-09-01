@@ -28,7 +28,6 @@ export const metadata: Metadata = {
   description:
     "1st Meath Dunboyne Scout Group, a community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a unique Water Section. Founded 1973.",
   keywords: ["scouts", "dunboyne", "meath", "beavers", "cubs", "rovers", "scouting ireland", "youth group"],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_IE",
@@ -54,11 +53,21 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "1st Meath Dunboyne Scout Group",
+  alternateName: ["Dunboyne Scouts", "1st Meath Dunboyne Scouts"],
   url: siteUrl,
   logo: `${siteUrl}/images/logo.jpg`,
   description:
     "Community scouting organisation in Dunboyne, Co. Meath, Ireland. Beavers, Cubs, Scouts, Ventures, Rovers, and a Water Section. Founded 1973.",
   foundingDate: "1973",
+  areaServed: [
+    { "@type": "Place", name: "Dunboyne" },
+    { "@type": "AdministrativeArea", name: "County Meath" },
+  ],
+  parentOrganization: {
+    "@type": "Organization",
+    name: "Scouting Ireland",
+    url: "https://www.scouts.ie/",
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "Rooske Road",
@@ -68,6 +77,21 @@ const organizationSchema = {
     addressCountry: "IE",
   },
   email: "secretarydunboynescouts@gmail.com",
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "group enquiries",
+    email: "secretarydunboynescouts@gmail.com",
+    areaServed: "IE",
+    availableLanguage: "en",
+  },
+  knowsAbout: [
+    "Scouting",
+    "youth development",
+    "outdoor education",
+    "camping",
+    "kayaking",
+    "community volunteering",
+  ],
   sameAs: [
     "https://www.facebook.com/groups/811773582630420",
     "https://www.instagram.com/dunboyne_scouts",

@@ -6,14 +6,16 @@ import staticFaqs from "@/data/faqs.json";
 import sections from "@/data/sections.json";
 import { client } from "@/sanity/lib/client";
 import { faqListQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Join the Group",
   description:
     "Join 1st Meath Dunboyne Scout Group. Apply for your child to join as a youth member or express interest in volunteering as an adult leader.",
-};
+  canonicalPath: "/join",
+});
 
 export default async function JoinPage() {
   // Local environments can intermittently fail TLS handshakes to Sanity,

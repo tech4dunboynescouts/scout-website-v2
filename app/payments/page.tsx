@@ -2,12 +2,14 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowRight, CreditCard, Tent } from "lucide-react"
 import PageHero from "@/components/PageHero"
+import { buildSocialMetadata } from "@/lib/socialMetadata"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Online Payments",
   description:
     "Make secure online payments for Annual Subscriptions and Camp Payments for 1st Meath Dunboyne Scout Group.",
-}
+  canonicalPath: "/payments",
+})
 
 export default function PaymentsPage() {
   return (

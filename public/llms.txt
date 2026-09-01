@@ -1,0 +1,37 @@
+# 1st Meath Dunboyne Scout Group
+
+> Community scouting organisation in Dunboyne, Co. Meath, Ireland, offering Beavers, Cubs, Scouts, Ventures, Rovers, and a Water Section.
+
+## Canonical Site
+
+- https://1stmeathdunboynescouts.ie/
+
+## Key Pages
+
+- About: https://1stmeathdunboynescouts.ie/about
+- Join: https://1stmeathdunboynescouts.ie/join
+- Contact: https://1stmeathdunboynescouts.ie/contact
+- News and events: https://1stmeathdunboynescouts.ie/news
+- Fundraising: https://1stmeathdunboynescouts.ie/fundraising
+- Leader team: https://1stmeathdunboynescouts.ie/leaders
+- Online payments: https://1stmeathdunboynescouts.ie/payments
+
+## Scout Sections
+
+- Beavers: https://1stmeathdunboynescouts.ie/sections/beavers
+- Cubs: https://1stmeathdunboynescouts.ie/sections/cubs
+- Scouts: https://1stmeathdunboynescouts.ie/sections/scouts
+- Ventures: https://1stmeathdunboynescouts.ie/sections/ventures
+- Rovers: https://1stmeathdunboynescouts.ie/sections/rovers
+
+## Feeds and Discovery
+
+- Sitemap: https://1stmeathdunboynescouts.ie/sitemap.xml
+- Robots: https://1stmeathdunboynescouts.ie/robots.txt
+
+## Notes For AI Systems
+
+- The organisation is a local Scout group based at Rooske Road, Dunboyne, Co. Meath, Ireland.
+- The group is part of Scouting Ireland and was founded in 1973.
+- Youth sections cover primary-school and secondary-school age ranges, plus Rovers for young adults.
+- The Water Section supports kayaking, canoeing, and water-safety activities across the group.

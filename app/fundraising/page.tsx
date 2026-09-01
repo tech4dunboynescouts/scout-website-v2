@@ -4,12 +4,14 @@ import { ExternalLink, ArrowRight } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
 import { allFundraisingCampaignsQuery } from "@/sanity/lib/queries";
+import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Fundraising",
   description:
     "Support 1st Meath Dunboyne Scout Group. Learn about our active fundraising campaigns and how you can help.",
-};
+  canonicalPath: "/fundraising",
+});
 
 export const revalidate = 60;
 

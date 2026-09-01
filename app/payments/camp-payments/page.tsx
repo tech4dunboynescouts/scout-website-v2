@@ -4,11 +4,13 @@ import PageHero from "@/components/PageHero"
 import { summerCampPaymentOptionsQuery } from "@/sanity/lib/queries"
 import { serverClient } from "@/sanity/lib/serverClient"
 import CampPaymentsForm from "./CampPaymentsForm"
+import { buildSocialMetadata } from "@/lib/socialMetadata"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Camp Payments",
   description: "Pay for upcoming Scout camps and activities online.",
-}
+  canonicalPath: "/payments/camp-payments",
+})
 
 export default async function PublicCampPaymentsPage() {
   const rawOptions = await serverClient

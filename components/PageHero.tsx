@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { siteUrl } from "@/lib/siteConfig";
 
 interface Breadcrumb {
   label: string;
@@ -24,6 +25,21 @@ export default function PageHero({
   accentColour = "#E8640A",
   bgImage,
 }: PageHeroProps) {
+  const breadcrumbSchema = breadcrumbs?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs.map((crumb, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: crumb.label,
+          ...(crumb.href
+            ? { item: new URL(crumb.href, siteUrl).toString().replace(/#.*$/, "") }
+            : {}),
+        })),
+      }
+    : null;
+
   return (
     <section
       className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden"
@@ -33,6 +49,13 @@ export default function PageHero({
           : `linear-gradient(135deg, #0D2044 0%, #1A3A6B 60%, #2A5298 100%)`,
       }}
     >
+      {breadcrumbSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+      )}
+
       {bgImage && (
         <>
           <div
