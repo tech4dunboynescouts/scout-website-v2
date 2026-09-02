@@ -36,6 +36,8 @@ export async function toJpegResponse(
       "Content-Type": "image/jpeg",
       "Content-Length": String(jpegBuffer.byteLength),
       "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
     },
   });
 }
