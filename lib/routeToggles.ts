@@ -1,4 +1,5 @@
 export interface RouteToggle {
+  label?: string
   routePath?: string
   enabled?: boolean
 }
@@ -39,25 +40,28 @@ function disabledPathSet(routeToggles: RouteToggle[]): Set<string> {
 
 export function isRouteDisabled(pathname: string, routeToggles: RouteToggle[]): boolean {
   const disabled = disabledPathSet(routeToggles)
-  return disabled.has(normalizeRoutePath(pathname))
+  const normalizedPath = normalizeRoutePath(pathname)
+  return Array.from(disabled).some(
+    (disabledPath) =>
+      normalizedPath === disabledPath ||
+      (disabledPath !== '/' && normalizedPath.startsWith(`${disabledPath}/`))
+  )
 }
 
 export function filterNavItemsByRouteToggles<T extends NavItemLike>(
   navItems: T[],
   routeToggles: RouteToggle[]
 ): T[] {
-  const disabled = disabledPathSet(routeToggles)
-
   return navItems
     .map((item) => {
       if (item._type === 'navLink') {
         const href = normalizeRoutePath(item.href)
-        return disabled.has(href) ? null : item
+        return isRouteDisabled(href, routeToggles) ? null : item
       }
 
       const children = (item.children ?? []).filter((child) => {
         const href = normalizeRoutePath(child.href)
-        return !disabled.has(href)
+        return !isRouteDisabled(href, routeToggles)
       })
 
       if (children.length === 0) return null

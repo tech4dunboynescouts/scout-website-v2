@@ -2,9 +2,10 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { auth } from "@/auth"
 import { serverClient } from "@/sanity/lib/serverClient"
-import { allLeaderResourcesQuery, leaderProfileByEmailQuery } from "@/sanity/lib/queries"
+import { allLeaderResourcesQuery, leaderProfileByEmailQuery, siteFeatureFlagsQuery } from "@/sanity/lib/queries"
 import LeadersDashboardSearch from "@/components/LeadersDashboardSearch"
 import type { LeaderResource } from "@/components/LeadersDashboardSearch"
+import { isRouteDisabled, type RouteToggle } from "@/lib/routeToggles"
 import { Calculator, ChevronRight, CreditCard, FileText } from "lucide-react"
 import PageHero from "@/components/PageHero"
 
@@ -20,9 +21,16 @@ export default async function DashboardPage() {
     .catch(() => null)
   const roles: string[] = profile?.roles ?? session?.user?.leaderRoles ?? []
 
-  const resources: LeaderResource[] = await serverClient
-    .fetch(allLeaderResourcesQuery, { roles })
-    .catch(() => [])
+  const [resources, featureFlags] = await Promise.all([
+    serverClient
+      .fetch(allLeaderResourcesQuery, { roles })
+      .catch(() => []) as Promise<LeaderResource[]>,
+    serverClient
+      .fetch(siteFeatureFlagsQuery)
+      .catch(() => null) as Promise<{ routes?: RouteToggle[] } | null>,
+  ])
+  const routeToggles = featureFlags?.routes ?? []
+  const showPayments = !isRouteDisabled("/leaders/payments", routeToggles)
 
   return (
     <>
@@ -57,23 +65,25 @@ export default async function DashboardPage() {
             <ChevronRight size={16} className="text-textMuted group-hover:text-orange-main transition-colors flex-shrink-0" />
           </Link>
 
-          <Link
-            href="/leaders/payments"
-            className="group flex items-center gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:border-orange-main/30 hover:shadow-md transition-all"
-          >
-            <div className="w-11 h-11 bg-orange-main/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-orange-main/20 transition-colors">
-              <CreditCard size={20} className="text-orange-main" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-display font-bold text-navy-dark text-sm leading-snug group-hover:text-orange-main transition-colors">
-                Payments
-              </p>
-              <p className="font-body text-textMuted text-xs mt-0.5">
-                Make secure online payments for Annual Subscriptions, Camps and other activities here.
-              </p>
-            </div>
-            <ChevronRight size={16} className="text-textMuted group-hover:text-orange-main transition-colors flex-shrink-0" />
-          </Link>
+          {showPayments ? (
+            <Link
+              href="/leaders/payments"
+              className="group flex items-center gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:border-orange-main/30 hover:shadow-md transition-all"
+            >
+              <div className="w-11 h-11 bg-orange-main/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-orange-main/20 transition-colors">
+                <CreditCard size={20} className="text-orange-main" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-display font-bold text-navy-dark text-sm leading-snug group-hover:text-orange-main transition-colors">
+                  Payments
+                </p>
+                <p className="font-body text-textMuted text-xs mt-0.5">
+                  Make secure online payments for Annual Subscriptions, Camps and other activities here.
+                </p>
+              </div>
+              <ChevronRight size={16} className="text-textMuted group-hover:text-orange-main transition-colors flex-shrink-0" />
+            </Link>
+          ) : null}
 
           <Link
             href="/leaders/expense-claim"

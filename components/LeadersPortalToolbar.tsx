@@ -6,12 +6,14 @@ import { Shield, LayoutDashboard, CreditCard, FileText } from "lucide-react"
 
 interface LeadersPortalToolbarProps {
   isAuthorized: boolean
+  showPayments: boolean
 }
 
 const hiddenPaths = new Set(["/leaders", "/leaders/login", "/leaders/unauthorized"])
 
 export default function LeadersPortalToolbar({
   isAuthorized,
+  showPayments,
 }: LeadersPortalToolbarProps) {
   const pathname = usePathname()
 
@@ -38,12 +40,14 @@ export default function LeadersPortalToolbar({
           >
             <LayoutDashboard size={11} /> Dashboard
           </Link>
-          <Link
-            href="/leaders/payments"
-            className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
-          >
-            <CreditCard size={11} /> Payments
-          </Link>
+          {showPayments ? (
+            <Link
+              href="/leaders/payments"
+              className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"
+            >
+              <CreditCard size={11} /> Payments
+            </Link>
+          ) : null}
           <Link
             href="/leaders/expense-claim"
             className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs font-body transition-colors"

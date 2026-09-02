@@ -45,6 +45,7 @@ export const siteNavigationQuery = groq`
 export const siteFeatureFlagsQuery = groq`
   *[_type == "siteFeatureFlags" && _id == "siteFeatureFlags"][0] {
     routes[] {
+      label,
       routePath,
       enabled,
     }

@@ -1,5 +1,9 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+const routeFlagTitles: Record<string, string> = {
+  '/leaders/payments': 'Leaders Payments',
+}
+
 export const siteFeatureFlags = defineType({
   name: 'siteFeatureFlags',
   title: 'Site Feature Flags',
@@ -18,10 +22,16 @@ export const siteFeatureFlags = defineType({
           title: 'Route Toggle',
           fields: [
             defineField({
+              name: 'label',
+              title: 'Feature Flag',
+              type: 'string',
+              description: 'Friendly name shown in Studio, for example Leaders Payments.',
+            }),
+            defineField({
               name: 'routePath',
               title: 'Route Path',
               type: 'string',
-              description: 'Exact internal path, for example /payments or /fundraising.',
+              description: 'Internal path to hide and block, including child routes. Leaders Payments uses /leaders/payments.',
               validation: (Rule) =>
                 Rule.required().custom((value) => {
                   if (typeof value !== 'string') return 'Route path is required.'
@@ -38,10 +48,19 @@ export const siteFeatureFlags = defineType({
             }),
           ],
           preview: {
-            select: { routePath: 'routePath', enabled: 'enabled' },
-            prepare({ routePath, enabled }: { routePath?: string; enabled?: boolean }) {
+            select: { label: 'label', routePath: 'routePath', enabled: 'enabled' },
+            prepare({
+              label,
+              routePath,
+              enabled,
+            }: {
+              label?: string
+              routePath?: string
+              enabled?: boolean
+            }) {
+              const routeTitle = routePath ? routeFlagTitles[routePath] : undefined
               return {
-                title: routePath ?? 'Route',
+                title: label || routeTitle || routePath || 'Route',
                 subtitle: enabled === false ? 'Disabled' : 'Enabled',
               }
             },

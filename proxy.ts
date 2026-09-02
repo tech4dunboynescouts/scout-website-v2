@@ -23,7 +23,7 @@ async function getRouteTogglesFromSanity(): Promise<RouteToggle[]> {
   const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
   if (!projectId || !dataset) return []
 
-  const query = '*[_type == "siteFeatureFlags" && _id == "siteFeatureFlags"][0]{routes[]{routePath,enabled}}'
+  const query = '*[_type == "siteFeatureFlags" && _id == "siteFeatureFlags"][0]{routes[]{label,routePath,enabled}}'
   const url = `https://${projectId}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${dataset}?query=${encodeURIComponent(query)}`
 
   try {
