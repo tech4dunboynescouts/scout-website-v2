@@ -79,3 +79,33 @@ Tips:
 Make sure you’re using Stripe test API keys.
 In test mode, never use real card details.
 If Stripe shows an auth challenge (3DS), follow the on-screen test prompts to complete/fail as needed.
+
+
+## Helpful Git Commands
+
+git clone https://github.com/alanjkeane/scout-website-v2.git
+
+git config --global credential.https://github.com.useHttpPath true
+
+@"
+protocol=https
+host=github.com
+path=tech4dunboynescouts/scout-website-v2.git
+
+"@ | git credential-manager erase
+
+
+git remote add Tech4DunboybneScoutsGit https://github.com/tech4dunboynescouts/scout-website-v2.git
+
+git fetch Tech4DunboybneScoutsGit
+
+git remote -v    
+Tech4DunboyneScoutsGit  https://github.com/tech4dunboynescouts/scout-website-v2.git (fetch)
+Tech4DunboyneScoutsGit  https://github.com/tech4dunboynescouts/scout-website-v2.git (push)
+origin  https://github.com/alanjkeane/scout-website-v2.git (fetch)
+origin  https://github.com/alanjkeane/scout-website-v2.git (push)
+
+git status --short
+
+git push --force-with-lease Tech4DunboyneScoutsGit master:master
+
