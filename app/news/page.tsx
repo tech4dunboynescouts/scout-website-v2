@@ -12,7 +12,7 @@ export const metadata: Metadata = buildSocialMetadata({
   canonicalPath: "/news",
 });
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export default async function NewsPage() {
   const articles: {

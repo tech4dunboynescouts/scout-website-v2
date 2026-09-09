@@ -47,7 +47,7 @@ const pillars = [
   },
 ];
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 interface NewsArticle {
   _id: string;
