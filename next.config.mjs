@@ -4,6 +4,35 @@ const serverActionsConfig = {
 }
 
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/beaver-section",
+        destination: "/sections/beavers",
+        permanent: true,
+      },
+      {
+        source: "/cub-section",
+        destination: "/sections/cubs",
+        permanent: true,
+      },
+      {
+        source: "/scout-section",
+        destination: "/sections/scouts",
+        permanent: true,
+      },
+      {
+        source: "/ventures",
+        destination: "/sections/ventures",
+        permanent: true,
+      },
+      {
+        source: "/dunboyne-scouts-history",
+        destination: "/pages/1st-meath-dunboyne-scout-group-history",
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
