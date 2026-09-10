@@ -9,7 +9,7 @@ import PageHero from "@/components/PageHero"
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 type Section = "beavers" | "cubs" | "scouts" | "ventures"
-type ActivityType = "standard" | "overnight" | "international"
+type ActivityType = "weekly" | "nonOvernight" | "overnight" | "international"
 
 interface RatioRule {
   base: number
@@ -17,27 +17,38 @@ interface RatioRule {
   increment: number
 }
 
+type MixedLeaderRequirement = "none" | "mandatory" | "recommended"
+
 // ── Calculation logic ─────────────────────────────────────────────────────────
-// Rules sourced from Scouting Ireland Leader-to-Child Ratios policy.
+// Rules sourced from the Scouting Ireland Leader-to-Child Ratios table.
 
 function getRule(section: Section, activity: ActivityType): RatioRule | null {
-  if (section === "ventures") return null // fixed minimum — handled separately
-
   if (section === "beavers") {
-    if (activity === "standard")     return { base: 3, baseMax: 16, increment: 8 }
+    if (activity === "weekly")       return { base: 2, baseMax: 16, increment: 8 }
+    if (activity === "nonOvernight") return { base: 3, baseMax: 16, increment: 8 }
     if (activity === "overnight")    return { base: 3, baseMax: 16, increment: 4 }
     if (activity === "international") return { base: 4, baseMax: 16, increment: 4 }
   }
 
   if (section === "cubs") {
-    if (activity === "standard" || activity === "overnight")
-      return { base: 3, baseMax: 16, increment: 8 }
+    if (activity === "weekly")       return { base: 2, baseMax: 20, increment: 10 }
+    if (activity === "nonOvernight") return { base: 3, baseMax: 20, increment: 10 }
+    if (activity === "overnight")    return { base: 2, baseMax: 16, increment: 8 }
     if (activity === "international") return { base: 3, baseMax: 16, increment: 6 }
   }
 
   if (section === "scouts") {
-    // Same rule for all activity types
-    return { base: 2, baseMax: 16, increment: 8 }
+    if (activity === "weekly")       return { base: 2, baseMax: 24, increment: 12 }
+    if (activity === "nonOvernight") return { base: 2, baseMax: 20, increment: 10 }
+    if (activity === "overnight")    return { base: 2, baseMax: 16, increment: 8 }
+    if (activity === "international") return { base: 3, baseMax: 16, increment: 8 }
+  }
+
+  if (section === "ventures") {
+    if (activity === "weekly")       return { base: 2, baseMax: 24, increment: 12 }
+    if (activity === "nonOvernight") return { base: 2, baseMax: 24, increment: 12 }
+    if (activity === "overnight")    return { base: 2, baseMax: 16, increment: 10 }
+    if (activity === "international") return { base: 2, baseMax: 16, increment: 10 }
   }
 
   return null
@@ -48,13 +59,22 @@ function calculate(
   activity: ActivityType,
   youth: number
 ): number {
-  if (section === "ventures") return 2
-
   const rule = getRule(section, activity)
   if (!rule) return 2
 
   if (youth <= rule.baseMax) return rule.base
   return rule.base + Math.ceil((youth - rule.baseMax) / rule.increment)
+}
+
+function getMixedLeaderRequirement(
+  section: Section,
+  activity: ActivityType
+): MixedLeaderRequirement {
+  if (activity === "weekly" || activity === "nonOvernight") return "none"
+  if (activity === "overnight") {
+    return section === "beavers" || section === "cubs" ? "mandatory" : "recommended"
+  }
+  return section === "ventures" ? "recommended" : "mandatory"
 }
 
 // ── Labels ────────────────────────────────────────────────────────────────────
@@ -67,9 +87,10 @@ const sectionLabels: Record<Section, string> = {
 }
 
 const activityLabels: Record<ActivityType, string> = {
-  standard:      "Standard Activity / Meeting",
+  weekly:        "Weekly Meeting (home base)",
+  nonOvernight: "Non-overnight Activity",
   overnight:     "Overnight",
-  international: "International Trip",
+  international: "Overseas / International",
 }
 
 const sectionColours: Record<Section, string> = {
@@ -83,16 +104,13 @@ const sectionColours: Record<Section, string> = {
 
 export default function RatiosCalculatorPage() {
   const [section, setSection]    = useState<Section>("beavers")
-  const [activity, setActivity]  = useState<ActivityType>("standard")
+  const [activity, setActivity]  = useState<ActivityType>("weekly")
   const [youth, setYouth]        = useState("")
   const [result, setResult]      = useState<number | null>(null)
   const [error, setError]        = useState("")
   const [mixedGender, setMixedGender] = useState(false)
 
-  // Cubs: international is the only distinct type; standard & overnight are identical.
-  // Scouts: activity type doesn't change the ratio but we still show the toggle
-  // so the UI is consistent and the user can record what they're planning.
-  const showActivityToggle = section !== "ventures"
+  const showActivityToggle = true
 
   function handleCalculate() {
     const n = parseInt(youth, 10)
@@ -123,7 +141,7 @@ export default function RatiosCalculatorPage() {
   return (
     <>
       <PageHero
-        title="Leader to Youth Member Ratio Calculator"
+        title="Scouter to Youth Member Ratio Calaulator"
         subtitle="Based on Scouting Ireland policy. Select your section, activity type, and number of youth members to calculate the minimum number of Scouters required."
         breadcrumbs={[
           { label: "Leaders Portal", href: "/leaders/dashboard" },
@@ -197,18 +215,6 @@ export default function RatiosCalculatorPage() {
                   </label>
                 ))}
               </div>
-              {/* Helpful note for Cubs where standard/overnight are identical */}
-              {section === "cubs" && activity !== "international" && (
-                <p className="text-xs font-body text-textMuted mt-2">
-                  For Cubs, the same ratio applies to both Standard and Overnight activities.
-                </p>
-              )}
-              {/* Helpful note for Scouts where activity type doesn't change ratio */}
-              {section === "scouts" && (
-                <p className="text-xs font-body text-textMuted mt-2">
-                  For Scouts, the same ratio (2 for 1–16, +1 per 8) applies to all activity types.
-                </p>
-              )}
             </div>
           )}
 
@@ -217,8 +223,8 @@ export default function RatiosCalculatorPage() {
             <div className="flex items-start gap-3 p-4 bg-purple-50 border border-purple-200 rounded-xl">
               <Users size={18} className="text-purple-600 flex-shrink-0 mt-0.5" />
               <p className="font-body text-sm text-purple-700">
-                For Venture Scouts, a minimum of <strong>2 Scouters</strong> is required at all
-                times, regardless of group size (up to reasonable safety limits).
+                Venture Scout ratios vary by activity type. Select the activity above to apply
+                the relevant minimum from the reference table.
               </p>
             </div>
           )}
@@ -253,8 +259,7 @@ export default function RatiosCalculatorPage() {
               <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl mt-3">
                 <UsersRound size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
                 <p className="font-body text-sm text-blue-700 leading-relaxed">
-                  A mixed-gender group requires <strong>at least one male and one female
-                  Scouter</strong> to be present, especially for overnights.
+                  The mixed-leader requirement for this activity will be shown with the result.
                 </p>
               </div>
             )}
@@ -280,7 +285,7 @@ export default function RatiosCalculatorPage() {
                 setError("")
               }}
               onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
-              placeholder={isVentures ? "Optional — result is always 2" : "e.g. 12"}
+              placeholder="e.g. 12"
               className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-body text-navy-dark placeholder:text-textMuted focus:outline-none focus:ring-2 focus:ring-orange-main/40 focus:border-orange-main transition-all"
             />
             {error && (
@@ -324,8 +329,8 @@ export default function RatiosCalculatorPage() {
               <div>
                 <p className="font-body text-textMuted text-xs uppercase tracking-widest mb-0.5">
                   {sectionLabels[section]}
-                  {!isVentures && ` · ${activityLabels[activity]}`}
-                  {!isVentures && youth && ` · ${youth} youth member${parseInt(youth) !== 1 ? "s" : ""}`}
+                  {` · ${activityLabels[activity]}`}
+                  {youth && ` · ${youth} youth member${parseInt(youth) !== 1 ? "s" : ""}`}
                   {mixedGender && " · Mixed-gender"}
                 </p>
                 <p className="font-display font-bold text-navy-dark text-4xl">
@@ -338,7 +343,7 @@ export default function RatiosCalculatorPage() {
             </div>
 
             {/* Breakdown note */}
-            {!isVentures && (() => {
+            {(() => {
               const rule = getRule(section, activity)
               const n = parseInt(youth, 10)
               if (!rule || isNaN(n)) return null
@@ -364,15 +369,18 @@ export default function RatiosCalculatorPage() {
               <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl mb-4">
                 <UsersRound size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
                 <p className="font-body text-xs text-blue-700 leading-relaxed">
-                  <strong>Mixed-gender group:</strong> The Scouter team must include{" "}
-                  <strong>at least one male and one female Scouter.</strong>
-                  {(activity === "overnight" || activity === "international") && (
-                    <> For {activity === "overnight" ? "overnight" : "international"} activities
-                    this is an absolute requirement — gender balance in the Scouter team is
-                    mandatory to ensure appropriate supervision.
-                    {" "}The minimum of <strong>{result} Scouter{result !== 1 ? "s" : ""}</strong> shown
-                    above must therefore comprise both male and female Scouters.
-                    </>
+                  <strong>Mixed-leader requirement:</strong>{" "}
+                  {getMixedLeaderRequirement(section, activity) === "none" && (
+                    <>There is <strong>no requirement</strong> for mixed leaders for this activity.</>
+                  )}
+                  {getMixedLeaderRequirement(section, activity) === "mandatory" && (
+                    <>A mixed leader group is <strong>mandatory</strong>. The minimum of{" "}
+                    <strong>{result} Scouter{result !== 1 ? "s" : ""}</strong> shown above must
+                    include both male and female Scouters.</>
+                  )}
+                  {getMixedLeaderRequirement(section, activity) === "recommended" && (
+                    <>A mixed leader group is <strong>recommended</strong>; responsible planning is
+                    required for this activity.</>
                   )}
                 </p>
               </div>
