@@ -73,6 +73,11 @@ export const newsArticleBySlugQuery = groq`
     tag,
     excerpt,
     "image": image.asset->url,
+    ctaButton {
+      label,
+      url,
+      openInNewTab,
+    },
     body[] {
       ...,
       _type == "bodyImage" => {

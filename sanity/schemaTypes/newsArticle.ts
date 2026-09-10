@@ -296,14 +296,12 @@ export const newsArticle = defineType({
           title: 'Button Label',
           type: 'string',
           description: 'Text shown on the button, e.g. "Register Now" or "Find Out More"',
-          validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'url',
           title: 'URL',
           type: 'string',
           description: 'Relative path (e.g. /join) for internal pages, or full URL (e.g. https://example.com) for external sites',
-          validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'openInNewTab',
