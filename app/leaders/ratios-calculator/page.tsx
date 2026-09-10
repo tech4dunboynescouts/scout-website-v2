@@ -150,9 +150,9 @@ export default function RatiosCalculatorPage() {
         ]}
       />
       <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-2xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         {/* Calculator card */}
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
+        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10 space-y-6">
 
           {/* Section selector */}
           <div>
@@ -187,11 +187,11 @@ export default function RatiosCalculatorPage() {
               <label className="block font-body font-semibold text-navy-dark text-sm mb-3">
                 Activity Type
               </label>
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                 {(Object.keys(activityLabels) as ActivityType[]).map((a) => (
                   <label
                     key={a}
-                    className={`flex items-center gap-3 flex-1 cursor-pointer rounded-xl border-2 px-4 py-3 transition-all ${
+                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 px-4 py-3 transition-all ${
                       activity === a
                         ? "border-orange-main bg-orange-main/5"
                         : "border-gray-200 hover:border-orange-main/40"
