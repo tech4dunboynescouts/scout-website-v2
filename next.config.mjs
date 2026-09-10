@@ -31,6 +31,21 @@ const nextConfig = {
         destination: "/pages/1st-meath-dunboyne-scout-group-history",
         permanent: true,
       },
+      {
+        source: "/parental-information",
+        destination: "/pages/parental-information",
+        permanent: true,
+      },
+      {
+        source: "/location",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/leader-team-2025-2026",
+        destination: "/leaders",
+        permanent: true,
+      },      
     ]
   },
   async headers() {
