@@ -14,10 +14,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     ...authConfig.callbacks,
     async jwt({ token, trigger, account }) {
-      // Query Sanity only on initial sign-in, not on every token refresh
-      if (trigger === "signIn" && token.email) {
+      // Re-check the profile so changing Active in Sanity takes effect for existing sessions.
+      if (token.email) {
         const leader = await serverClient
-          .fetch(leaderProfileByEmailQuery, { email: token.email })
+          .fetch(leaderProfileByEmailQuery, { email: token.email.trim().toLowerCase() })
           .catch(() => null)
 
         token.isAuthorizedLeader = leader?.isActive === true
@@ -26,6 +26,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       void account
       return token
+    },
+    async session({ session, token }) {
+      const email = token.email ?? session.user.email
+      const leader = email
+        ? await serverClient
+            .fetch(leaderProfileByEmailQuery, { email: email.trim().toLowerCase() })
+            .catch(() => null)
+        : null
+
+      session.user.isAuthorizedLeader = leader?.isActive === true
+      session.user.leaderRoles = (leader?.roles as string[]) ?? []
+      session.user.leaderName = (leader?.name as string) ?? session.user.name ?? null
+      return session
     },
   },
 })

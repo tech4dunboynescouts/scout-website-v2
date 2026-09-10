@@ -49,6 +49,37 @@ async function getRouteTogglesFromSanity(): Promise<RouteToggle[]> {
   }
 }
 
+async function isActiveLeader(email: string): Promise<boolean> {
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
+  if (!projectId || !dataset) return false
+
+  const query = '*[_type == "leaderProfile" && email == $email && isActive == true][0]{_id}'
+  const normalizedEmail = email.trim().toLowerCase()
+  const searchParams = new URLSearchParams({
+    query,
+    "$email": JSON.stringify(normalizedEmail),
+  })
+  const url = `https://${projectId}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${dataset}?${searchParams}`
+
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        ...(process.env.SANITY_API_READ_TOKEN
+          ? { Authorization: `Bearer ${process.env.SANITY_API_READ_TOKEN}` }
+          : {}),
+      },
+    })
+    if (!res.ok) return false
+
+    const data = (await res.json()) as { result?: { _id?: string } | null }
+    return Boolean(data.result?._id)
+  } catch {
+    return false
+  }
+}
+
 export default auth(async (req) => {
   const { nextUrl } = req
   const session = req.auth
@@ -77,7 +108,8 @@ export default auth(async (req) => {
     return NextResponse.redirect(new URL("/leaders/login", req.url))
   }
 
-  if (!session.user?.isAuthorizedLeader) {
+  const email = session.user?.email
+  if (!email || !(await isActiveLeader(email))) {
     return NextResponse.redirect(new URL("/leaders/unauthorized", req.url))
   }
 })
