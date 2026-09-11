@@ -35,6 +35,15 @@ export const leaderTeam = defineType({
   title: 'Leader Team',
   type: 'document',
   fields: [
+    defineField({
+      name: 'validFor',
+      title: 'Published Team Valid For',
+      type: 'string',
+      description: 'Shown in the page title, for example 2026-27. Update this when publishing a new team list.',
+      initialValue: '2025-26',
+      validation: (Rule) => Rule.required(),
+    }),
+
     // ── Group Council ───────────────────────────────────────────────────────────
     defineField({
       name: 'councilColour',

@@ -16,6 +16,7 @@ export const faqListQuery = groq`
 
 export const leaderTeamQuery = groq`
   *[_type == "leaderTeam"][0] {
+    validFor,
     councilColour,
     councilMembers[] { name, role, lead },
     sectionGroups[] {

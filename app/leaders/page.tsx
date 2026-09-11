@@ -6,14 +6,19 @@ import { client } from "@/sanity/lib/client";
 import { leaderTeamQuery } from "@/sanity/lib/queries";
 import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const metadata: Metadata = buildSocialMetadata({
-  title: "Leader Team",
-  description:
-    "Meet the volunteer leader team of 1st Meath Dunboyne Scout Group for the 2025/26 scouting year.",
-  canonicalPath: "/leaders",
-});
-
 export const revalidate = 3600;
+const DEFAULT_TEAM_YEAR = "2025-26";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const team = await client.fetch<{ validFor?: string }>(leaderTeamQuery).catch(() => null);
+  const validFor = team?.validFor?.trim() || DEFAULT_TEAM_YEAR;
+
+  return buildSocialMetadata({
+    title: `Leader Team for ${validFor}`,
+    description: `Meet the volunteer leader team of 1st Meath Dunboyne Scout Group for the ${validFor} scouting year.`,
+    canonicalPath: "/leaders",
+  });
+}
 
 interface Member {
   name: string;
@@ -28,6 +33,7 @@ interface SectionGroup {
 }
 
 interface LeaderTeamData {
+  validFor?: string;
   councilColour: string;
   councilMembers: Member[];
   sectionGroups: SectionGroup[];
@@ -144,6 +150,7 @@ export default async function LeadersPage() {
   const sanity = await client.fetch(leaderTeamQuery).catch(() => null) as LeaderTeamData | null;
   const data: LeaderTeamData = sanity ?? staticData;
 
+  const validFor = data.validFor?.trim() || DEFAULT_TEAM_YEAR;
   const councilColour = data.councilColour || staticData.councilColour;
   const councilMembers = data.councilMembers ?? [];
   const sectionGroups = data.sectionGroups ?? [];
@@ -151,7 +158,7 @@ export default async function LeadersPage() {
   return (
     <>
       <PageHero
-        title="Leader Team"
+        title={`Leader Team for ${validFor}`}
         subtitle="Every leader is a volunteer, giving their time, energy, and expertise so young people in Dunboyne can have the scouting experience they deserve."
         breadcrumbs={[
           { label: "Home", href: "/" },
