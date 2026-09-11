@@ -33,7 +33,7 @@ function getRule(section: Section, activity: ActivityType): RatioRule | null {
   if (section === "cubs") {
     if (activity === "weekly")       return { base: 2, baseMax: 20, increment: 10 }
     if (activity === "nonOvernight") return { base: 3, baseMax: 20, increment: 10 }
-    if (activity === "overnight")    return { base: 2, baseMax: 16, increment: 8 }
+    if (activity === "overnight")    return { base: 3, baseMax: 16, increment: 8 }
     if (activity === "international") return { base: 3, baseMax: 16, increment: 6 }
   }
 
@@ -363,6 +363,16 @@ export default function RatiosCalculatorPage() {
                 </p>
               )
             })()}
+
+            {section === "beavers" && activity === "international" && (
+              <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl mb-4">
+                <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="font-body text-xs text-amber-700 leading-relaxed">
+                  <strong>Geographic limitation:</strong> This calculated ratio applies to Great
+                  Britain and the Isle of Man only.
+                </p>
+              </div>
+            )}
 
             {/* Mixed-gender result note */}
             {mixedGender && (
