@@ -17,6 +17,7 @@ const SINGLETON_TYPES = new Set([
   'annualSubscriptionPricing',
   'leadersAnnualSubscriptionPricing',
   'siteFeatureFlags',
+  'leaderTeam',
 ])
 
 export default defineConfig({

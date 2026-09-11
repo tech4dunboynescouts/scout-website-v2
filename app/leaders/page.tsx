@@ -39,107 +39,6 @@ interface LeaderTeamData {
   sectionGroups: SectionGroup[];
 }
 
-// ── Static fallback ────────────────────────────────────────────────────────────
-const staticData: LeaderTeamData = {
-  councilColour: "#5A6A8A",
-  councilMembers: [
-    { name: "Bernie O'Connor", role: "Group Leader", lead: true },
-    { name: "Tom Holmes", role: "Deputy" },
-    { name: "Dermot Walsh", role: "Deputy" },
-    { name: "Karl Maher", role: "Chairperson" },
-    { name: "Marcus McInerney", role: "Treasurer" },
-    { name: "Celine Sludds", role: "Scouter Representative" },
-    { name: "Philip Flood", role: "Quartermaster" },
-    { name: "Siobhan Murphy", role: "Secretary" },
-  ],
-  sectionGroups: [
-    {
-      name: "Monday Beavers", colour: "#E8640A",
-      members: [
-        { name: "Gary Gunning", role: "Section Leader", lead: true },
-        { name: "Celine Sludds", role: "Leader" },
-        { name: "Neil Brady", role: "Leader" },
-        { name: "Louise Roche", role: "Leader" },
-        { name: "Gareth Fereday", role: "Leader" },
-        { name: "Karl Maher", role: "Leader" },
-      ],
-    },
-    {
-      name: "Tuesday Beavers", colour: "#E8640A",
-      members: [
-        { name: "Shaun O'Rourke", role: "Section Leader", lead: true },
-        { name: "Michelle McKenna", role: "Leader" },
-        { name: "Martha Sutton", role: "Leader" },
-        { name: "Matthew Berigan", role: "Leader" },
-        { name: "Gabriel Beirne", role: "Leader" },
-        { name: "Karen Flannery", role: "Leader" },
-      ],
-    },
-    {
-      name: "Tuesday Cubs", colour: "#2A5298",
-      members: [
-        { name: "Ronnie Kane", role: "Section Leader", lead: true },
-        { name: "Oriel Helena Smith", role: "Leader" },
-        { name: "Sinead Lowe", role: "Leader" },
-        { name: "Philip Flood", role: "Leader" },
-        { name: "Helen Beswick", role: "Leader" },
-        { name: "James Sludds", role: "Leader" },
-      ],
-    },
-    {
-      name: "Wednesday Cubs", colour: "#2A5298",
-      members: [
-        { name: "Cormac Mooney", role: "Section Leader", lead: true },
-        { name: "Michael Ó Baille", role: "Leader" },
-        { name: "Daniel Doyle", role: "Leader" },
-        { name: "Ciara O'Neill", role: "Leader" },
-      ],
-    },
-    {
-      name: "Thursday Cubs", colour: "#2A5298",
-      members: [
-        { name: "Anita Reid", role: "Section Leader", lead: true },
-        { name: "Alan Keane", role: "Leader" },
-        { name: "Eoin O'Toole", role: "Leader" },
-        { name: "Michelle Phelan", role: "Leader" },
-        { name: "Ruth Mullins", role: "Leader" },
-        { name: "Dara Collins", role: "Leader" },
-      ],
-    },
-    {
-      name: "Monday Scouts", colour: "#1A3A6B",
-      members: [
-        { name: "Barry Lonergan", role: "Section Leader", lead: true },
-        { name: "Dave Brown", role: "Leader" },
-        { name: "Marcus McInerney", role: "Leader" },
-        { name: "Jennifer Phillips", role: "Leader" },
-        { name: "Ian Roe", role: "Leader" },
-        { name: "Bernie O'Connor", role: "Leader" },
-        { name: "Méabh Ní Thiarnáin", role: "Leader" },
-      ],
-    },
-    {
-      name: "Wednesday Scouts", colour: "#1A3A6B",
-      members: [
-        { name: "Tony Collins", role: "Section Leader", lead: true },
-        { name: "Helen Lonergan", role: "Leader" },
-        { name: "Paul D'Alton", role: "Leader" },
-        { name: "Tom Holmes", role: "Leader" },
-        { name: "Dermot Walsh", role: "Leader" },
-      ],
-    },
-    {
-      name: "Ventures", colour: "#0D2044",
-      members: [
-        { name: "David Renshaw", role: "Section Leader", lead: true },
-        { name: "Dave Kavanagh", role: "Leader" },
-        { name: "Méabh Ní Thiarnáin", role: "Leader" },
-        { name: "Liam Egan", role: "Leader" },
-      ],
-    },
-  ],
-};
-
 function initials(name: string): string {
   const words = name.trim().split(/\s+/);
   if (words.length === 1) return words[0][0].toUpperCase();
@@ -148,12 +47,11 @@ function initials(name: string): string {
 
 export default async function LeadersPage() {
   const sanity = await client.fetch(leaderTeamQuery).catch(() => null) as LeaderTeamData | null;
-  const data: LeaderTeamData = sanity ?? staticData;
 
-  const validFor = data.validFor?.trim() || DEFAULT_TEAM_YEAR;
-  const councilColour = data.councilColour || staticData.councilColour;
-  const councilMembers = data.councilMembers ?? [];
-  const sectionGroups = data.sectionGroups ?? [];
+  const validFor = sanity?.validFor?.trim() || DEFAULT_TEAM_YEAR;
+  const councilColour = sanity?.councilColour || "#5A6A8A";
+  const councilMembers = sanity?.councilMembers ?? [];
+  const sectionGroups = sanity?.sectionGroups ?? [];
 
   return (
     <>
