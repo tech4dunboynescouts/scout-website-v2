@@ -56,7 +56,7 @@ export default async function DashboardPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-display font-bold text-navy-dark text-sm leading-snug group-hover:text-orange-main transition-colors">
-                Leader to Youth Member Ratio Calculator
+                Scouter to Youth Member Ratio Calculator
               </p>
               <p className="font-body text-textMuted text-xs mt-0.5">
                 Scouting Ireland minimum Scouter requirements
