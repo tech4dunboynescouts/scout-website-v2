@@ -15,10 +15,12 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 3600;
+export const revalidate = 60;
+
+const pageClient = client.withConfig({ useCdn: false });
 
 export async function generateStaticParams() {
-  const slugs: { slug: string }[] = await client
+  const slugs: { slug: string }[] = await pageClient
     .fetch(allGeneralPageSlugsQuery)
     .catch(() => []);
   return slugs;
@@ -26,7 +28,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const page = await client
+  const page = await pageClient
     .fetch(generalPageBySlugQuery, { slug })
     .catch(() => null);
   if (!page) return {};
@@ -154,7 +156,7 @@ const portableTextComponents: PortableTextComponents = {
 
 export default async function GeneralPage({ params }: Props) {
   const { slug } = await params;
-  const page = await client
+  const page = await pageClient
     .fetch(generalPageBySlugQuery, { slug })
     .catch(() => null);
 
