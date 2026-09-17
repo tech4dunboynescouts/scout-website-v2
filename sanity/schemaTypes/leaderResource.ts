@@ -38,6 +38,7 @@ export const leaderResource = defineType({
           { title: 'Documents',     value: 'Documents' },
           { title: 'Training',      value: 'Training' },
           { title: 'Finance',       value: 'Finance' },
+          { title: 'Forms',         value: 'Forms' },
         ],
         layout: 'radio',
       },

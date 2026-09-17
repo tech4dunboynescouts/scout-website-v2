@@ -25,6 +25,7 @@ const categoryColours: Record<string, string> = {
   Documents: "bg-navy-dark/10 text-navy-dark",
   Training: "bg-green-100 text-green-700",
   Finance: "bg-purple-100 text-purple-700",
+  Forms: "bg-teal-100 text-teal-700",
 }
 
 export default function LeadersDashboardSearch({ resources }: Props) {
