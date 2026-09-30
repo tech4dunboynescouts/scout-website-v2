@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-const TAGS = ["All", "Beavers", "Cubs", "Scouts", "Ventures", "Group"];
+const TAGS = ["All", "Beavers", "Cubs", "Scouts", "Ventures", "Group", "Water Section"];
 
 interface TagFilterProps {
   active: string;

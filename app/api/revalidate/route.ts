@@ -33,6 +33,7 @@ function getPathsToRevalidate(
 
   switch (documentType) {
     case "newsArticle":
+      paths.add("/");
       paths.add("/news");
       if (slug) {
         paths.add(`/news/${slug}`);
