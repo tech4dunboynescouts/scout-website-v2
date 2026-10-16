@@ -66,63 +66,50 @@ export default async function WaitingListPage() {
           <ChevronLeft size={15} /> Back to Dashboard
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          {data === null ? (
-            <div className="p-12 text-center">
-              <p className="font-body text-textMuted text-sm">
-                Waiting list statistics have not been configured yet. Please add them in Sanity Studio.
+        {data === null ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+            <p className="font-body text-textMuted text-sm">
+              Waiting list statistics have not been configured yet. Please add them in Sanity Studio.
+            </p>
+          </div>
+        ) : (
+          <>
+            {formattedLastUpdated && (
+              <p className="font-body text-textMuted text-sm mb-4">
+                Last updated: {formattedLastUpdated}
               </p>
+            )}
+            <div className="overflow-x-auto rounded-2xl overflow-hidden">
+              <table className="w-full bg-white font-body text-sm">
+                <thead>
+                  <tr className="bg-navy-mid text-white">
+                    <th className="px-6 py-4 text-left font-semibold">Section</th>
+                    <th className="px-6 py-4 text-left font-semibold">Current Waiting List</th>
+                    <th className="px-6 py-4 text-left font-semibold">Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {SECTION_ORDER.map((key, i) => {
+                    const row = (data.sections ?? []).find((s) => s.section === key)
+                    return (
+                      <tr key={key} className={i % 2 === 0 ? "bg-white" : "bg-background"}>
+                        <td className="px-6 py-4 font-semibold text-navy-dark">
+                          {SECTION_LABELS[key]}
+                        </td>
+                        <td className="px-6 py-4 text-textMuted">
+                          {row != null ? row.count : "—"}
+                        </td>
+                        <td className="px-6 py-4 text-textMuted">
+                          {row?.comments?.trim() ? row.comments.trim() : "—"}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
-          ) : (
-            <>
-              {formattedLastUpdated && (
-                <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-                  <p className="font-body text-textMuted text-xs">
-                    Last updated: {formattedLastUpdated}
-                  </p>
-                </div>
-              )}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm font-body">
-                  <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                        Section
-                      </th>
-                      <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                        Current Waiting List
-                      </th>
-                      <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                        Comments
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {SECTION_ORDER.map((key) => {
-                      const row = (data.sections ?? []).find((s) => s.section === key)
-                      return (
-                        <tr
-                          key={key}
-                          className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
-                        >
-                          <td className="px-5 py-3 font-semibold text-navy-dark">
-                            {SECTION_LABELS[key]}
-                          </td>
-                          <td className="px-5 py-3 text-navy-dark">
-                            {row != null ? row.count : "—"}
-                          </td>
-                          <td className="px-5 py-3 text-textMuted">
-                            {row?.comments?.trim() ? row.comments.trim() : "—"}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </>
   )
