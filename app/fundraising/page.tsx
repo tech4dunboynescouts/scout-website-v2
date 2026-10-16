@@ -13,7 +13,7 @@ export const metadata: Metadata = buildSocialMetadata({
   canonicalPath: "/fundraising",
 });
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 interface Campaign {
   _id: string;

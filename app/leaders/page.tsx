@@ -6,7 +6,7 @@ import { client } from "@/sanity/lib/client";
 import { leaderTeamQuery } from "@/sanity/lib/queries";
 import { buildSocialMetadata } from "@/lib/socialMetadata";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 const DEFAULT_TEAM_YEAR = "2025-26";
 
 export async function generateMetadata(): Promise<Metadata> {

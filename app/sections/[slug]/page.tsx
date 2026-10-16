@@ -13,7 +13,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 // ── Normalised section type ────────────────────────────────────────────────────
 interface Section {

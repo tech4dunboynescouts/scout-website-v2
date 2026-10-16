@@ -17,7 +17,7 @@ const roboto = Roboto({
   display: "swap",
 });
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
