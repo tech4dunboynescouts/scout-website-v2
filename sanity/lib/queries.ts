@@ -351,6 +351,19 @@ export const allSectionPageSlugsQuery = groq`
   *[_type == "sectionPage"] { "slug": slug.current }
 `
 
+// ── Waiting List Statistics ────────────────────────────────────────────────────
+
+export const waitingListStatisticsQuery = groq`
+  *[_type == "waitingListStatistics" && _id == "waitingListStatistics"][0] {
+    lastUpdated,
+    sections[] {
+      section,
+      count,
+      comments,
+    }
+  }
+`
+
 // ── Leaders Portal ─────────────────────────────────────────────────────────────
 
 export const leaderProfileByEmailQuery = groq`

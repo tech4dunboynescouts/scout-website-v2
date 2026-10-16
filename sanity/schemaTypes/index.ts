@@ -12,6 +12,7 @@ import { faqList } from './faqList'
 import { annualSubscriptionPricing } from './annualSubscriptionPricing'
 import { leadersAnnualSubscriptionPricing } from './leadersAnnualSubscriptionPricing'
 import { scoutsSummerCampPricing } from './scoutsSummerCampPricing'
+import { waitingListStatistics } from './waitingListStatistics'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -28,5 +29,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     annualSubscriptionPricing,
     leadersAnnualSubscriptionPricing,
     scoutsSummerCampPricing,
+    waitingListStatistics,
   ],
 }
