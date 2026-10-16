@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { ScrollRestoration } from "@/components/ScrollRestoration";
@@ -10,9 +10,8 @@ import { siteFeatureFlagsQuery, siteNavigationQuery } from "@/sanity/lib/queries
 import type { NavItem } from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/next";
 
-const roboto = Roboto({
+const roboto = Roboto_Flex({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
   variable: "--font-roboto",
   display: "swap",
 });

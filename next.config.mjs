@@ -77,6 +77,9 @@ const nextConfig = {
   experimental: {
     serverActions: serverActionsConfig,
   },
+  // Next.js 16 uses Turbopack by default. The empty config satisfies the
+  // requirement to declare turbopack when a webpack config is also present.
+  turbopack: {},
   webpack: (config) => {
     // pdf.js optionally imports canvas for server-side rendering — not needed here
     config.resolve.alias.canvas = false
