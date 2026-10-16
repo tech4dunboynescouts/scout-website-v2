@@ -3,7 +3,7 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import { ArrowRight } from "lucide-react";
 import { client } from "@/sanity/lib/client";
-import { leaderTeamQuery, waitingListStatisticsQuery } from "@/sanity/lib/queries";
+import { leaderTeamQuery } from "@/sanity/lib/queries";
 import { buildSocialMetadata } from "@/lib/socialMetadata";
 
 export const revalidate = 300;
@@ -39,29 +39,6 @@ interface LeaderTeamData {
   sectionGroups: SectionGroup[];
 }
 
-type SectionKey = "beavers" | "cubs" | "scouts" | "ventures" | "rovers";
-
-interface WaitingListSection {
-  section: SectionKey;
-  count: number;
-  comments?: string | null;
-}
-
-interface WaitingListStatisticsData {
-  lastUpdated: string;
-  sections: WaitingListSection[] | null;
-}
-
-const SECTION_ORDER: SectionKey[] = ["beavers", "cubs", "scouts", "ventures", "rovers"];
-
-const SECTION_LABELS: Record<SectionKey, string> = {
-  beavers: "Beavers",
-  cubs: "Cubs",
-  scouts: "Scouts",
-  ventures: "Ventures",
-  rovers: "Rovers",
-};
-
 function initials(name: string): string {
   const words = name.trim().split(/\s+/);
   if (words.length === 1) return words[0][0].toUpperCase();
@@ -69,28 +46,12 @@ function initials(name: string): string {
 }
 
 export default async function LeadersPage() {
-  const [sanity, waitingListData] = await Promise.all([
-    client.fetch(leaderTeamQuery).catch(() => null) as Promise<LeaderTeamData | null>,
-    client.fetch(waitingListStatisticsQuery).catch(() => null) as Promise<WaitingListStatisticsData | null>,
-  ]);
+  const sanity = await client.fetch(leaderTeamQuery).catch(() => null) as LeaderTeamData | null;
 
   const validFor = sanity?.validFor?.trim() || DEFAULT_TEAM_YEAR;
   const councilColour = sanity?.councilColour || "#5A6A8A";
   const councilMembers = sanity?.councilMembers ?? [];
   const sectionGroups = sanity?.sectionGroups ?? [];
-
-  // Build an ordered map from the Sanity data for fast lookup
-  const waitingListMap = new Map<SectionKey, WaitingListSection>(
-    (waitingListData?.sections ?? []).map((s) => [s.section, s])
-  );
-
-  const formattedLastUpdated = waitingListData?.lastUpdated
-    ? new Date(waitingListData.lastUpdated).toLocaleDateString("en-IE", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : null;
 
   return (
     <>
@@ -196,76 +157,6 @@ export default async function LeadersPage() {
             </div>
           </div>
         )}
-
-        {/* Waiting List Statistics */}
-        <div>
-          <div className="mb-8">
-            <span className="text-orange-main font-body text-sm font-semibold uppercase tracking-widest mb-2 block">
-              Membership
-            </span>
-            <h2 className="font-display font-bold text-navy-dark text-3xl sm:text-4xl">
-              Waiting List Statistics
-            </h2>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {waitingListData === null ? (
-              <div className="p-8 text-center">
-                <p className="font-body text-textMuted text-sm">
-                  Waiting list statistics have not been configured yet. Please add them in Sanity Studio.
-                </p>
-              </div>
-            ) : (
-              <>
-                {formattedLastUpdated && (
-                  <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-                    <p className="font-body text-textMuted text-xs">
-                      Last updated: {formattedLastUpdated}
-                    </p>
-                  </div>
-                )}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm font-body">
-                    <thead>
-                      <tr className="border-b border-gray-100">
-                        <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                          Section
-                        </th>
-                        <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                          Current Waiting List
-                        </th>
-                        <th className="px-5 py-3 text-left font-semibold text-navy-dark text-xs uppercase tracking-wider">
-                          Comments
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {SECTION_ORDER.map((key) => {
-                        const row = waitingListMap.get(key);
-                        return (
-                          <tr
-                            key={key}
-                            className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
-                          >
-                            <td className="px-5 py-3 font-semibold text-navy-dark">
-                              {SECTION_LABELS[key]}
-                            </td>
-                            <td className="px-5 py-3 text-navy-dark">
-                              {row != null ? row.count : "—"}
-                            </td>
-                            <td className="px-5 py-3 text-textMuted">
-                              {row?.comments?.trim() ? row.comments.trim() : "—"}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
 
         {/* Volunteer CTA */}
         <div className="bg-navy-dark rounded-2xl p-8 lg:p-12 text-center">
