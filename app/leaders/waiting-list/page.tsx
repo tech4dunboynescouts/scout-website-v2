@@ -59,7 +59,7 @@ export default async function WaitingListPage() {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 lg:py-16">
 
         {data === null ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
@@ -74,12 +74,13 @@ export default async function WaitingListPage() {
                 Last updated: {formattedLastUpdated}
               </p>
             )}
-            <div className="overflow-x-auto rounded-2xl overflow-hidden">
+            {/* Table layout for tablet and up */}
+            <div className="hidden md:block rounded-2xl overflow-hidden">
               <table className="w-full bg-white font-body text-sm">
                 <thead>
                   <tr className="bg-navy-mid text-white">
                     <th className="px-6 py-4 text-left font-semibold">Section</th>
-                    <th className="px-6 py-4 text-left font-semibold">Current Waiting List</th>
+                    <th className="px-6 py-4 text-left font-semibold whitespace-nowrap">Current Waiting List</th>
                     <th className="px-6 py-4 text-left font-semibold">Comments</th>
                   </tr>
                 </thead>
@@ -88,13 +89,13 @@ export default async function WaitingListPage() {
                     const row = (data.sections ?? []).find((s) => s.section === key)
                     return (
                       <tr key={key} className={i % 2 === 0 ? "bg-white" : "bg-background"}>
-                        <td className="px-6 py-4 font-semibold text-navy-dark">
+                        <td className="px-6 py-4 font-semibold text-navy-dark align-top">
                           {SECTION_LABELS[key]}
                         </td>
-                        <td className="px-6 py-4 text-textMuted">
+                        <td className="px-6 py-4 text-textMuted align-top">
                           {row != null ? row.count : "—"}
                         </td>
-                        <td className="px-6 py-4 text-textMuted">
+                        <td className="px-6 py-4 text-textMuted whitespace-pre-line align-top">
                           {row?.comments?.trim() ? row.comments.trim() : "—"}
                         </td>
                       </tr>
@@ -102,6 +103,34 @@ export default async function WaitingListPage() {
                   })}
                 </tbody>
               </table>
+            </div>
+
+            {/* Stacked card layout for mobile */}
+            <div className="md:hidden space-y-4">
+              {SECTION_ORDER.map((key) => {
+                const row = (data.sections ?? []).find((s) => s.section === key)
+                return (
+                  <div
+                    key={key}
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                  >
+                    <div className="flex items-center justify-between bg-navy-mid text-white px-5 py-3">
+                      <span className="font-semibold">{SECTION_LABELS[key]}</span>
+                      <span className="text-sm">
+                        Waiting: <span className="font-semibold">{row != null ? row.count : "—"}</span>
+                      </span>
+                    </div>
+                    <div className="px-5 py-4 font-body text-sm">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-textMuted mb-1">
+                        Comments
+                      </p>
+                      <p className="text-textMuted whitespace-pre-line">
+                        {row?.comments?.trim() ? row.comments.trim() : "—"}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </>
         )}
