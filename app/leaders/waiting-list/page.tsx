@@ -54,17 +54,12 @@ export default async function WaitingListPage() {
         subtitle="Current waiting list counts for each section."
         breadcrumbs={[
           { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Dashboard", href: "/leaders/dashboard" },
           { label: "Waiting List Statistics" },
         ]}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <Link
-          href="/leaders/dashboard"
-          className="inline-flex items-center gap-1.5 text-textMuted hover:text-navy-dark text-sm font-body mb-8 transition-colors"
-        >
-          <ChevronLeft size={15} /> Back to Dashboard
-        </Link>
 
         {data === null ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">

@@ -29,6 +29,7 @@ export default async function ExpenseClaimPage() {
         subtitle="Complete the form below to submit expenses for reimbursement. Receipts must be attached as PDF or JPEG files."
         breadcrumbs={[
           { label: "Leaders Portal", href: "/leaders/dashboard" },
+          { label: "Dashboard", href: "/leaders/dashboard" },
           { label: "Expense Claim" },
         ]}
       />
