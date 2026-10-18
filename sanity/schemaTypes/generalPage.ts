@@ -267,6 +267,95 @@ export const generalPage = defineType({
             },
           },
         }),
+        defineArrayMember({
+          type: 'object',
+          name: 'linkPanels',
+          title: 'Link Panels',
+          description: 'A set of large, clickable panels that link to other pages (e.g. the forms on the Forms page). Drag panels to reorder them.',
+          fields: [
+            defineField({
+              name: 'panels',
+              title: 'Panels',
+              type: 'array',
+              description: 'Each panel becomes a clickable card. The order here is the order shown on the page.',
+              of: [
+                defineArrayMember({
+                  type: 'object',
+                  name: 'linkPanel',
+                  title: 'Panel',
+                  fields: [
+                    defineField({
+                      name: 'title',
+                      title: 'Title',
+                      type: 'string',
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 2,
+                      description: 'Optional short text shown beneath the title.',
+                    }),
+                    defineField({
+                      name: 'href',
+                      title: 'Link',
+                      type: 'url',
+                      description: 'Where the panel links to. Use a relative path like /pages/activity-consent-form for pages on this website, or a full https:// URL for external links.',
+                      validation: (rule) =>
+                        rule
+                          .required()
+                          .uri({ scheme: ['http', 'https'], allowRelative: true }),
+                    }),
+                    defineField({
+                      name: 'icon',
+                      title: 'Icon (emoji)',
+                      type: 'string',
+                      description: 'Optional emoji shown on the panel, e.g. 📝 or 💊.',
+                    }),
+                  ],
+                  preview: {
+                    select: { title: 'title', subtitle: 'href', icon: 'icon' },
+                    prepare({ title, subtitle, icon }: { title?: string; subtitle?: string; icon?: string }) {
+                      return {
+                        title: icon ? `${icon} ${title ?? ''}`.trim() : (title ?? 'Panel'),
+                        subtitle,
+                      }
+                    },
+                  },
+                }),
+              ],
+              validation: (Rule) => Rule.min(1),
+            }),
+          ],
+          initialValue: {
+            panels: [
+              {
+                _key: 'activityConsentForm',
+                _type: 'linkPanel',
+                title: 'Activity Consent Form',
+                description: 'Give consent for your child to take part in Scouting activities.',
+                href: '/pages/activity-consent-form',
+                icon: '📝',
+              },
+              {
+                _key: 'managingMedicationsForm',
+                _type: 'linkPanel',
+                title: 'Managing Medications Form',
+                description: 'Tell us about any medication your child needs while taking part in Scouting activities.',
+                href: '/pages/managing-medications-form',
+                icon: '💊',
+              },
+            ],
+          },
+          preview: {
+            select: { panels: 'panels' },
+            prepare({ panels }: { panels?: unknown[] }) {
+              const count = Array.isArray(panels) ? panels.length : 0
+              return { title: `Link Panels (${count} ${count === 1 ? 'panel' : 'panels'})` }
+            },
+          },
+        }),
       ],
       validation: (Rule) => Rule.required(),
     }),

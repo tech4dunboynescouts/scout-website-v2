@@ -6,6 +6,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import TiledImageGallery from "@/components/TiledImageGallery";
 import BodyImage from "@/components/BodyImage";
 import PdfDocumentBlock from "@/components/PdfDocumentBlock";
+import LinkPanelsBlock, { type LinkPanel } from "@/components/LinkPanelsBlock";
 import PageHero from "@/components/PageHero";
 import { client } from "@/sanity/lib/client";
 import { generalPageBySlugQuery, allGeneralPageSlugsQuery } from "@/sanity/lib/queries";
@@ -123,6 +124,9 @@ const portableTextComponents: PortableTextComponents = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pdfDocument: ({ value }: { value: any }) => (
       <PdfDocumentBlock value={value} />
+    ),
+    linkPanels: ({ value }: { value: { panels?: LinkPanel[] } }) => (
+      <LinkPanelsBlock panels={value.panels ?? []} />
     ),
   },
   block: {
