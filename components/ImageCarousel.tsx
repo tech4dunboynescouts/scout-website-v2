@@ -240,7 +240,7 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
 
               {/* Image area */}
               <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-14"
+                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
                 onClick={e => e.stopPropagation()}
               >
                 <AnimatePresence custom={direction} mode="popLayout">

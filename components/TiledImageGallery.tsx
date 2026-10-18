@@ -146,7 +146,7 @@ export default function TiledImageGallery({
 
               {/* Image Viewer */}
               <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-3 sm:px-6 md:px-14"
+                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
                 onClick={(e) => e.stopPropagation()}
               >
                 <AnimatePresence mode="wait">

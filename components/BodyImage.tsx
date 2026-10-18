@@ -132,7 +132,7 @@ export default function BodyImage({ url, alt, caption }: Props) {
 
               {/* Image area */}
               <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-4"
+                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
