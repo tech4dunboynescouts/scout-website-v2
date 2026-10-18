@@ -120,102 +120,92 @@ export default function TiledImageGallery({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] flex flex-col bg-black/95"
+              className="fixed inset-0 z-[9999] bg-black/95"
               onClick={handleCloseLightbox}
               onKeyDown={handleKeyDown}
               role="dialog"
               aria-modal="true"
               aria-label="Image viewer"
             >
-              {/* Header */}
-              <div
-                className="flex items-center justify-between px-4 py-3 shrink-0"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span className="text-white/60 text-sm font-body select-none">
+              {/* Image fills the entire viewport; object-contain preserves aspect ratio */}
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentIndex}
+                  src={images[currentIndex].url}
+                  alt={images[currentIndex].alt ?? ""}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute inset-0 h-full w-full object-contain select-none"
+                />
+              </AnimatePresence>
+
+              {/* Top bar: counter + close (overlaid) */}
+              <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-4 py-3 pointer-events-none">
+                <span className="text-white/70 text-sm font-body select-none bg-black/30 rounded-full px-2.5 py-1">
                   {images.length > 1 ? `${currentIndex + 1} / ${images.length}` : ""}
                 </span>
                 <button
-                  onClick={handleCloseLightbox}
+                  onClick={(e) => { e.stopPropagation(); handleCloseLightbox(); }}
                   aria-label="Close lightbox"
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              {/* Image Viewer */}
-              <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentIndex}
-                    src={images[currentIndex].url}
-                    alt={images[currentIndex].alt ?? ""}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="max-w-full max-h-full object-contain rounded-lg"
-                    style={{ maxHeight: "calc(100dvh - 120px)" }}
-                  />
-                </AnimatePresence>
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handlePrevious(); }}
+                    aria-label="Previous image"
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  >
+                    <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                    aria-label="Next image"
+                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  >
+                    <ChevronRight size={20} className="sm:w-6 sm:h-6" />
+                  </button>
+                </>
+              )}
 
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => {
-                        handlePrevious();
-                      }}
-                      aria-label="Previous image"
-                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleNext();
-                      }}
-                      aria-label="Next image"
-                      className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      <ChevronRight size={20} className="sm:w-6 sm:h-6" />
-                    </button>
-                  </>
-                )}
-              </div>
+              {/* Bottom bar: caption + dots (overlaid) */}
+              {(images[currentIndex].caption || images.length > 1) && (
+                <div
+                  className="absolute bottom-0 inset-x-0 z-10 px-3 sm:px-4 py-2 sm:py-3 flex flex-col items-center gap-2 sm:gap-3"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {images[currentIndex].caption && (
+                    <p className="text-white/80 text-xs sm:text-sm font-body text-center italic max-w-2xl line-clamp-2 bg-black/30 rounded-lg px-3 py-1">
+                      {images[currentIndex].caption}
+                    </p>
+                  )}
 
-              {/* Footer with caption and thumbnails */}
-              <div
-                className="shrink-0 px-3 sm:px-4 py-2 sm:py-3 flex flex-col items-center gap-2 sm:gap-3 overflow-y-auto max-h-24"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {images[currentIndex].caption && (
-                  <p className="text-white/70 text-xs sm:text-sm font-body text-center italic max-w-2xl line-clamp-2">
-                    {images[currentIndex].caption}
-                  </p>
-                )}
-
-                {images.length > 1 && (
-                  <div className="flex gap-1.5 sm:gap-2 flex-wrap justify-center">
-                    {images.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentIndex(index)}
-                        aria-label={`Go to image ${index + 1}`}
-                        aria-current={index === currentIndex}
-                        className={`w-2 h-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
-                          index === currentIndex
-                            ? "bg-orange-main"
-                            : "bg-white/30 hover:bg-white/50"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+                  {images.length > 1 && (
+                    <div className="flex gap-1.5 sm:gap-2 flex-wrap justify-center">
+                      {images.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentIndex(index)}
+                          aria-label={`Go to image ${index + 1}`}
+                          aria-current={index === currentIndex}
+                          className={`w-2 h-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                            index === currentIndex
+                              ? "bg-orange-main"
+                              : "bg-white/30 hover:bg-white/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>,

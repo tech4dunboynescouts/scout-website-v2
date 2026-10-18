@@ -113,52 +113,42 @@ export default function BodyImage({ url, alt, caption }: Props) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] flex flex-col bg-black/95"
+              className="fixed inset-0 z-[9999] bg-black/95"
               onClick={() => setLightboxOpen(false)}
             >
-              {/* Header bar */}
-              <div
-                className="flex items-center justify-end px-4 py-3 shrink-0"
+              {/* Image fills the entire viewport; object-contain preserves aspect ratio */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <motion.img
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                src={url}
+                alt={alt ?? ""}
                 onClick={(e) => e.stopPropagation()}
+                className="absolute inset-0 h-full w-full object-contain select-none"
+              />
+
+              {/* Close button (overlaid) */}
+              <button
+                onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+                aria-label="Close fullscreen"
+                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
               >
-                <button
-                  onClick={() => setLightboxOpen(false)}
-                  aria-label="Close fullscreen"
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                <X size={20} />
+              </button>
+
+              {/* Caption (overlaid) */}
+              {caption && (
+                <div
+                  className="absolute bottom-0 inset-x-0 z-10 px-4 py-3 flex justify-center"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <X size={20} />
-                </button>
-              </div>
-
-              {/* Image area */}
-              <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <motion.img
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.95, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  src={url}
-                  alt={alt ?? ""}
-                  className="max-w-full max-h-full object-contain rounded-lg"
-                  style={{ maxHeight: "calc(100dvh - 120px)" }}
-                />
-              </div>
-
-              {/* Caption */}
-              <div
-                className="shrink-0 px-4 py-3 flex flex-col items-center gap-2"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {caption && (
-                  <p className="text-white/70 text-sm font-body text-center italic">
+                  <p className="text-white/80 text-sm font-body text-center italic bg-black/30 rounded-lg px-3 py-1">
                     {caption}
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>,

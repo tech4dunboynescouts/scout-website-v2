@@ -218,92 +218,86 @@ export default function ImageCarousel({ images }: { images: CarouselImage[] }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[9999] flex flex-col bg-black/95"
+              className="fixed inset-0 z-[9999] bg-black/95"
               onClick={() => setLightboxOpen(false)}
             >
-              {/* Header bar */}
-              <div
-                className="flex items-center justify-between px-4 py-3 shrink-0"
-                onClick={e => e.stopPropagation()}
-              >
-                <span className="text-white/60 text-sm font-body select-none">
+              {/* Image fills the entire viewport; object-contain preserves aspect ratio */}
+              <AnimatePresence custom={direction} mode="popLayout">
+                <motion.img
+                  key={current}
+                  src={images[current].url}
+                  alt={images[current].alt ?? ""}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  onClick={e => e.stopPropagation()}
+                  className="absolute inset-0 h-full w-full object-contain select-none"
+                />
+              </AnimatePresence>
+
+              {/* Top bar: counter + close (overlaid) */}
+              <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-4 py-3 pointer-events-none">
+                <span className="text-white/70 text-sm font-body select-none bg-black/30 rounded-full px-2.5 py-1">
                   {images.length > 1 ? `${current + 1} / ${images.length}` : ""}
                 </span>
                 <button
-                  onClick={() => setLightboxOpen(false)}
+                  onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
                   aria-label="Close fullscreen"
-                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                  className="pointer-events-auto w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              {/* Image area */}
-              <div
-                className="flex-1 relative flex items-center justify-center overflow-hidden px-2 sm:px-6 md:px-14"
-                onClick={e => e.stopPropagation()}
-              >
-                <AnimatePresence custom={direction} mode="popLayout">
-                  <motion.img
-                    key={current}
-                    src={images[current].url}
-                    alt={images[current].alt ?? ""}
-                    custom={direction}
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="max-w-full max-h-full object-contain rounded-lg"
-                    style={{ maxHeight: "calc(100dvh - 120px)" }}
-                  />
-                </AnimatePresence>
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={e => { e.stopPropagation(); prev(); }}
+                    aria-label="Previous image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    onClick={e => { e.stopPropagation(); next(); }}
+                    aria-label="Next image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
 
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={prev}
-                      aria-label="Previous image"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button
-                      onClick={next}
-                      aria-label="Next image"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-                  </>
-                )}
-              </div>
-
-              {/* Caption and dots */}
-              <div
-                className="shrink-0 px-4 py-3 flex flex-col items-center gap-2"
-                onClick={e => e.stopPropagation()}
-              >
-                {images[current].caption && (
-                  <p className="text-white/70 text-sm font-body text-center italic">
-                    {images[current].caption}
-                  </p>
-                )}
-                {images.length > 1 && (
-                  <div className="flex gap-2">
-                    {images.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => go(i)}
-                        aria-label={`Go to image ${i + 1}`}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          i === current ? "bg-orange-main" : "bg-white/30 hover:bg-white/50"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Bottom bar: caption + dots (overlaid) */}
+              {(images[current].caption || images.length > 1) && (
+                <div
+                  className="absolute bottom-0 inset-x-0 z-10 px-4 py-3 flex flex-col items-center gap-2"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {images[current].caption && (
+                    <p className="text-white/80 text-sm font-body text-center italic bg-black/30 rounded-lg px-3 py-1">
+                      {images[current].caption}
+                    </p>
+                  )}
+                  {images.length > 1 && (
+                    <div className="flex gap-2">
+                      {images.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => go(i)}
+                          aria-label={`Go to image ${i + 1}`}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            i === current ? "bg-orange-main" : "bg-white/30 hover:bg-white/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>,
